@@ -16,6 +16,7 @@ import PlannerPage from './pages/PlannerPage';
 import FinancePage from './pages/FinancePage';
 import ResumePage from './pages/ResumePage';
 import ResumePreviewPage from './pages/ResumePreviewPage';
+import SupportPage from './pages/SupportPage';
 
 function AppLayout() {
   return (
@@ -47,6 +48,7 @@ export default function App() {
               <Route path="/finance" element={<FinancePage />} />
               <Route path="/resume" element={<ResumePage />} />
               <Route path="/resume/preview" element={<ResumePreviewPage />} />
+              <Route path="/support" element={<SupportPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

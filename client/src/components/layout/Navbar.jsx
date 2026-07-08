@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { GraduationCap, Moon, Sun, LogOut, Menu, X } from 'lucide-react';
+import { GraduationCap, Heart, Moon, Sun, LogOut, Menu, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -48,6 +48,13 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <NavLink
+            to="/support"
+            aria-label="Support the Hub"
+            className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30"
+          >
+            <Heart className="h-5 w-5" />
+          </NavLink>
           <button
             onClick={toggle}
             aria-label="Toggle dark mode"
