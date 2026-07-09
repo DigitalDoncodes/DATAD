@@ -49,6 +49,7 @@ app.use('/api/finance', require('./routes/financeRoutes'));
 app.use('/api/resume', require('./routes/resumeRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/announcements', require('./routes/announcementRoutes'));
+app.use('/api/intelligence', require('./routes/intelligenceRoutes'));
 
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 app.use(errorHandler);

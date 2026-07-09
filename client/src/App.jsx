@@ -14,6 +14,7 @@ import NoteEditorPage from './pages/NoteEditorPage';
 import AlbumsListPage from './pages/AlbumsListPage';
 import PlannerPage from './pages/PlannerPage';
 import FinancePage from './pages/FinancePage';
+import IntelligencePage from './pages/IntelligencePage';
 import ResumePage from './pages/ResumePage';
 import ResumePreviewPage from './pages/ResumePreviewPage';
 import SupportPage from './pages/SupportPage';
@@ -69,6 +70,7 @@ export default function App() {
               <Route path="/albums" element={<AlbumsListPage />} />
               <Route path="/planner" element={<PlannerPage />} />
               <Route path="/finance" element={<FinancePage />} />
+              <Route path="/news" element={<IntelligencePage />} />
               <Route path="/resume" element={<ResumePage />} />
               <Route path="/resume/preview" element={<ResumePreviewPage />} />
               <Route path="/support" element={<SupportPage />} />

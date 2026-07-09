@@ -13,6 +13,7 @@ const links = [
   { to: '/planner', label: 'Planner' },
   { to: '/finance', label: 'Finance' },
   { to: '/resume', label: 'Resume' },
+  { to: '/news', label: 'News' },
 ];
 
 const linkClass = ({ isActive }) =>

@@ -9,7 +9,20 @@ MBA students open every day. Modules ship incrementally; nothing existing breaks
 - Notes (shared, by subject/semester) · Photos (albums, Cloudinary) · Planner (shared tasks)
 - Finance (private): expenses, budget, category chart, EMI/SIP/savings calculators
 - Resume Builder (private): guided sections → ATS print-to-PDF
-- Support page: UPI QR presets + roadmap · Footer with feedback links
+- Photos: Google Photos shared-album links (no upload/storage cost)
+- Roles: admin superuser (by email) + members · admin Journal, Console, announcements (Brevo email)
+- **Intelligence Center** (News): admin-curated business-intelligence cards with full MBA framing
+  (what happened / why it matters / MBA concepts / interview relevance / prep pack), 10 categories,
+  bookmarks, topic personalization ("For you"), admin-updated market snapshot, News of the Day,
+  dashboard integration
+- Support page: UPI QR presets + roadmap · Footer with feedback links · Privacy/Terms · Settings
+
+## Intelligence Center — Phase 2 (needs API keys + budget)
+
+- Live news aggregation (NewsAPI/GNews) auto-populating the feed
+- Live market ticker (Nifty/Sensex/Gold/USD-INR/Oil) via a market-data API
+- AI auto-enhancement per article (summary, why-it-matters, MBA concepts, interview questions,
+  similar past events) via an LLM API — currently these fields are admin-curated
 
 ## 🔜 Phase 1 — Go live
 

@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, CalendarDays, Camera, ArrowRight, Megaphone, Pin, Image, ExternalLink } from 'lucide-react';
+import { BookOpen, CalendarDays, Camera, ArrowRight, Megaphone, Pin, Image, ExternalLink, Newspaper, Sparkles } from 'lucide-react';
 import { listNotes } from '../api/notes';
 import { listTasks } from '../api/tasks';
 import { listAlbums } from '../api/albums';
 import { listAnnouncements } from '../api/admin';
+import { listArticles, getMarket } from '../api/intelligence';
 import { useAuth } from '../context/AuthContext';
 import { formatDate, daysUntil } from '../utils/dateUtils';
+import { categoryMeta } from '../utils/intelligence';
 import Loader from '../components/common/Loader';
+import MarketStrip from '../components/intelligence/MarketStrip';
 import { Page, Stagger, StaggerItem, AnimatedNumber } from '../components/common/motion';
 
 function SectionCard({ title, icon: Icon, to, children }) {
@@ -45,18 +48,26 @@ export default function DashboardPage() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    Promise.all([listNotes(), listTasks(), listAlbums(), listAnnouncements()]).then(
-      ([notes, tasks, albums, announcements]) => {
-        const upcoming = tasks.data.filter((t) => t.status !== 'done' && daysUntil(t.dueDate) >= -7);
-        setData({
-          notes: notes.data.slice(0, 4),
-          tasks: upcoming.slice(0, 5),
-          albums: albums.data.slice(0, 4),
-          announcements: announcements.data.slice(0, 3),
-          counts: { notes: notes.data.length, tasks: upcoming.length, albums: albums.data.length },
-        });
-      }
-    );
+    Promise.all([
+      listNotes(),
+      listTasks(),
+      listAlbums(),
+      listAnnouncements(),
+      listArticles(),
+      getMarket(),
+    ]).then(([notes, tasks, albums, announcements, articles, market]) => {
+      const upcoming = tasks.data.filter((t) => t.status !== 'done' && daysUntil(t.dueDate) >= -7);
+      setData({
+        notes: notes.data.slice(0, 4),
+        tasks: upcoming.slice(0, 5),
+        albums: albums.data.slice(0, 4),
+        announcements: announcements.data.slice(0, 3),
+        headlines: articles.data.slice(0, 5),
+        newsOfDay: articles.data.find((a) => a.newsOfTheDay) || null,
+        market: market.data.indicators || [],
+        counts: { notes: notes.data.length, tasks: upcoming.length, albums: albums.data.length },
+      });
+    });
   }, []);
 
   if (!data) return <Loader />;
@@ -75,6 +86,40 @@ export default function DashboardPage() {
         <StatTile icon={CalendarDays} label="Upcoming" value={data.counts.tasks} to="/planner" />
         <StatTile icon={Camera} label="Albums" value={data.counts.albums} to="/albums" />
       </div>
+
+      {(data.market.length > 0 || data.headlines.length > 0) && (
+        <div className="card-hover mb-4 rounded-2xl border border-gray-200/80 bg-white p-5 dark:border-gray-800/80 dark:bg-gray-900">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 font-semibold">
+              <Newspaper className="h-4 w-4 text-indigo-500" /> Business Intelligence
+            </h2>
+            <Link to="/news" className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:gap-1.5 hover:underline dark:text-indigo-400">
+              Open feed <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+          {data.market.length > 0 && <MarketStrip indicators={data.market} />}
+          {data.newsOfDay && (
+            <Link to="/news" className="mt-3 block rounded-xl bg-gradient-to-br from-indigo-500/10 to-blue-500/10 p-3">
+              <p className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-amber-500">
+                <Sparkles className="h-3 w-3" /> News of the day
+              </p>
+              <p className="mt-0.5 text-sm font-semibold">{data.newsOfDay.headline}</p>
+            </Link>
+          )}
+          {data.headlines.length > 0 && (
+            <ul className="mt-3 space-y-2">
+              {data.headlines.map((a) => (
+                <li key={a._id}>
+                  <Link to="/news" className="flex items-start gap-2 text-sm hover:text-indigo-600">
+                    <span className="shrink-0">{categoryMeta(a.category).emoji}</span>
+                    <span className="line-clamp-1">{a.headline}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
 
       {data.announcements.length > 0 && (
         <div className="mb-4 space-y-2">
