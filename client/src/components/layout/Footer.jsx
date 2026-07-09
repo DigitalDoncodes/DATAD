@@ -22,6 +22,8 @@ export default function Footer() {
           <a href={mailto('D Square Labs — Feature suggestion')} className="hover:text-gray-600 dark:hover:text-gray-300">Suggest a feature</a>
           <a href="https://github.com/DigitalDoncodes" target="_blank" rel="noreferrer" className="hover:text-gray-600 dark:hover:text-gray-300">GitHub</a>
           <a href="tel:+919363632214" className="hover:text-gray-600 dark:hover:text-gray-300">{PHONE}</a>
+          <Link to="/privacy" className="hover:text-gray-600 dark:hover:text-gray-300">Privacy</Link>
+          <Link to="/terms" className="hover:text-gray-600 dark:hover:text-gray-300">Terms</Link>
         </nav>
         <p>
           D² Labs · Built by{' '}

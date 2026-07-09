@@ -95,7 +95,7 @@ exports.setBudget = async (req, res, next) => {
     const budget = await Budget.findOneAndUpdate(
       { user: req.user.userId },
       { monthlyAmount },
-      { new: true, upsert: true }
+      { new: true, upsert: true, runValidators: true }
     );
     res.json(budget);
   } catch (err) {

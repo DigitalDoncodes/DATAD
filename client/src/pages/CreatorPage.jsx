@@ -69,12 +69,12 @@ export default function CreatorPage() {
               <Phone className="h-4 w-4 text-indigo-500" /> +91 93636 32214
             </a>
             <a
-              href="https://github.com/DigitalDoncodes"
+              href="https://instagram.com/technerdalert"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
             >
-              <ExternalLink className="h-4 w-4 text-indigo-500" /> github.com/DigitalDoncodes
+              <ExternalLink className="h-4 w-4 text-indigo-500" /> Instagram
             </a>
           </div>
         </section>

@@ -22,6 +22,9 @@ import ComingSoonPage from './pages/ComingSoonPage';
 import AdminPage from './pages/AdminPage';
 import CreatorPage from './pages/CreatorPage';
 import JournalPage from './pages/JournalPage';
+import SettingsPage from './pages/SettingsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 import { UPCOMING_FEATURES } from './utils/upcomingFeatures';
 import { useAuth } from './context/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -56,6 +59,8 @@ export default function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/creator" element={<CreatorPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
             <Route element={<AppLayout />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/notes" element={<NotesListPage />} />
@@ -69,6 +74,7 @@ export default function App() {
               <Route path="/resume" element={<ResumePage />} />
               <Route path="/resume/preview" element={<ResumePreviewPage />} />
               <Route path="/support" element={<SupportPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
               <Route path="/journal" element={<AdminRoute><JournalPage /></AdminRoute>} />
               {UPCOMING_FEATURES.map((f) => (

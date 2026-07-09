@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const announcementSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
-    body: { type: String, required: true },
+    title: { type: String, required: true, trim: true, maxlength: 200 },
+    body: { type: String, required: true, maxlength: 5000 },
     priority: { type: String, enum: ['normal', 'important'], default: 'normal' },
     pinned: { type: Boolean, default: false },
     emailed: { type: Boolean, default: false },

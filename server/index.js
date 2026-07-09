@@ -12,23 +12,33 @@ const cors = require('cors');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
-const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
+const { generalLimiter, authLimiter } = require('./middleware/rateLimiters');
 
 const app = express();
 
+// Behind a hosting proxy (Render/Railway/Vercel) the client IP is in
+// X-Forwarded-For; trust one hop so rate limiting keys on the real IP.
+app.set('trust proxy', 1);
+
+// CLIENT_URL may be a comma-separated allow-list (e.g. prod + www + localhost).
+const allowedOrigins = process.env.CLIENT_URL.split(',').map((o) => o.trim());
+
 app.use(helmet());
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      // Allow same-origin / server-to-server calls (no Origin header).
+      if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+      cb(new Error('Not allowed by CORS'));
+    },
+  })
+);
 app.use(express.json({ limit: '1mb' }));
 app.use(mongoSanitize());
 app.use(hpp());
-
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 20,
-  message: { message: 'Too many attempts, please try again later' },
-});
+app.use('/api', generalLimiter);
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authLimiter, require('./routes/authRoutes'));

@@ -2,15 +2,15 @@ const mongoose = require('mongoose');
 
 const taskSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
+    title: { type: String, required: true, trim: true, maxlength: 200 },
     type: {
       type: String,
       enum: ['case-study', 'deadline', 'interview-prep', 'exam', 'other'],
       default: 'other',
     },
-    subject: { type: String, trim: true },
+    subject: { type: String, trim: true, maxlength: 60 },
     dueDate: { type: Date, required: true },
-    description: { type: String, trim: true },
+    description: { type: String, trim: true, maxlength: 2000 },
     assignee: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
     status: {
       type: String,

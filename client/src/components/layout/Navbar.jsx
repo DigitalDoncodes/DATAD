@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { ChevronDown, Heart, Moon, Sun, LogOut, Menu, X } from 'lucide-react';
+import { ChevronDown, Heart, Moon, Settings, Sun, LogOut, Menu, X } from 'lucide-react';
 import { DSquareMark } from '../common/Logo';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -115,6 +115,13 @@ export default function Navbar() {
             className="rounded-lg p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30"
           >
             <Heart className="h-5 w-5" />
+          </NavLink>
+          <NavLink
+            to="/settings"
+            aria-label="Settings"
+            className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+          >
+            <Settings className="h-5 w-5" />
           </NavLink>
           <button
             onClick={toggle}

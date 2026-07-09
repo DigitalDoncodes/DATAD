@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const verifyToken = require('../middleware/verifyToken');
 const checkRole = require('../middleware/checkRole');
+const { heavyLimiter } = require('../middleware/rateLimiters');
 const {
   getStats,
   listStudents,
@@ -22,7 +23,7 @@ router.post('/journal', createJournalEntry);
 router.put('/journal/:id', updateJournalEntry);
 router.delete('/journal/:id', deleteJournalEntry);
 
-router.post('/announcements', createAnnouncement);
+router.post('/announcements', heavyLimiter, createAnnouncement);
 router.delete('/announcements/:id', deleteAnnouncement);
 
 module.exports = router;

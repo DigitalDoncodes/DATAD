@@ -5,6 +5,19 @@ const errorHandler = (err, req, res, next) => {
   if (err.message === 'Only image files are allowed') {
     return res.status(400).json({ message: err.message });
   }
+  // Mongoose validation (maxlength, enum, required, custom array caps)
+  if (err.name === 'ValidationError') {
+    const first = Object.values(err.errors)[0];
+    return res.status(400).json({ message: first?.message || 'Invalid input' });
+  }
+  // Malformed ObjectId in a route param
+  if (err.name === 'CastError') {
+    return res.status(400).json({ message: 'Invalid identifier' });
+  }
+  // Duplicate unique key (e.g. email already registered)
+  if (err.code === 11000) {
+    return res.status(409).json({ message: 'That value is already taken' });
+  }
   console.error(err);
   res.status(500).json({ message: 'Something went wrong' });
 };

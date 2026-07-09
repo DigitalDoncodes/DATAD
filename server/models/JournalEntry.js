@@ -4,8 +4,8 @@ const mongoose = require('mongoose');
 const journalEntrySchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    title: { type: String, trim: true },
-    content: { type: String, required: true },
+    title: { type: String, trim: true, maxlength: 200 },
+    content: { type: String, required: true, maxlength: 20000 },
     mood: {
       type: String,
       enum: ['great', 'good', 'okay', 'low', 'rough'],
