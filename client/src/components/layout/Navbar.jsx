@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { GraduationCap, Heart, Moon, Sun, LogOut, Menu, X } from 'lucide-react';
+import { Heart, Moon, Sun, LogOut, Menu, X } from 'lucide-react';
+import { DSquareMark } from '../common/Logo';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -34,9 +35,9 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur print:hidden dark:border-gray-800 dark:bg-gray-950/90">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2 font-semibold">
-          <GraduationCap className="h-6 w-6 text-indigo-600" />
-          <span>MBA Batch Hub</span>
+        <div className="flex items-baseline gap-1.5 whitespace-nowrap font-semibold">
+          <DSquareMark />
+          <span className="text-indigo-500 dark:text-indigo-400">Labs</span>
         </div>
 
         <nav className="hidden items-center gap-1 sm:flex">

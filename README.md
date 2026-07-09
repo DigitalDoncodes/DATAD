@@ -1,6 +1,10 @@
-# MBA Batch Hub
+# D² Labs — D Square Labs
 
-A private space for your MBA batch — shared study notes, photo memories, and a group study planner.
+**Technology · Psychology · Impact**
+
+A Student Operating System for MBA students — notes, memories, planning, personal finance,
+resume building, and (soon) placements, community and AI study tools. Independently built
+and maintained by Dhatchinamoorthi.
 
 ## Tech Stack
 
@@ -11,11 +15,16 @@ A private space for your MBA batch — shared study notes, photo memories, and a
 
 ## Features
 
-- Open signup — anyone with the link can join the batch
-- **Notes:** create and share study notes by subject and semester
-- **Photos:** album-based photo sharing for batch memories
-- **Planner:** shared task tracker for case studies, deadlines, exams and interview prep
-- Dark mode
+| Module | What it does | Visibility |
+|---|---|---|
+| Notes | Study notes by subject & semester | Shared with batch |
+| Photos | Album-based memories | Shared with batch |
+| Planner | Case studies, deadlines, exam & interview prep | Shared with batch |
+| Finance | Expense tracker, budget, EMI/SIP/savings calculators | Private per user |
+| Resume | Guided ATS resume builder with print-to-PDF | Private per user |
+| Support | UPI contributions toward hosting & development | — |
+
+See [ROADMAP.md](ROADMAP.md) for what's next (Placement Hub, Community Feed, AI tools…).
 
 ## Setup
 
@@ -35,8 +44,27 @@ A private space for your MBA batch — shared study notes, photo memories, and a
    npm run dev            # runs on http://localhost:5173
    ```
 
-## Notes
+## Project structure
 
-- All content is visible to every registered user; only the author/uploader/creator can edit or delete their own items.
+```
+server/
+  config/       # db + cloudinary setup
+  middleware/   # JWT auth, multer upload, error handler
+  models/       # User, Note, Album, Photo, Task, Expense, Budget, Resume
+  controllers/  # one per domain
+  routes/       # mounted under /api/*
+client/src/
+  api/          # axios instance + per-domain API modules
+  context/      # Auth (JWT) + Theme (dark mode)
+  components/   # layout, common UI, feature components
+  pages/        # one per route
+  utils/        # constants, date helpers
+```
+
+## Conventions
+
+- Shared content is visible to every registered user; only the author/uploader/creator can
+  edit or delete their own items. Finance and Resume data are private per user.
 - Photo uploads are capped at 10MB, images only.
 - Auth endpoints are rate-limited (20 requests / 15 min).
+- JWT (7-day expiry) in `Authorization: Bearer` header; 401 triggers client-side logout.

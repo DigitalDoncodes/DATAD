@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { GraduationCap } from 'lucide-react';
+import Logo from '../components/common/Logo';
 import { login as loginApi } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 
@@ -24,9 +24,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center gap-2">
-          <GraduationCap className="h-10 w-10 text-indigo-600" />
-          <h1 className="text-2xl font-bold">MBA Batch Hub</h1>
-          <p className="text-sm text-gray-500">Log in to your batch space</p>
+          <Logo size="lg" showTagline />
+          <p className="mt-2 text-sm text-gray-500">Log in to your space</p>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}

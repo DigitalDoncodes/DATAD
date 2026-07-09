@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -21,8 +22,13 @@ import SupportPage from './pages/SupportPage';
 function AppLayout() {
   return (
     <ProtectedRoute>
-      <Navbar />
-      <Outlet />
+      <div className="flex min-h-screen flex-col">
+        <Navbar />
+        <div className="flex-1">
+          <Outlet />
+        </div>
+        <Footer />
+      </div>
     </ProtectedRoute>
   );
 }

@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { GraduationCap } from 'lucide-react';
+import Logo from '../components/common/Logo';
 import { register as registerApi } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
 
@@ -25,9 +25,10 @@ export default function RegisterPage() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center gap-2">
-          <GraduationCap className="h-10 w-10 text-indigo-600" />
-          <h1 className="text-2xl font-bold">Join MBA Batch Hub</h1>
-          <p className="text-sm text-gray-500">Notes, photos & plans — shared with your batch</p>
+          <Logo size="lg" showTagline />
+          <p className="mt-2 text-sm text-gray-500">
+            Notes, photos, plans & placements — everything your batch needs
+          </p>
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
