@@ -44,7 +44,6 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authLimiter, require('./routes/authRoutes'));
 app.use('/api/notes', require('./routes/noteRoutes'));
 app.use('/api/albums', require('./routes/albumRoutes'));
-app.use('/api/photos', require('./routes/photoRoutes'));
 app.use('/api/tasks', require('./routes/taskRoutes'));
 app.use('/api/finance', require('./routes/financeRoutes'));
 app.use('/api/resume', require('./routes/resumeRoutes'));

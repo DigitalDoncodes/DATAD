@@ -12,7 +12,6 @@ import NotesListPage from './pages/NotesListPage';
 import NoteDetailPage from './pages/NoteDetailPage';
 import NoteEditorPage from './pages/NoteEditorPage';
 import AlbumsListPage from './pages/AlbumsListPage';
-import AlbumDetailPage from './pages/AlbumDetailPage';
 import PlannerPage from './pages/PlannerPage';
 import FinancePage from './pages/FinancePage';
 import ResumePage from './pages/ResumePage';
@@ -68,7 +67,6 @@ export default function App() {
               <Route path="/notes/:id" element={<NoteDetailPage />} />
               <Route path="/notes/:id/edit" element={<NoteEditorPage />} />
               <Route path="/albums" element={<AlbumsListPage />} />
-              <Route path="/albums/:id" element={<AlbumDetailPage />} />
               <Route path="/planner" element={<PlannerPage />} />
               <Route path="/finance" element={<FinancePage />} />
               <Route path="/resume" element={<ResumePage />} />

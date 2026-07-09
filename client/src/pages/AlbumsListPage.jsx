@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { Camera, Plus, Image } from 'lucide-react';
-import { listAlbums, createAlbum } from '../api/albums';
+import { Camera, Plus, Image, Trash2, ExternalLink } from 'lucide-react';
+import { listAlbums, createAlbum, deleteAlbum } from '../api/albums';
+import { useAuth } from '../context/AuthContext';
 import { formatDate } from '../utils/dateUtils';
 import Loader from '../components/common/Loader';
 import EmptyState from '../components/common/EmptyState';
@@ -16,6 +16,7 @@ export default function AlbumsListPage() {
   const [albums, setAlbums] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const { register, handleSubmit, reset, formState } = useForm();
+  const { user } = useAuth();
 
   const load = () => listAlbums().then((res) => setAlbums(res.data));
   useEffect(() => {
@@ -25,26 +26,38 @@ export default function AlbumsListPage() {
   const onCreate = async (data) => {
     try {
       await createAlbum(data);
-      toast.success('Album created');
+      toast.success('Album added');
       reset();
       setModalOpen(false);
       load();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create album');
+      toast.error(err.response?.data?.message || 'Failed to add album');
     }
+  };
+
+  const onDelete = async (e, id) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!window.confirm('Remove this album link?')) return;
+    await deleteAlbum(id);
+    toast.success('Album removed');
+    load();
   };
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-1 flex items-center justify-between">
         <h1 className="text-xl font-bold">Photo Albums</h1>
         <button
           onClick={() => setModalOpen(true)}
           className="flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700"
         >
-          <Plus className="h-4 w-4" /> New album
+          <Plus className="h-4 w-4" /> Add album
         </button>
       </div>
+      <p className="mb-4 text-xs text-gray-400">
+        Albums link to shared Google Photos — click any card to open the full album.
+      </p>
 
       {!albums ? (
         <Loader />
@@ -52,35 +65,59 @@ export default function AlbumsListPage() {
         <EmptyState
           icon={Camera}
           title="No albums yet"
-          subtitle="Create an album for your first batch memory"
+          subtitle="Paste a Google Photos shared link to add your first batch album"
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {albums.map((album) => (
-            <Link
+            <a
               key={album._id}
-              to={`/albums/${album._id}`}
-              className="card-hover overflow-hidden rounded-2xl border border-gray-200/80 bg-white dark:border-gray-800/80 dark:bg-gray-900"
+              href={album.link}
+              target="_blank"
+              rel="noreferrer"
+              className="card-hover group relative block overflow-hidden rounded-2xl border border-gray-200/80 bg-white dark:border-gray-800/80 dark:bg-gray-900"
             >
-              <div className="flex h-36 items-center justify-center bg-gray-100 dark:bg-gray-800">
-                {album.coverUrl ? (
-                  <img src={album.coverUrl} alt={album.title} className="h-full w-full object-cover" />
+              <div className="relative flex h-40 items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-500 to-blue-500">
+                {album.cover ? (
+                  <img
+                    src={album.cover}
+                    alt={album.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
                 ) : (
-                  <Image className="h-8 w-8 text-gray-400" />
+                  <Image className="h-9 w-9 text-white/80" />
                 )}
+                <span className="absolute right-2 top-2 rounded-lg bg-black/50 p-1.5 text-white opacity-0 transition-opacity group-hover:opacity-100">
+                  <ExternalLink className="h-4 w-4" />
+                </span>
               </div>
               <div className="p-4">
                 <h2 className="font-semibold">{album.title}</h2>
-                <p className="text-xs text-gray-400">
-                  {album.photoCount} photo{album.photoCount !== 1 && 's'} · {formatDate(album.createdAt)}
+                {album.description && (
+                  <p className="mt-0.5 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
+                    {album.description}
+                  </p>
+                )}
+                <p className="mt-2 text-xs text-gray-400">
+                  {album.createdBy?.name} · {formatDate(album.createdAt)}
                 </p>
               </div>
-            </Link>
+              {album.createdBy?._id === user?.id && (
+                <button
+                  onClick={(e) => onDelete(e, album._id)}
+                  aria-label="Remove album"
+                  className="absolute bottom-3 right-3 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/30"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              )}
+            </a>
           ))}
         </div>
       )}
 
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="New album">
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Add a Google Photos album">
         <form onSubmit={handleSubmit(onCreate)} className="space-y-4">
           <div>
             <label htmlFor="album-title" className="mb-1 block text-sm font-medium">Title</label>
@@ -88,6 +125,31 @@ export default function AlbumsListPage() {
               id="album-title"
               {...register('title', { required: true })}
               placeholder="e.g. Orientation Week"
+              className={inputClass}
+            />
+          </div>
+          <div>
+            <label htmlFor="album-link" className="mb-1 block text-sm font-medium">
+              Google Photos shared link
+            </label>
+            <input
+              id="album-link"
+              {...register('link', { required: true })}
+              placeholder="https://photos.app.goo.gl/…"
+              className={inputClass}
+            />
+            <p className="mt-1 text-xs text-gray-400">
+              In Google Photos: open the album → Share → Create link → paste it here.
+            </p>
+          </div>
+          <div>
+            <label htmlFor="album-cover" className="mb-1 block text-sm font-medium">
+              Cover image URL <span className="text-gray-400">(optional)</span>
+            </label>
+            <input
+              id="album-cover"
+              {...register('cover')}
+              placeholder="https://… (leave blank for a default cover)"
               className={inputClass}
             />
           </div>
@@ -102,7 +164,7 @@ export default function AlbumsListPage() {
             disabled={formState.isSubmitting}
             className="w-full rounded-lg bg-indigo-600 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
           >
-            Create album
+            Add album
           </button>
         </form>
       </Modal>

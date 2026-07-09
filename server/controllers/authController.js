@@ -3,14 +3,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Note = require('../models/Note');
 const Album = require('../models/Album');
-const Photo = require('../models/Photo');
 const Task = require('../models/Task');
 const Expense = require('../models/Expense');
 const Budget = require('../models/Budget');
 const Resume = require('../models/Resume');
 const JournalEntry = require('../models/JournalEntry');
 const Announcement = require('../models/Announcement');
-const cloudinary = require('../config/cloudinary');
 const { sendWelcomeEmail } = require('../config/mailer');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -131,23 +129,7 @@ exports.deleteAccount = async (req, res, next) => {
       return res.status(401).json({ message: 'Password is incorrect' });
     }
 
-    // Remove all Cloudinary assets this user is responsible for: photos they
-    // uploaded, plus every photo inside albums they created.
-    const ownedAlbums = await Album.find({ createdBy: userId }).select('_id');
-    const albumIds = ownedAlbums.map((a) => a._id);
-    const photos = await Photo.find({
-      $or: [{ uploadedBy: userId }, { album: { $in: albumIds } }],
-    }).select('publicId');
-    for (const photo of photos) {
-      try {
-        await cloudinary.uploader.destroy(photo.publicId);
-      } catch (err) {
-        console.error('Cloudinary cleanup failed for', photo.publicId, err.message);
-      }
-    }
-
     await Promise.all([
-      Photo.deleteMany({ $or: [{ uploadedBy: userId }, { album: { $in: albumIds } }] }),
       Album.deleteMany({ createdBy: userId }),
       Note.deleteMany({ author: userId }),
       Task.deleteMany({ createdBy: userId }),

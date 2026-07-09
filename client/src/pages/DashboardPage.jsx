@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, CalendarDays, Camera, ArrowRight, Megaphone, Pin } from 'lucide-react';
+import { BookOpen, CalendarDays, Camera, ArrowRight, Megaphone, Pin, Image, ExternalLink } from 'lucide-react';
 import { listNotes } from '../api/notes';
 import { listTasks } from '../api/tasks';
-import { listRecentPhotos } from '../api/photos';
+import { listAlbums } from '../api/albums';
 import { listAnnouncements } from '../api/admin';
 import { useAuth } from '../context/AuthContext';
 import { formatDate, daysUntil } from '../utils/dateUtils';
@@ -45,15 +45,15 @@ export default function DashboardPage() {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    Promise.all([listNotes(), listTasks(), listRecentPhotos(), listAnnouncements()]).then(
-      ([notes, tasks, photos, announcements]) => {
+    Promise.all([listNotes(), listTasks(), listAlbums(), listAnnouncements()]).then(
+      ([notes, tasks, albums, announcements]) => {
         const upcoming = tasks.data.filter((t) => t.status !== 'done' && daysUntil(t.dueDate) >= -7);
         setData({
           notes: notes.data.slice(0, 4),
           tasks: upcoming.slice(0, 5),
-          photos: photos.data.slice(0, 4),
+          albums: albums.data.slice(0, 4),
           announcements: announcements.data.slice(0, 3),
-          counts: { notes: notes.data.length, tasks: upcoming.length, photos: photos.data.length },
+          counts: { notes: notes.data.length, tasks: upcoming.length, albums: albums.data.length },
         });
       }
     );
@@ -73,7 +73,7 @@ export default function DashboardPage() {
       <div className="mb-4 grid grid-cols-3 gap-3">
         <StatTile icon={BookOpen} label="Notes" value={data.counts.notes} to="/notes" />
         <StatTile icon={CalendarDays} label="Upcoming" value={data.counts.tasks} to="/planner" />
-        <StatTile icon={Camera} label="Photos" value={data.counts.photos} to="/albums" />
+        <StatTile icon={Camera} label="Albums" value={data.counts.albums} to="/albums" />
       </div>
 
       {data.announcements.length > 0 && (
@@ -148,20 +148,31 @@ export default function DashboardPage() {
         </StaggerItem>
 
         <StaggerItem className="lg:col-span-2">
-          <SectionCard title="Latest photos" icon={Camera} to="/albums">
-            {data.photos.length === 0 ? (
-              <p className="text-sm text-gray-400">No photos yet — start an album!</p>
+          <SectionCard title="Recent albums" icon={Camera} to="/albums">
+            {data.albums.length === 0 ? (
+              <p className="text-sm text-gray-400">No albums yet — add a Google Photos link!</p>
             ) : (
-              <div className="grid grid-cols-4 gap-2">
-                {data.photos.map((photo) => (
-                  <Link key={photo._id} to={`/albums/${photo.album}`} className="overflow-hidden rounded-lg">
-                    <img
-                      src={photo.url}
-                      alt={photo.caption || 'Batch photo'}
-                      loading="lazy"
-                      className="aspect-square w-full object-cover transition-transform duration-300 hover:scale-105"
-                    />
-                  </Link>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {data.albums.map((album) => (
+                  <a
+                    key={album._id}
+                    href={album.link}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group overflow-hidden rounded-lg border border-gray-200/80 dark:border-gray-800/80"
+                  >
+                    <div className="flex h-20 items-center justify-center overflow-hidden bg-gradient-to-br from-indigo-500 to-blue-500">
+                      {album.cover ? (
+                        <img src={album.cover} alt={album.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+                      ) : (
+                        <Image className="h-6 w-6 text-white/80" />
+                      )}
+                    </div>
+                    <p className="flex items-center justify-between gap-1 truncate p-2 text-xs font-medium">
+                      <span className="truncate">{album.title}</span>
+                      <ExternalLink className="h-3 w-3 shrink-0 text-gray-400" />
+                    </p>
+                  </a>
                 ))}
               </div>
             )}
