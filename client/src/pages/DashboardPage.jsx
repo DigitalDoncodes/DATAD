@@ -11,6 +11,7 @@ import { formatDate, daysUntil } from '../utils/dateUtils';
 import { categoryMeta } from '../utils/intelligence';
 import Loader from '../components/common/Loader';
 import InviteCard from '../components/common/InviteCard';
+import ReadinessCard from '../components/common/ReadinessCard';
 import MarketStrip from '../components/intelligence/MarketStrip';
 import { Page, Stagger, StaggerItem, AnimatedNumber } from '../components/common/motion';
 
@@ -87,6 +88,8 @@ export default function DashboardPage() {
         <StatTile icon={CalendarDays} label="Upcoming" value={data.counts.tasks} to="/planner" />
         <StatTile icon={Camera} label="Albums" value={data.counts.albums} to="/albums" />
       </div>
+
+      <ReadinessCard />
 
       {(data.market.length > 0 || data.headlines.length > 0) && (
         <div className="card-hover mb-4 rounded-2xl border border-gray-200/80 bg-white p-5 dark:border-gray-800/80 dark:bg-gray-900">

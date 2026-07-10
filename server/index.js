@@ -67,6 +67,7 @@ app.use('/api/announcements', require('./routes/announcementRoutes'));
 app.use('/api/intelligence', require('./routes/intelligenceRoutes'));
 app.use('/api/entertainment', entertainmentRoutes);
 app.use('/api/companies', require('./routes/companyRoutes'));
+app.use('/api/readiness', require('./routes/readinessRoutes'));
 app.use('/api', (req, res) => res.status(404).json({ message: 'Route not found' }));
 
 // Serve the built React app from this same server (single ngrok tunnel /

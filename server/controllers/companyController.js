@@ -1,4 +1,5 @@
 const Company = require('../models/Company');
+const CompanyRead = require('../models/CompanyRead');
 
 const slugify = (name) =>
   name
@@ -32,6 +33,12 @@ exports.getCompanyBySlug = async (req, res, next) => {
       { returnDocument: 'after' }
     ).lean();
     if (!company) return res.status(404).json({ message: 'Company not found' });
+    // Mark this card as studied by the viewer (feeds the readiness score).
+    CompanyRead.updateOne(
+      { user: req.user.userId, company: company._id },
+      { $setOnInsert: { user: req.user.userId, company: company._id } },
+      { upsert: true }
+    ).catch(() => {});
     res.json(company);
   } catch (err) {
     next(err);
