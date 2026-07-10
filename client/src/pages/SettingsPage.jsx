@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { KeyRound, Moon, ShieldAlert, Sun, Trash2 } from 'lucide-react';
-import { changePassword, deleteAccount } from '../api/auth';
+import { KeyRound, Moon, ShieldAlert, Sun, Trash2, UserRound, Gift, Copy, MessageCircle } from 'lucide-react';
+import { changePassword, deleteAccount, getMe, updateProfile } from '../api/auth';
+import { whatsappInviteUrl } from '../components/common/InviteCard';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import Modal from '../components/common/Modal';
@@ -29,13 +30,45 @@ function Card({ title, icon: Icon, danger, children }) {
 }
 
 export default function SettingsPage() {
-  const { user, logout } = useAuth();
+  const { user, login, logout } = useAuth();
   const { dark, toggle } = useTheme();
   const navigate = useNavigate();
   const pwForm = useForm();
+  const profileForm = useForm();
+  const [me, setMe] = useState(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletePassword, setDeletePassword] = useState('');
   const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    getMe().then((res) => {
+      setMe(res.data);
+      profileForm.reset({
+        name: res.data.name || '',
+        bio: res.data.bio || '',
+        linkedin: res.data.linkedin || '',
+        github: res.data.github || '',
+      });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onSaveProfile = async (data) => {
+    try {
+      const res = await updateProfile(data);
+      setMe(res.data.user);
+      // Fresh token keeps the navbar name in sync.
+      if (res.data.token) login(res.data.token);
+      toast.success('Profile updated');
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Failed to update profile');
+    }
+  };
+
+  const copyReferral = () => {
+    navigator.clipboard.writeText(me.referralCode);
+    toast.success('Referral code copied');
+  };
 
   const onChangePassword = async (data) => {
     try {
@@ -76,6 +109,88 @@ export default function SettingsPage() {
             {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             Switch to {dark ? 'light' : 'dark'} mode
           </button>
+        </Card>
+
+        <Card title="Profile" icon={UserRound}>
+          <form onSubmit={profileForm.handleSubmit(onSaveProfile)} className="space-y-3">
+            <input
+              placeholder="Name"
+              aria-label="Name"
+              {...profileForm.register('name', { required: true })}
+              className={inputClass}
+            />
+            <textarea
+              rows={2}
+              placeholder="Short bio (max 300 chars)"
+              aria-label="Bio"
+              maxLength={300}
+              {...profileForm.register('bio')}
+              className={inputClass}
+            />
+            <div className="grid gap-3 sm:grid-cols-2">
+              <input
+                placeholder="LinkedIn URL"
+                aria-label="LinkedIn URL"
+                {...profileForm.register('linkedin')}
+                className={inputClass}
+              />
+              <input
+                placeholder="GitHub URL"
+                aria-label="GitHub URL"
+                {...profileForm.register('github')}
+                className={inputClass}
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={profileForm.formState.isSubmitting}
+              className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            >
+              {profileForm.formState.isSubmitting ? 'Saving…' : 'Save profile'}
+            </button>
+          </form>
+        </Card>
+
+        <Card title="Referral code" icon={Gift}>
+          <p className="mb-3 text-sm text-gray-600 dark:text-gray-300">
+            Your personal one-time invite: exactly <strong>one</strong> batchmate can register
+            with this code and skip the admin approval queue.
+          </p>
+          {me?.referralCode ? (
+            me.referralUsedBy ? (
+              <div className="flex items-center gap-2">
+                <code className="rounded-lg bg-gray-100 px-4 py-2 font-mono text-sm font-bold tracking-wider text-gray-400 line-through dark:bg-gray-800">
+                  {me.referralCode}
+                </code>
+                <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300">
+                  Used — your invite brought someone in 🎉
+                </span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <code className="rounded-lg bg-indigo-50 px-4 py-2 font-mono text-sm font-bold tracking-wider text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+                  {me.referralCode}
+                </code>
+                <button
+                  onClick={copyReferral}
+                  aria-label="Copy referral code"
+                  className="rounded-lg border border-gray-300 p-2 text-gray-500 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+                >
+                  <Copy className="h-4 w-4" />
+                </button>
+                <a
+                  href={whatsappInviteUrl(me.referralCode)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-2 text-xs font-medium text-white hover:bg-emerald-700"
+                >
+                  <MessageCircle className="h-4 w-4" /> WhatsApp
+                </a>
+              </div>
+            )
+          ) : (
+            <p className="text-sm text-gray-400">Loading…</p>
+          )}
         </Card>
 
         <Card title="Change password" icon={KeyRound}>

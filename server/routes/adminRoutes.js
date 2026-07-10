@@ -5,6 +5,10 @@ const { heavyLimiter } = require('../middleware/rateLimiters');
 const {
   getStats,
   listStudents,
+  approveStudent,
+  rejectStudent,
+  getActivityLogs,
+  getReferralMap,
   listJournal,
   createJournalEntry,
   updateJournalEntry,
@@ -17,6 +21,10 @@ router.use(verifyToken, checkRole('admin'));
 
 router.get('/stats', getStats);
 router.get('/students', listStudents);
+router.patch('/students/:id/approve', approveStudent);
+router.delete('/students/:id/reject', rejectStudent);
+router.get('/logs', getActivityLogs);
+router.get('/referrals', getReferralMap);
 
 router.get('/journal', listJournal);
 router.post('/journal', createJournalEntry);

@@ -10,6 +10,7 @@ import { useAuth } from '../context/AuthContext';
 import { formatDate, daysUntil } from '../utils/dateUtils';
 import { categoryMeta } from '../utils/intelligence';
 import Loader from '../components/common/Loader';
+import InviteCard from '../components/common/InviteCard';
 import MarketStrip from '../components/intelligence/MarketStrip';
 import { Page, Stagger, StaggerItem, AnimatedNumber } from '../components/common/motion';
 
@@ -224,6 +225,8 @@ export default function DashboardPage() {
           </SectionCard>
         </StaggerItem>
       </Stagger>
+
+      <InviteCard />
     </Page>
   );
 }

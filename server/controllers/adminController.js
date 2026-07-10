@@ -4,7 +4,9 @@ const Photo = require('../models/Photo');
 const Task = require('../models/Task');
 const JournalEntry = require('../models/JournalEntry');
 const Announcement = require('../models/Announcement');
-const { sendAnnouncementEmail } = require('../config/mailer');
+const { sendAnnouncementEmail, sendAccountApprovedEmail, sendWelcomeEmail } = require('../config/mailer');
+const ActivityLog = require('../models/ActivityLog');
+const logActivity = require('../utils/logActivity');
 
 // ---- Overview ----
 
@@ -25,8 +27,70 @@ exports.getStats = async (req, res, next) => {
 
 exports.listStudents = async (req, res, next) => {
   try {
-    const students = await User.find().select('-password').sort({ createdAt: -1 });
+    const students = await User.find()
+      .select('-password -resetTokenHash -resetTokenExpires')
+      .sort({ status: -1, createdAt: -1 }); // 'pending' > 'approved', so pending first
     res.json(students);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ---- Membership approval ----
+
+exports.approveStudent = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.status !== 'pending') return res.status(400).json({ message: 'User is already approved' });
+
+    user.status = 'approved';
+    await user.save();
+    sendAccountApprovedEmail(user).catch((err) => console.error('Approval email failed:', err.message));
+    sendWelcomeEmail(user).catch((err) => console.error('Welcome email failed:', err.message));
+    logActivity('approved', `Admin approved ${user.name}'s account`, user);
+    res.json({ message: `${user.name} approved`, user });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.rejectStudent = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (user.status !== 'pending') {
+      return res.status(400).json({ message: 'Only pending accounts can be rejected' });
+    }
+    await User.deleteOne({ _id: user._id });
+    logActivity('rejected', `Admin rejected ${user.name}'s pending signup`, user);
+    res.json({ message: 'Pending account removed' });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ---- Activity log & referral network ----
+
+exports.getActivityLogs = async (req, res, next) => {
+  try {
+    const logs = await ActivityLog.find().sort({ createdAt: -1 }).limit(100).lean();
+    res.json(logs);
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Who referred whom, plus each member's code status — powers the flow view.
+exports.getReferralMap = async (req, res, next) => {
+  try {
+    const users = await User.find()
+      .select('name email status referralCode referralUsedBy referredBy createdAt')
+      .populate('referredBy', 'name email')
+      .populate('referralUsedBy', 'name email')
+      .sort({ createdAt: 1 })
+      .lean();
+    res.json(users);
   } catch (err) {
     next(err);
   }

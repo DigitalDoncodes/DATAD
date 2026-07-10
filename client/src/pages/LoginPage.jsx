@@ -19,6 +19,10 @@ export default function LoginPage() {
       login(res.data.token);
       navigate('/');
     } catch (err) {
+      if (err.response?.data?.pending) {
+        toast(err.response.data.message, { icon: '⏳', duration: 6000 });
+        return;
+      }
       toast.error(err.response?.data?.message || 'Login failed');
     }
   };
@@ -31,7 +35,15 @@ export default function LoginPage() {
           <input id="email" type="email" {...register('email', { required: true })} className={fieldClass} />
         </div>
         <div>
-          <label htmlFor="password" className="mb-1 block text-sm font-medium">Password</label>
+          <div className="mb-1 flex items-center justify-between">
+            <label htmlFor="password" className="block text-sm font-medium">Password</label>
+            <Link
+              to="/forgot-password"
+              className="text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400"
+            >
+              Forgot password?
+            </Link>
+          </div>
           <input id="password" type="password" {...register('password', { required: true })} className={fieldClass} />
         </div>
         <button

@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { MailCheck } from 'lucide-react';
 import AuthShell from '../components/layout/AuthShell';
 import { register as registerApi } from '../api/auth';
 import { useAuth } from '../context/AuthContext';
@@ -12,10 +14,15 @@ export default function RegisterPage() {
   const { register, handleSubmit, formState } = useForm();
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [pending, setPending] = useState(false);
 
   const onSubmit = async (data) => {
     try {
       const res = await registerApi(data);
+      if (res.data.pending) {
+        setPending(true);
+        return;
+      }
       login(res.data.token);
       toast.success('Welcome aboard!');
       navigate('/');
@@ -23,6 +30,30 @@ export default function RegisterPage() {
       toast.error(err.response?.data?.message || 'Registration failed');
     }
   };
+
+  if (pending) {
+    return (
+      <AuthShell subtitle="One last step">
+        <div className="space-y-3 py-4 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400">
+            <MailCheck className="h-7 w-7" />
+          </div>
+          <h2 className="text-lg font-bold">Account created — pending approval</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            An admin will verify your details and approve your account shortly. You'll receive an
+            email the moment you're in. Have a referral code from a batchmate? Register again with
+            it to skip the queue.
+          </p>
+          <Link
+            to="/login"
+            className="inline-block rounded-lg bg-indigo-600 px-5 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+          >
+            Back to login
+          </Link>
+        </div>
+      </AuthShell>
+    );
+  }
 
   return (
     <AuthShell subtitle="Notes, photos, plans & placements — everything your batch needs">
@@ -46,6 +77,21 @@ export default function RegisterPage() {
           {formState.errors.password && (
             <p className="mt-1 text-xs text-red-500">At least 8 characters, with a letter and a number</p>
           )}
+        </div>
+        <div>
+          <label htmlFor="referralCode" className="mb-1 block text-sm font-medium">
+            Referral code <span className="font-normal text-gray-400">(optional)</span>
+          </label>
+          <input
+            id="referralCode"
+            placeholder="e.g. DHAT-7K2M"
+            {...register('referralCode')}
+            className={fieldClass}
+          />
+          <p className="mt-1 text-xs text-gray-400">
+            Each code works once. With a batchmate's unused code you're approved instantly;
+            without one an admin reviews your signup.
+          </p>
         </div>
         <button
           type="submit"

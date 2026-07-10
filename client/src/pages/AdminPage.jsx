@@ -1,33 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import {
   BookLock,
   BookOpen,
   Camera,
   CalendarDays,
   Crown,
-  Mail,
   Megaphone,
-  Pin,
-  Trash2,
   Users,
+  Clapperboard,
+  ScrollText,
+  Gift,
+  ChevronRight,
 } from 'lucide-react';
-import {
-  getStats,
-  listStudents,
-  listAnnouncements,
-  createAnnouncement,
-  deleteAnnouncement,
-} from '../api/admin';
+import { getStats, listStudents } from '../api/admin';
 import { useAuth } from '../context/AuthContext';
-import { formatDate } from '../utils/dateUtils';
 import Loader from '../components/common/Loader';
-import { AnimatedNumber } from '../components/common/motion';
-
-const inputClass =
-  'w-full rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none dark:border-gray-700';
+import { AnimatedNumber, Stagger, StaggerItem } from '../components/common/motion';
 
 function StatTile({ icon: Icon, label, value }) {
   return (
@@ -40,41 +29,89 @@ function StatTile({ icon: Icon, label, value }) {
   );
 }
 
+function NavCard({ to, icon: Icon, title, description, badge }) {
+  return (
+    <Link
+      to={to}
+      className="card-hover group flex items-center gap-4 rounded-2xl border border-gray-200/80 bg-white p-5 dark:border-gray-800/80 dark:bg-gray-900"
+    >
+      <div className="rounded-xl bg-indigo-100 p-3 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-400">
+        <Icon className="h-5 w-5" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="flex items-center gap-2 font-semibold">
+          {title}
+          {badge > 0 && (
+            <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[11px] font-semibold text-orange-700 dark:bg-orange-900/40 dark:text-orange-300">
+              {badge}
+            </span>
+          )}
+        </p>
+        <p className="truncate text-xs text-gray-500 dark:text-gray-400">{description}</p>
+      </div>
+      <ChevronRight className="h-4 w-4 shrink-0 text-gray-300 transition-transform group-hover:translate-x-0.5 group-hover:text-indigo-500 dark:text-gray-600" />
+    </Link>
+  );
+}
+
 export default function AdminPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState(null);
-  const [students, setStudents] = useState(null);
-  const [announcements, setAnnouncements] = useState(null);
-  const { register, handleSubmit, reset, formState } = useForm();
+  const [pending, setPending] = useState(0);
 
-  const load = () => {
+  useEffect(() => {
     getStats().then((res) => setStats(res.data));
-    listStudents().then((res) => setStudents(res.data));
-    listAnnouncements().then((res) => setAnnouncements(res.data));
-  };
-  useEffect(load, []);
+    listStudents().then((res) =>
+      setPending(res.data.filter((s) => s.status === 'pending').length)
+    );
+  }, []);
 
-  const onCreate = async (data) => {
-    try {
-      await createAnnouncement(data);
-      toast.success(data.sendEmail ? 'Announcement sent & emailed to the batch' : 'Announcement posted');
-      reset();
-      load();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to post announcement');
-    }
-  };
+  if (!stats) return <Loader />;
 
-  const onDeleteAnnouncement = async (id) => {
-    if (!window.confirm('Delete this announcement?')) return;
-    await deleteAnnouncement(id);
-    load();
-  };
-
-  if (!stats || !students || !announcements) return <Loader />;
+  const sections = [
+    {
+      to: '/admin/students',
+      icon: Users,
+      title: 'Students & approvals',
+      description: pending
+        ? `${pending} signup${pending === 1 ? '' : 's'} waiting for review`
+        : 'Member register — everyone approved',
+      badge: pending,
+    },
+    {
+      to: '/admin/announcements',
+      icon: Megaphone,
+      title: 'Announcements',
+      description: 'Post to the dashboard, optionally email the batch',
+    },
+    {
+      to: '/admin/logs',
+      icon: ScrollText,
+      title: 'Activity log',
+      description: 'Registrations, approvals, resets — everything, timestamped',
+    },
+    {
+      to: '/admin/referrals',
+      icon: Gift,
+      title: 'Referral network',
+      description: 'Who invited whom, and every code’s status',
+    },
+    {
+      to: '/admin/archive',
+      icon: Clapperboard,
+      title: 'Nostalgia Archive',
+      description: 'Publish and manage entertainment content',
+    },
+    {
+      to: '/journal',
+      icon: BookLock,
+      title: 'Journal',
+      description: 'Your private diary — visible only to you',
+    },
+  ];
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-6">
+    <div className="animate-in mx-auto max-w-4xl px-4 py-6">
       <h1 className="mb-1 flex items-center gap-2 text-xl font-bold">
         <Crown className="h-5 w-5 text-amber-500" /> Admin Console
       </h1>
@@ -82,110 +119,20 @@ export default function AdminPage() {
         Welcome back, {user?.name?.split(' ')[0]} — here's your platform at a glance.
       </p>
 
-      <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <StatTile icon={Users} label="Students" value={stats.students} />
         <StatTile icon={BookOpen} label="Notes" value={stats.notes} />
         <StatTile icon={Camera} label="Photos" value={stats.photos} />
         <StatTile icon={CalendarDays} label="Tasks" value={stats.tasks} />
-        <Link to="/journal" className="block">
-          <StatTile icon={BookLock} label="Journal entries" value={stats.journalEntries} />
-        </Link>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-          <h2 className="mb-3 flex items-center gap-2 font-semibold">
-            <Megaphone className="h-4 w-4 text-indigo-500" /> New announcement
-          </h2>
-          <form onSubmit={handleSubmit(onCreate)} className="space-y-3">
-            <input
-              {...register('title', { required: true })}
-              placeholder="Title"
-              aria-label="Announcement title"
-              className={inputClass}
-            />
-            <textarea
-              rows={4}
-              {...register('body', { required: true })}
-              placeholder="Write the announcement…"
-              aria-label="Announcement body"
-              className={inputClass}
-            />
-            <div className="flex flex-wrap items-center gap-4 text-sm">
-              <label className="flex items-center gap-1.5">
-                <input type="checkbox" {...register('pinned')} className="rounded" />
-                <Pin className="h-3.5 w-3.5 text-gray-400" /> Pin
-              </label>
-              <label className="flex items-center gap-1.5">
-                <input type="checkbox" defaultChecked {...register('sendEmail')} className="rounded" />
-                <Mail className="h-3.5 w-3.5 text-gray-400" /> Email everyone
-              </label>
-              <select {...register('priority')} aria-label="Priority" className="rounded-lg border border-gray-300 bg-transparent px-2 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-900">
-                <option value="normal">Normal</option>
-                <option value="important">Important</option>
-              </select>
-            </div>
-            <button
-              type="submit"
-              disabled={formState.isSubmitting}
-              className="w-full rounded-lg bg-indigo-600 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
-            >
-              {formState.isSubmitting ? 'Posting…' : 'Post announcement'}
-            </button>
-          </form>
-
-          <div className="mt-4 space-y-2 border-t border-gray-100 pt-3 dark:border-gray-800">
-            {announcements.length === 0 && (
-              <p className="text-sm text-gray-400">No announcements yet.</p>
-            )}
-            {announcements.map((a) => (
-              <div key={a._id} className="flex items-start gap-2 text-sm">
-                <div className="min-w-0 flex-1">
-                  <p className="font-medium">
-                    {a.pinned && <Pin className="mr-1 inline h-3 w-3 text-amber-500" />}
-                    {a.title}
-                    {a.emailed && <Mail className="ml-1 inline h-3 w-3 text-gray-400" />}
-                  </p>
-                  <p className="text-xs text-gray-400">{formatDate(a.createdAt)}</p>
-                </div>
-                <button
-                  onClick={() => onDeleteAnnouncement(a._id)}
-                  aria-label="Delete announcement"
-                  className="rounded p-1 text-gray-400 hover:text-red-500"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900">
-          <h2 className="mb-3 flex items-center gap-2 font-semibold">
-            <Users className="h-4 w-4 text-indigo-500" /> Registered students ({students.length})
-          </h2>
-          <ul className="max-h-96 divide-y divide-gray-100 overflow-y-auto dark:divide-gray-800">
-            {students.map((s) => (
-              <li key={s._id} className="flex items-center justify-between py-2 text-sm">
-                <div className="min-w-0">
-                  <p className="truncate font-medium">
-                    {s.name}
-                    {s.role === 'admin' && (
-                      <span className="ml-1.5 rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
-                        admin
-                      </span>
-                    )}
-                  </p>
-                  <p className="truncate text-xs text-gray-400">{s.email}</p>
-                </div>
-                <span className="ml-2 shrink-0 text-xs text-gray-400">
-                  {formatDate(s.createdAt)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <Stagger className="grid gap-3 sm:grid-cols-2">
+        {sections.map((s) => (
+          <StaggerItem key={s.to}>
+            <NavCard {...s} />
+          </StaggerItem>
+        ))}
+      </Stagger>
     </div>
   );
 }
