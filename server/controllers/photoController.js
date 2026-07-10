@@ -11,7 +11,7 @@ exports.uploadPhoto = async (req, res, next) => {
 
     const dataUri = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
     const result = await cloudinary.uploader.upload(dataUri, {
-      folder: 'd-square-labs/photos',
+      folder: 'datad/photos',
     });
 
     const photo = await Photo.create({

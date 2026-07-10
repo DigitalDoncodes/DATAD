@@ -1,4 +1,4 @@
-# D² Labs — Deployment Runbook
+# DATAD — Deployment Runbook
 
 The app is two deployables: the **server** (Express API) and the **client** (static
 Vite build). Recommended free-tier hosts: **Render** (server) + **Vercel** (client).

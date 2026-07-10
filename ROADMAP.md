@@ -1,4 +1,4 @@
-# D² Labs — Product Roadmap
+# DATAD — Product Roadmap
 
 Goal: evolve from a batch utility app into a **Student Operating System** — the platform
 MBA students open every day. Modules ship incrementally; nothing existing breaks.

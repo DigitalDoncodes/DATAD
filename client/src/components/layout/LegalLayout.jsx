@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { DSquareMark } from '../common/Logo';
+import { DatadMark } from '../common/Logo';
 
 // Shared shell for public legal pages (privacy, terms).
 export default function LegalLayout({ title, updated, children }) {
@@ -8,8 +8,7 @@ export default function LegalLayout({ title, updated, children }) {
       <header className="border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-baseline gap-1.5 font-semibold">
-            <DSquareMark />
-            <span className="text-indigo-500 dark:text-indigo-400">Labs</span>
+            <DatadMark />
           </Link>
           <Link to="/" className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
             Home
@@ -26,7 +25,7 @@ export default function LegalLayout({ title, updated, children }) {
       </main>
 
       <footer className="border-t border-gray-200 py-4 text-center text-xs text-gray-400 dark:border-gray-800">
-        D² Labs · Built by Dhatchina Moorthi
+        DATAD · Built by Dhatchina Moorthi
       </footer>
     </div>
   );

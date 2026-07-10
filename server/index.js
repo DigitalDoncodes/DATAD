@@ -15,7 +15,7 @@ const hpp = require('hpp');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const { generalLimiter, authLimiter } = require('./middleware/rateLimiters');
-
+const entertainmentRoutes = require('./routes/entertainmentRoutes');
 const app = express();
 
 // Behind a hosting proxy (Render/Railway/Vercel) the client IP is in
@@ -50,7 +50,7 @@ app.use('/api/resume', require('./routes/resumeRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/announcements', require('./routes/announcementRoutes'));
 app.use('/api/intelligence', require('./routes/intelligenceRoutes'));
-
+app.use('/api/entertainment', entertainmentRoutes);
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
 app.use(errorHandler);
 

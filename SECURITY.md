@@ -1,4 +1,4 @@
-# D² Labs — Security
+# DATAD — Security
 
 A summary of the security posture and the pre-launch audit. Scope: a small,
 open-signup platform for one MBA batch.

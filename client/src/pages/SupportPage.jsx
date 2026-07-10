@@ -5,7 +5,7 @@ import { Copy, Heart, Server, Globe, Wrench, CheckCircle2, Circle, CircleDot } f
 
 // Contributions go directly to this UPI ID — no gateway, no fees.
 const UPI_ID = 'dhatchinamoorthikclas@okhdfcbank';
-const PAYEE_NAME = 'D Square Labs';
+const PAYEE_NAME = 'DATAD';
 const PRESETS = [99, 199, 499];
 
 const ROADMAP = [
@@ -43,7 +43,7 @@ export default function SupportPage() {
     <div className="mx-auto max-w-2xl px-4 py-6">
       <div className="mb-6 text-center">
         <Heart className="mx-auto mb-2 h-8 w-8 text-rose-500" />
-        <h1 className="text-2xl font-bold">Support D Square Labs</h1>
+        <h1 className="text-2xl font-bold">Support DATAD</h1>
         <p className="mx-auto mt-2 max-w-md text-sm text-gray-500 dark:text-gray-400">
           This platform is independently developed and maintained by a student. Contributions
           help cover hosting, storage, domain renewal, and future feature development.

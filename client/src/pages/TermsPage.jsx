@@ -4,7 +4,7 @@ export default function TermsPage() {
   return (
     <LegalLayout title="Terms of Use" updated="July 2026">
       <p>
-        By creating an account on D² Labs, you agree to these simple terms. This is a free,
+        By creating an account on DATAD, you agree to these simple terms. This is a free,
         student-run platform for an MBA batch — please use it in good faith.
       </p>
 

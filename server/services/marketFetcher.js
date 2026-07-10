@@ -18,7 +18,7 @@ const pctChange = (price, prev) => {
 
 async function fetchOne({ label, symbol, fmt }) {
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`;
-  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; DSquareLabs/1.0)' } });
+  const res = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0 (compatible; DATAD/1.0)' } });
   if (!res.ok) throw new Error(`Yahoo ${symbol} ${res.status}`);
   const json = await res.json();
   const meta = json?.chart?.result?.[0]?.meta;

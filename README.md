@@ -1,4 +1,4 @@
-# D² Labs — D Square Labs
+# DATAD
 
 **Technology · Psychology · Impact**
 

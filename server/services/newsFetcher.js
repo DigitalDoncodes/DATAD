@@ -4,7 +4,7 @@ const FEEDS = require('../config/newsFeeds');
 
 const parser = new Parser({
   timeout: 15000,
-  headers: { 'User-Agent': 'Mozilla/5.0 (compatible; DSquareLabs/1.0)' },
+  headers: { 'User-Agent': 'Mozilla/5.0 (compatible; DATAD/1.0)' },
 });
 
 const MAX_PER_FEED = 25;

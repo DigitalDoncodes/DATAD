@@ -156,7 +156,7 @@ export default function IntelligenceCard({ article, onToggleBookmark, isAdmin, o
 
       <div className="mt-3 flex items-center justify-between border-t border-gray-100 pt-2 text-xs text-gray-400 dark:border-gray-800">
         <span>
-          {article.source || 'D² Intelligence'} · {formatDateTime(article.publishedAt || article.createdAt)}
+          {article.source || 'DATAD Intelligence'} · {formatDateTime(article.publishedAt || article.createdAt)}
         </span>
         {(article.link || article.sourceUrl) && (
           <a href={article.link || article.sourceUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-indigo-500 hover:underline">

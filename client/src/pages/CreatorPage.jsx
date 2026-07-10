@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ExternalLink, GraduationCap, Heart, Mail, Phone, Sparkles, Brain, Code2 } from 'lucide-react';
-import Logo, { DSquareMark } from '../components/common/Logo';
+import Logo, { DatadMark } from '../components/common/Logo';
 
 // Public page — reachable without an account.
 const PILLARS = [
@@ -27,8 +27,7 @@ export default function CreatorPage() {
       <header className="border-b border-gray-200 dark:border-gray-800">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
           <Link to="/" className="flex items-baseline gap-1.5 font-semibold">
-            <DSquareMark />
-            <span className="text-indigo-500 dark:text-indigo-400">Labs</span>
+            <DatadMark />
           </Link>
           <Link
             to="/login"
@@ -50,7 +49,7 @@ export default function CreatorPage() {
           <h1 className="mt-2 text-4xl font-bold">Dhatchina Moorthi</h1>
           <p className="mx-auto mt-4 max-w-xl text-gray-500 dark:text-gray-400">
             MBA student, psychology graduate and independent builder. Created{' '}
-            <span className="font-semibold text-gray-700 dark:text-gray-200">D² Labs</span> — a
+            <span className="font-semibold text-gray-700 dark:text-gray-200">DATAD</span> — a
             Student Operating System that gives his batch one place for notes, memories,
             planning, personal finance, resumes and placements.
           </p>
@@ -97,7 +96,7 @@ export default function CreatorPage() {
             <GraduationCap className="mx-auto mb-2 h-6 w-6 text-indigo-500" />
             <h2 className="font-semibold">Want in?</h2>
             <p className="mx-auto mt-1 max-w-md text-sm text-gray-500 dark:text-gray-400">
-              D² Labs is free for the batch. Create an account to explore, or chip in to keep it
+              DATAD is free for the batch. Create an account to explore, or chip in to keep it
               running.
             </p>
             <div className="mt-4 flex justify-center gap-3">

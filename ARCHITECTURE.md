@@ -1,4 +1,4 @@
-# D² Labs — Architecture
+# DATAD — Architecture
 
 ## System overview
 
