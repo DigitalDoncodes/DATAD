@@ -11,6 +11,7 @@ const { notify } = require('./notificationController');
 const ActivityLog = require('../models/ActivityLog');
 const logActivity = require('../utils/logActivity');
 const publishService = require('../services/publishing/publishService');
+const logger = require('../utils/logger');
 
 // ---- Overview ----
 
@@ -75,8 +76,8 @@ exports.approveStudent = async (req, res, next) => {
 
     user.status = 'approved';
     await user.save();
-    sendAccountApprovedEmail(user).catch((err) => console.error('Approval email failed:', err.message));
-    sendWelcomeEmail(user).catch((err) => console.error('Welcome email failed:', err.message));
+    sendAccountApprovedEmail(user).catch((err) => logger.error('Approval email failed:', err.message));
+    sendWelcomeEmail(user).catch((err) => logger.error('Welcome email failed:', err.message));
     notify({ user: user._id, type: 'general', title: `Welcome to DATAD, ${user.name.split(' ')[0]}! Your account has been approved.`, link: '/' }).catch(() => {});
     logActivity('approved', `Admin approved ${user.name}'s account`, user);
     res.json({ message: `${user.name} approved`, user });
@@ -161,7 +162,7 @@ exports.createAnnouncement = async (req, res, next) => {
           announcement.emailed = true;
           await announcement.save();
         } catch (err) {
-          console.error('Announcement email failed:', err.message);
+          logger.error('Announcement email failed:', err.message);
         }
       }
     }

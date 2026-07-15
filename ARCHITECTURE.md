@@ -19,14 +19,14 @@
                     └──┬──────────┬────────┬───┘
                        │          │        │
               ┌────────▼──┐  ┌────▼────┐  ┌▼──────────┐
-              │ MongoDB    │  │Cloudinary│  │  Brevo    │
+              │ MongoDB    │  │Cloudinary│  │  Resend    │
               │ Atlas      │  │ (photos) │  │ (email)   │
               └────────────┘  └──────────┘  └───────────┘
 ```
 
 - **Client** (`client/`): React 19 + Vite + Tailwind. One axios instance injects the JWT and redirects to `/login` on 401. Routing in `App.jsx`; auth state in `context/AuthContext` (decodes the JWT), theme in `context/ThemeContext`.
 - **Server** (`server/`): Express 4. Layered `routes → controllers → models`. Cross-cutting concerns in `middleware/` and `config/`.
-- **Data**: MongoDB Atlas via Mongoose. Photos on Cloudinary (only URL + publicId stored in Mongo). Email via Brevo HTTP API.
+- **Data**: MongoDB Atlas via Mongoose. Photos on Cloudinary (only URL + publicId stored in Mongo). Email via Resend HTTP API.
 
 ## Request lifecycle
 
@@ -67,7 +67,7 @@
 
 ```
 server/
-  config/      db.js · cloudinary.js · mailer.js (Brevo)
+  config/      db.js · cloudinary.js · mailer.js (Resend)
   middleware/  verifyToken · checkRole · upload (multer) · rateLimiters · errorHandler
   models/      User · Note · Album · Photo · Task · Expense · Budget · Resume · JournalEntry · Announcement
   controllers/ one per domain

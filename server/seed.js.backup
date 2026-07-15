@@ -15,45 +15,10 @@ const Post = require('./models/Post');
 const Event = require('./models/Event');
 const MarketListing = require('./models/MarketListing');
 const Project = require('./models/Project');
-const Program = require("./models/ProgramRegistry");
-const Subject = require("./models/SubjectRegistry");
 
 async function seed() {
   await mongoose.connect(process.env.MONGODB_URI);
   console.log('Connected to MongoDB');
-
-  // ── Program & Subject Registry ──────────────────────────────────────
-  await Program.deleteMany({});
-  await Program.insertMany([
-    {
-      _id: "mba",
-      label: "MBA",
-      description: "Master of Business Administration",
-      dashboardOrder: ["studyHub","financeHub","placementHub","dailyCase"],
-      promptSet: "default",
-      features: {
-        financeHub: true,
-        wellbeingHub: true,
-        careerHub: true,
-        community: true,
-        aiChat: true,
-        dailyBriefing: true,
-        dailyCase: true,
-        planner: true,
-        resources: true
-      }
-    }
-  ]);
-
-  await Subject.deleteMany({});
-  await Subject.insertMany([
-    { _id: "finance", label: "Finance", description: "Financial management, investments, markets", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "marketing", label: "Marketing", description: "Marketing strategy, branding, customer insights", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "hr", label: "HR", description: "Human resources, talent management, organizational behavior", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "operations", label: "Operations", description: "Operations management, supply chain, logistics", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "analytics", label: "Analytics", description: "Data analysis, statistics, business intelligence", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "strategy", label: "Strategy", description: "Business strategy, competitive analysis, corporate planning", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false }
-  ]);
 
   const admin = await User.findOne({ role: 'admin' });
   if (!admin) { console.error('No admin user found. Create one first.'); process.exit(1); }
@@ -140,38 +105,6 @@ async function seed() {
   await MarketListing.insertMany(listings);
   console.log(`✓ ${listings.length} marketplace listings`);
 
-  // ── Program & Subject Registry ──────────────────────────────────────
-  await Program.deleteMany({});
-  await Program.insertMany([
-    {
-      _id: "mba",
-      label: "MBA",
-      description: "Master of Business Administration",
-      dashboardOrder: ["studyHub","financeHub","placementHub","dailyCase"],
-      promptSet: "default",
-      features: {
-        financeHub: true,
-        wellbeingHub: true,
-        careerHub: true,
-        community: true,
-        aiChat: true,
-        dailyBriefing: true,
-        dailyCase: true,
-        planner: true,
-        resources: true
-      }
-    }
-  ]);
-
-  await Subject.deleteMany({});
-  await Subject.insertMany([
-    { _id: "finance", label: "Finance", description: "Financial management, investments, markets", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "marketing", label: "Marketing", description: "Marketing strategy, branding, customer insights", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "hr", label: "HR", description: "Human resources, talent management, organizational behavior", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "operations", label: "Operations", description: "Operations management, supply chain, logistics", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "analytics", label: "Analytics", description: "Data analysis, statistics, business intelligence", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false },
-    { _id: "strategy", label: "Strategy", description: "Business strategy, competitive analysis, corporate planning", programs: ["mba"], enablesFinanceHub: false, enablesWellbeingHub: false, enablesCareerHub: false }
-  ]);
   console.log('\n✅ Seed complete!');
   process.exit(0);
 }

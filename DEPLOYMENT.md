@@ -11,7 +11,7 @@ Everything below can be prepared now; the only blocker is choosing a domain.
    (0.0.0.0/0) or Render's IPs.
 2. **Cloudinary** — create a *separate* account (or at least a dedicated folder) for prod.
    Note cloud name, API key, API secret.
-3. **Brevo** — verify the sender email you'll send from; grab the API key.
+3. **Resend** — verify the sender email you'll send from; grab the API key.
 4. **Secrets** — generate a fresh JWT secret:
    ```bash
    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
@@ -30,7 +30,7 @@ Everything below can be prepared now; the only blocker is choosing a domain.
    CLOUDINARY_CLOUD_NAME=<...>
    CLOUDINARY_API_KEY=<...>
    CLOUDINARY_API_SECRET=<...>
-   BREVO_API_KEY=<...>
+   RESEND_API_KEY=<...>
    MAIL_FROM=<verified sender>
    ADMIN_EMAIL=digitaldoncodes@gmail.com
    ```
@@ -59,7 +59,7 @@ Everything below can be prepared now; the only blocker is choosing a domain.
    `digitaldoncodes@gmail.com` — this account is auto-promoted to admin. Do this
    *before* sharing the link, so no one else can claim the admin email.
 2. Verify: admin sees the **Admin** and **Journal** nav links; `/admin` loads.
-3. Post a test announcement with "Email everyone" to confirm Brevo works.
+3. Post a test announcement with "Email everyone" to confirm Resend works.
 4. Share the link with the batch.
 
 ## Local development

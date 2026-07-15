@@ -75,7 +75,7 @@ export default function DailyCaseCard() {
       {/* Header bar */}
       <div className="flex items-center justify-between gap-2 border-b border-gray-100 dark:border-gray-800 px-5 py-3">
         <h2 className="flex items-center gap-2 font-semibold text-sm">
-          <BrainCircuit className="h-4 w-4 text-indigo-500" /> Daily MBA Case
+          <BrainCircuit className="h-4 w-4 text-indigo-500" /> Daily Case
         </h2>
         <div className="flex items-center gap-2">
           {streak > 0 && (

@@ -98,7 +98,7 @@ export default function IntelligenceCard({ article, onToggleBookmark, isAdmin, o
           {article.mbaConcepts?.length > 0 && (
             <div>
               <p className="mb-1 flex items-center gap-1.5 text-xs text-gray-400">
-                <GraduationCap className="h-3.5 w-3.5" /> MBA concepts
+                <Lightbulb className="h-3.5 w-3.5" /> Key concepts
               </p>
               <Chips items={article.mbaConcepts} />
             </div>
@@ -145,7 +145,7 @@ export default function IntelligenceCard({ article, onToggleBookmark, isAdmin, o
               )}
               {article.businessTerms?.length > 0 && (
                 <div>
-                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Business terms to know</p>
+                  <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-gray-400">Key terms</p>
                   <Chips items={article.businessTerms} />
                 </div>
               )}

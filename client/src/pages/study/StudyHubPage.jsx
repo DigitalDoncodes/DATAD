@@ -108,7 +108,8 @@ export default function StudyHubPage() {
                 <p className="truncate text-sm font-semibold">{subject}</p>
                 <p className="text-xs text-gray-400">{count} note{count === 1 ? '' : 's'}</p>
               </Link>
-            ))}
+            ))
+          }
           </div>
         </div>
       )}
@@ -132,7 +133,8 @@ export default function StudyHubPage() {
                     <span className="ml-2 shrink-0 text-xs text-gray-400">{n.subject}</span>
                   </Link>
                 </li>
-              ))}
+              ))
+            }
             </ul>
           )}
         </div>
@@ -159,15 +161,16 @@ export default function StudyHubPage() {
                   </li>
                 );
               })}
+            )
             </ul>
           )}
         </div>
       </div>
 
-      {/* Daily MBA case — enhanced */}
+      {/* Daily Case — enhanced */}
       <div className="mt-8" id="daily-case">
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Today's MBA case</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Today's Case</p>
           <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-900/40 dark:text-amber-300">
             Daily practice
           </span>

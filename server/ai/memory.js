@@ -34,7 +34,6 @@ async function bootstrapMemory(userId) {
   const interests = user?.interests || [];
   const skills    = resume?.skills || [];
 
-  // Infer specialization from interests/skills heuristic
   const specMap = {
     Finance:    ['finance', 'banking', 'equity', 'investment', 'cfa', 'valuation'],
     Marketing:  ['marketing', 'brand', 'consumer', 'campaign', 'digital'],
@@ -44,16 +43,16 @@ async function bootstrapMemory(userId) {
   };
 
   const pool = [...interests, ...skills].map((s) => s.toLowerCase());
-  let mbaSpecialization = null;
+  let specialization = null;
   let maxScore = 0;
   for (const [spec, keywords] of Object.entries(specMap)) {
     const score = keywords.filter((k) => pool.some((p) => p.includes(k))).length;
-    if (score > maxScore) { maxScore = score; mbaSpecialization = spec; }
+    if (score > maxScore) { maxScore = score; specialization = spec; }
   }
 
   const data = {
     user: userId,
-    mbaSpecialization,
+    specialization,
     careerInterests: interests,
     resumeCompletionPct: _resumeCompletionPct(resume),
     tasksCompletedCount: taskCount,
@@ -104,7 +103,7 @@ async function appendTopic(userId, topic) {
 function formatMemoryContext(mem) {
   if (!mem) return '';
   const lines = [];
-  if (mem.mbaSpecialization)       lines.push(`MBA Specialization: ${mem.mbaSpecialization}`);
+  if (mem.specialization)       lines.push(`Specialization: ${mem.specialization}`);
   if (mem.careerInterests?.length)  lines.push(`Career Interests: ${mem.careerInterests.join(', ')}`);
   if (mem.targetCompanies?.length)  lines.push(`Target Companies: ${mem.targetCompanies.join(', ')}`);
   if (mem.readinessScore != null)   lines.push(`Placement Readiness Score: ${mem.readinessScore}/100`);

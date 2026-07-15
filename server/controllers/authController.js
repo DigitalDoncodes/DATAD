@@ -15,6 +15,7 @@ const UserProfile = require('../models/UserProfile');
 const { sendWelcomeEmail, sendPasswordResetEmail } = require('../config/mailer');
 const logActivity = require('../utils/logActivity');
 const cloudinary = require('../config/cloudinary');
+const logger = require('../utils/logger');
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const MIN_PASSWORD = 8;
@@ -56,7 +57,31 @@ const signToken = (user) =>
 
 exports.register = async (req, res, next) => {
   try {
-    const { name, email, password, referralCode, rollNumber, studentType, workExYears, preMbaDomain } = req.body;
+    const {
+      name,
+      email,
+      password,
+      referralCode,
+      rollNumber,
+      // New profile fields
+      college,
+      course,
+      department,
+      specialization,
+      batch,
+      semester,
+      graduationYear,
+      dreamRole,
+      preferredIndustries,
+      careerInterests,
+      favouriteSubjects,
+      difficultSubjects,
+      learningStyle,
+      goals,
+      experience
+    } = req.body;
+
+    // Basic validation
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Name, email and password are required' });
     }
@@ -106,8 +131,9 @@ exports.register = async (req, res, next) => {
         rollNumber: rollNumber ? String(rollNumber).trim() : '',
         referralCode: await uniqueReferralCode(name),
         referredBy: referrer ? referrer._id : null,
-        studentType: studentType === 'experienced' ? 'experienced' : 'fresher',
-        workExYears: studentType === 'experienced' && workExYears ? Number(workExYears) : null,
+        // We will set studentType and workExYears after we have experience data
+        studentType: 'fresher', // temporary, will update below
+        workExYears: null, // temporary
       });
     } catch (err) {
       // Release the claimed code if account creation failed for any reason.
@@ -119,6 +145,24 @@ exports.register = async (req, res, next) => {
       }
       throw err;
     }
+
+    // Determine studentType and workExYears from experience
+    let years = 0;
+    let expType = 'fresher';
+    let pastDomain = '';
+    if (experience && typeof experience === 'object') {
+      years = experience.years || 0;
+      expType = experience.type || 'fresher';
+      pastDomain = experience.pastDomain || '';
+    }
+    // Derive studentType: if years === 0 or type is fresher-like, then fresher, else experienced
+    const studentType = years === 0 || ['fresher', 'intern'].includes(expType) ? 'fresher' : 'experienced';
+    const workExYears = years > 0 ? years : null;
+
+    // Update user with computed studentType and workExYears
+    user.studentType = studentType;
+    user.workExYears = workExYears;
+    await user.save();
 
     if (referrer) {
       logActivity(
@@ -140,17 +184,55 @@ exports.register = async (req, res, next) => {
       });
     }
 
-    // Seed UserProfile with preMbaDomain if provided at registration.
-    if (preMbaDomain) {
-      UserProfile.findOneAndUpdate(
-        { user: user._id },
-        { $setOnInsert: { user: user._id }, $set: { preMbaDomain } },
-        { upsert: true, new: true }
-      ).catch(() => {});
-    }
+    // Prepare profile data
+    const profileData = {
+      user: user._id,
+      college: college || '',
+      course: course || '',
+      department: department || '',
+      specialization: specialization || '',
+      batch: batch || '',
+      semester: semester || '',
+      graduationYear: graduationYear || null,
+      dreamRole: dreamRole || '',
+      preferredIndustries: Array.isArray(preferredIndustries) ? preferredIndustries : [],
+      careerInterests: Array.isArray(careerInterests) ? careerInterests : [],
+      favouriteSubjects: Array.isArray(favouriteSubjects) ? favouriteSubjects : [],
+      difficultSubjects: Array.isArray(difficultSubjects) ? difficultSubjects : [],
+      learningStyle: learningStyle || 'Other',
+      goals: typeof goals === 'object' && goals !== null ? goals : {
+        placement: false,
+        higherStudies: false,
+        entrepreneurship: false,
+        financialLiteracy: false,
+        leadership: false,
+        communication: false,
+        research: false,
+        certifications: false
+      },
+      experience: {
+        years: years,
+        type: expType,
+        pastDomain: pastDomain
+      },
+      // Keep existing fields for backward compatibility
+      skills: [],
+      interests: [],
+      clubs: [],
+      languages: [],
+      linkedin: '',
+      github: '',
+      portfolio: '',
+      bio: '',
+      lookingFor: '',
+      preMbaDomain: pastDomain // map pastDomain to preMbaDomain for existing features
+    };
+
+    // Create UserProfile
+    await UserProfile.create(profileData);
 
     // Fire-and-forget: registration must not fail if the mail service is down.
-    sendWelcomeEmail(user).catch((err) => console.error('Welcome email failed:', err.message));
+    sendWelcomeEmail(user).catch((err) => logger.error('Welcome email failed:', { error: err.message }));
     res.status(201).json({ token: signToken(user) });
   } catch (err) {
     next(err);
@@ -273,7 +355,7 @@ exports.forgotPassword = async (req, res, next) => {
       : process.env.CLIENT_URL.split(',')[0].trim();
     const link = `${trustedOrigin}/reset-password?token=${token}`;
     sendPasswordResetEmail(user, link).catch((err) =>
-      console.error('Reset email failed:', err.message)
+      logger.error('Reset email failed:', err.message)
     );
     logActivity('password_reset_requested', `${user.name} requested a password reset link`, user);
     res.json(generic);

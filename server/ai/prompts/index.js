@@ -7,8 +7,8 @@
 const PROMPTS = {
   // ── Daily Case Study ────────────────────────────────────────────────────────
   dailyCase: ({ category, difficulty, dateStr }) => ({
-    system: `You are an expert MBA case interview coach creating daily practice cases for Indian B-school students preparing for campus placements. Write realistic, India-relevant business scenarios.`,
-    user: `Generate a complete daily MBA case study for ${dateStr}.
+    system: `You are an expert case interview coach creating daily practice cases for students preparing for campus placements. Write realistic, India-relevant business scenarios.`,
+    user: `Generate a complete daily case study for ${dateStr}.
 
 Category: ${category}
 Difficulty: ${difficulty}
@@ -28,8 +28,8 @@ Return ONLY valid JSON in this exact schema:
 
   // ── Daily Briefing ───────────────────────────────────────────────────────────
   dailyBriefing: ({ dateStr, recentHeadlines }) => ({
-    system: `You are a sharp MBA daily briefing writer. Your audience is Indian B-school students preparing for placements. Be specific, cite numbers, explain business implications.`,
-    user: `Generate a comprehensive MBA morning briefing for ${dateStr}.
+    system: `You are a sharp daily briefing writer. Your audience is students preparing for placements. Be specific, cite numbers, explain business implications.`,
+    user: `Generate a comprehensive morning briefing for ${dateStr}.
 
 Recent headlines for context:
 ${recentHeadlines}
@@ -49,30 +49,30 @@ Return ONLY valid JSON:
   },
   "interviewTip": "one specific, actionable interview tip tied to today's news",
   "keyNumbers": ["number with context 1", "number with context 2", "number with context 3"],
-  "mustKnowTerm": { "term": "MBA jargon term", "definition": "plain English explanation in one sentence" }
+  "mustKnowTerm": { "term": "field-specific jargon term", "definition": "plain English explanation in one sentence" }
 }`,
   }),
 
   // ── Daily Reflection ─────────────────────────────────────────────────────────
   dailyReflection: ({ dateStr, dayOfWeek }) => ({
-    system: `You are a mindful MBA coach helping students build daily habits. Your reflections are grounded, specific, and actionable — not generic motivational content.`,
-    user: `Generate a daily reflection for ${dayOfWeek}, ${dateStr} for an MBA student preparing for campus placements.
+    system: `You are a mindful coach helping students build daily habits. Your reflections are grounded, specific, and actionable — not generic motivational content.`,
+    user: `Generate a daily reflection for ${dayOfWeek}, ${dateStr} for a student preparing for campus placements.
 
 Return ONLY valid JSON:
 {
   "quote": { "text": "an insightful quote relevant to business or leadership", "author": "full name and role/company" },
-  "reflection": "a 2-3 sentence thought-provoking reflection specific to the MBA journey",
+  "reflection": "a 2-3 sentence thought-provoking reflection specific to the student's journey",
   "challenge": "one concrete 15-minute challenge the student can do today (specific action)",
   "productivityTip": "one productivity or study tip, backed by a method or framework",
-  "mbaConcept": { "concept": "one MBA concept to review today", "whyToday": "one sentence on why this concept matters for placements" },
+  "concept": { "concept": "one concept to review today", "whyToday": "one sentence on why this concept matters for their goals" },
   "gratitude": "a one-sentence prompt for a gratitude journaling exercise"
 }`,
   }),
 
   // ── Resume Tip ───────────────────────────────────────────────────────────────
   resumeTip: ({ recentTips }) => ({
-    system: `You are a senior placement advisor at a top Indian B-school. Generate precise, actionable resume tips for MBA students. Never give generic advice.`,
-    user: `Generate ONE fresh, specific resume tip for MBA students targeting Indian campus placements.
+    system: `You are a senior placement advisor at a top Indian institution. Generate precise, actionable resume tips for students. Never give generic advice.`,
+    user: `Generate ONE fresh, specific resume tip for students targeting campus placements.
 
 Recent tips already given (do NOT repeat these themes):
 ${recentTips || 'None yet'}
@@ -89,8 +89,8 @@ Return ONLY valid JSON:
 
   // ── Company Profile Enrichment ────────────────────────────────────────────────
   companyEnrich: ({ name, sector, existingOverview }) => ({
-    system: `You are a B-school placement advisor with deep knowledge of Indian corporate recruiters. Generate accurate, helpful company information for MBA students.`,
-    user: `Enrich this company profile for MBA placement preparation.
+    system: `You are a placement advisor with deep knowledge of Indian corporate recruiters. Generate accurate, helpful company information for students.`,
+    user: `Enrich this company profile for placement preparation.
 
 Company: ${name}
 Sector: ${sector}
@@ -100,8 +100,8 @@ Return ONLY valid JSON:
 {
   "overview": "3-4 sentence company overview: what they do, scale, India presence, recent news",
   "businessModel": "how they make money, key revenue streams (2-3 sentences)",
-  "whatTheyLookFor": "specific traits and skills this company values in MBA hires (2-3 sentences)",
-  "salaryRange": "typical MBA CTC range at this company (e.g. ₹8-12 LPA)",
+  "whatTheyLookFor": "specific traits and skills this company values in hires (2-3 sentences)",
+  "salaryRange": "typical CTC range at this company (e.g. ₹8-12 LPA)",
   "roles": ["role 1", "role 2", "role 3"],
   "rounds": ["round 1", "round 2", "round 3"],
   "prepTips": ["tip 1", "tip 2", "tip 3"],
@@ -113,7 +113,7 @@ Return ONLY valid JSON:
   // ── Interview Questions ───────────────────────────────────────────────────────
   interviewQuestions: ({ companyName, sector, roles }) => ({
     system: `You are a placement officer who has interviewed hundreds of candidates at Indian companies. Generate realistic interview questions that mirror actual rounds.`,
-    user: `Generate interview questions for MBA students targeting ${companyName} (${sector} sector).
+    user: `Generate interview questions for students targeting ${companyName} (${sector} sector).
 Relevant roles: ${roles?.join(', ') || 'business analyst, management trainee'}
 
 Return ONLY valid JSON:
@@ -140,8 +140,8 @@ Return ONLY valid JSON:
 
   // ── News Enhancement ──────────────────────────────────────────────────────────
   newsEnhance: ({ articles }) => ({
-    system: `You are an MBA professor framing business news for students preparing for placements. Be concise and insight-dense.`,
-    user: `Enhance these news articles for MBA students. For each article, provide MBA-relevant framing.
+    system: `You are a professor framing business news for students preparing for placements. Be concise and insight-dense.`,
+    user: `Enhance these news articles for students. For each article, provide relevant framing.
 
 Articles:
 ${articles.map((a, i) => `${i + 1}. Title: ${a.title}\nSummary: ${a.summary}`).join('\n\n')}
@@ -150,8 +150,8 @@ Return ONLY a JSON array, one object per article in the same order:
 [
   {
     "whyItMatters": "1-2 sentences on why this matters for business/placements",
-    "mbaConcepts": ["concept1", "concept2"],
-    "keyTakeaway": "one actionable insight for an MBA student",
+    "concepts": ["concept1", "concept2"],
+    "keyTakeaway": "one actionable insight for a student",
     "interviewRelevance": "high|medium|low"
   }
 ]`,
@@ -159,8 +159,8 @@ Return ONLY a JSON array, one object per article in the same order:
 
   // ── Discussion Moderation ─────────────────────────────────────────────────────
   moderatePost: ({ title, body }) => ({
-    system: `You are a content moderator for an MBA student community. Be fair but strict about quality.`,
-    user: `Moderate this discussion post for an MBA student community.
+    system: `You are a content moderator for a student community. Be fair but strict about quality.`,
+    user: `Moderate this discussion post for a student community.
 
 Title: ${title}
 Body: ${body}
@@ -180,7 +180,7 @@ All scores 0.0-1.0. overall=hide if any score>0.85, review if>0.5, else approve.
 
   // ── Weekly Newsletter ─────────────────────────────────────────────────────────
   weeklyNewsletter: ({ weekStart, topDiscussions, topCompanies, briefingSummary, upcomingDeadlines }) => ({
-    system: `You are the editor of a sharp weekly MBA newsletter for Indian B-school students. Write with energy and insight, not corporate blandness.`,
+    system: `You are the editor of a weekly newsletter for students. Write with energy and insight, not corporate blandness.`,
     user: `Generate the weekly DATAD newsletter for the week starting ${weekStart}.
 
 Top discussions this week:

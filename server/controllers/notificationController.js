@@ -1,4 +1,5 @@
 const Notification = require('../models/Notification');
+const logger = require('../utils/logger');
 
 exports.list = async (req, res, next) => {
   try {
@@ -40,7 +41,9 @@ exports.notify = async ({ user, type, title, body, link, actor }) => {
   try {
     if (!user || user.toString() === (actor || '').toString()) return;
     await Notification.create({ user, type, title, body, link, actor });
-  } catch (_) {}
+  } catch (err) {
+    logger.error('Failed to create notification', { error: err.message, user, type, title });
+  }
 };
 
 // Bulk helper — one insertMany for broadcasting to many users
@@ -52,5 +55,7 @@ exports.notifyBulk = async (userIds, { type, title, body, link, actor }) => {
       .filter((id) => !actorStr || id.toString() !== actorStr)
       .map((user) => ({ user, type, title, body, link, actor }));
     if (docs.length) await Notification.insertMany(docs, { ordered: false });
-  } catch (_) {}
+  } catch (err) {
+    logger.error('Failed to create bulk notifications', { error: err.message, userIdsCount: userIds?.length, type, title });
+  }
 };

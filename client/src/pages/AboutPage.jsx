@@ -18,10 +18,9 @@ function useReveal(threshold = 0.15) {
       ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
       { threshold }
     );
-    obs.observe(el);
+    obsserve.observe(el);
     return () => obs.disconnect();
   }, [threshold]);
-  return [ref, visible];
 }
 
 function Reveal({ children, delay = 0, className = '' }) {
@@ -62,7 +61,7 @@ const pillars = [
 ];
 
 const milestones = [
-  { when: 'Late 2024', label: 'Notes & Planner', detail: 'The first tools — a shared note system and personal planner to bring the batch together academically.' },
+  { when: 'Late 2024', label: 'Notes & Planner', detail: 'The first tools — a shared note system and personal planner to bring peers together academically.' },
   { when: 'Early 2025', label: 'Finance & Resume', detail: 'Expense tracking, budget visualisation, and an ATS-ready resume builder built around placement season.' },
   { when: 'Mid 2025', label: 'Career Hub & Intelligence', detail: 'Company prep, placement readiness score, daily case studies, and a live market + news briefing.' },
   { when: 'Mid 2025', label: 'Community & Journal', detail: 'Discussions, announcements, nostalgia archive, and a private daily journal for reflection.' },
@@ -138,7 +137,7 @@ export default function AboutPage() {
               { x: '70%', dir: 'down', color: 'rgba(252,211,77,0.9)', idx: 3 },
               { x: '90%', dir: 'up', color: 'rgba(251,191,36,0.9)', idx: 4 },
             ].map(({ x, dir, color, idx }) => (
-              <line key={idx} x1={x} y1="50%" x2={x} y2={dir === 'up' ? '0%' : '100%'} stroke={color} strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round"
+              <line key={idx} x1={x} y1="50%" x2={x} y2={dir === 'up' ? '0%' : '100%' } stroke={color} strokeWidth="3" strokeDasharray="4 10" strokeLinecap="round"
                 style={{ strokeDashoffset: columnStages[idx] >= 2 ? '0' : '200', opacity: columnStages[idx] >= 2 ? 1 : 0, transition: 'stroke-dashoffset 1.1s cubic-bezier(0.4,0,0.2,1), opacity 0.3s' }} />
             ))}
           </svg>
@@ -165,7 +164,7 @@ export default function AboutPage() {
             return (
               <div key={`bottom-${idx}`} className="flex justify-center">
                 {item.bottomNode ? (
-                  <div onClick={() => revealed && setActiveNode(activeNode?.id === item.bottomNode.id ? null : item.bottomNode)} className={`p-3 sm:p-4 rounded-2xl bg-slate-900/90 border ${item.bottomNode.border} backdrop-blur-md shadow-xl cursor-pointer hover:scale-105 transition-all duration-500 w-full max-w-[190px] ${revealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}`}>
+                  <div onClick={() => revealed && setActiveNode(activeNode?.id === item.bottomNode.id ? null : item.bottomNode)} className={`p-3 sm:p-4 rounded-2xl bg-slate-900/90 border ${item.bottomNode.border} backdrop-blur-md shadow-xl cursor-pointer hover:scale-105 transition-all duration-500 w-full max-w-[190px] ${revealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'`}>
                     <div className="flex items-center gap-2 mb-1">
                       <div className={`p-1.5 rounded-lg ${item.bottomNode.bg}`}><item.bottomNode.icon className="w-3.5 h-3.5" /></div>
                       <span className="text-[11px] font-bold text-white truncate">{item.bottomNode.title}</span>
@@ -238,7 +237,7 @@ export default function AboutPage() {
         {/* The turning point */}
         <Reveal delay={200}>
           <div className="bg-slate-900/60 border border-slate-800 rounded-3xl p-8 sm:p-10 space-y-5">
-            <h3 className="text-lg sm:text-xl font-bold text-white">Your MBA is your first dataset.</h3>
+            <h3 className="text-lg sm:text-xl font-bold text-white">Your journey is your first dataset.</h3>
             <p className="text-sm text-slate-300 leading-relaxed">
               Think about it. Two years. Hundreds of decisions — which electives to take, which companies to target, which skills to build, how to spend your weekend, who to network with. Each one of those is a data point. And if you don't track them, they disappear.
             </p>
@@ -266,8 +265,8 @@ export default function AboutPage() {
             <p className="text-sm text-slate-300 leading-relaxed mb-4">
               The letters <strong className="text-white">T, A, D</strong> appear at the heart of <strong className="text-white">DA<span className="text-purple-300">T</span>AD</strong> — and they are the initials of the person who built it: <strong className="text-white">T. A. Dhatchina Moorthi</strong>.
             </p>
-            <p className="text-sm text-slate-400 leading-relaxed mb-4">
-              DATAD was not named for a logo or a marketing brief. It was named for a student who believed the best tools are built by the people who most need them. The acronym — Discover, Aspire, Transform, Achieve, Develop — is the journey that student wanted every batchmate to take.
+            <p className="text-sm text-slate-300 leading-relaxed mb-4">
+              DATAD was not named for a logo or a marketing brief. It was named for a student who believed the best tools are built by the people who most need them. The acronym — Discover, Aspire, Transform, Achieve, Develop — is the journey that student wanted every student to take.
             </p>
             <p className="text-sm text-slate-500 leading-relaxed italic">
               "Not a tool someone made for students. A tool a student made — with them, for them."
@@ -290,7 +289,7 @@ export default function AboutPage() {
               <div className={`bg-gradient-to-b ${p.gradient} border ${p.border} p-6 sm:p-8 rounded-3xl backdrop-blur-md shadow-xl hover:-translate-y-1 transition-all duration-300 h-full`}>
                 <div className="p-3 rounded-2xl bg-slate-950/80 border border-slate-800 w-fit text-purple-400 shadow-md mb-4"><p.icon className="w-5 h-5" /></div>
                 <span className="text-[10px] font-mono uppercase tracking-wider text-purple-400">{p.tagline}</span>
-                <h3 className="text-base font-bold text-white mt-1 mb-3">{p.title}</h3>
+                <h3 className="text-base font-bold text-white mt-1 mb-3">{p.title}</h2>
                 <p className="text-xs text-slate-300 leading-relaxed">{p.description}</p>
               </div>
             </Reveal>
@@ -312,7 +311,7 @@ export default function AboutPage() {
               <div className={`relative flex items-center gap-6 sm:gap-12 ${idx % 2 === 0 ? 'sm:flex-row-reverse' : ''}`}>
                 <div className="absolute left-6 sm:left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-slate-950 border-2 border-purple-400 z-10 shadow-[0_0_10px_rgba(192,132,252,0.8)]" />
                 <div className="ml-12 sm:ml-0 sm:w-1/2 bg-slate-900/60 border border-slate-800 p-5 rounded-2xl backdrop-blur-md hover:border-purple-500/40 transition-all shadow-lg">
-                  <span className="text-[10px] font-bold tracking-widest text-amber-400 uppercase bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">{m.when}</span>
+                  <span className="text-[10px] font-bold tracking-widest text-amber-400 uppercase bg-amber-500/10 px-2.5 py=1 rounded-full border border-amber-500/20">{m.when}</span>
                   <h4 className="text-sm font-bold text-white mt-3">{m.label}</h4>
                   <p className="text-xs text-slate-400 mt-1 leading-relaxed">{m.detail}</p>
                 </div>
@@ -335,7 +334,7 @@ export default function AboutPage() {
             </blockquote>
             <div className="pt-2">
               <h4 className="text-sm font-bold text-white">T. A. Dhatchina Moorthi</h4>
-              <p className="text-xs text-slate-500 mt-0.5">Founder &amp; Systems Architect</p>
+              <p className="text-xs text-slate-500 mt-0.5">Founder & Systems Architect</p>
               <p className="text-xs text-slate-600 mt-0.5">
                 <Link to="/creator" className="text-indigo-400 hover:underline">D² Labs</Link>{' '}· Technology × Psychology × Impact
               </p>

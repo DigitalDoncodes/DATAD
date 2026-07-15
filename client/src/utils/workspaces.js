@@ -48,7 +48,7 @@ export const WORKSPACE_TABS = {
     { to: '/me/finance/tracker', label: 'Tracker' },
     { to: '/me/finance/calculator', label: 'Calculator' },
     { to: '/me/finance/learn', label: 'Learn' },
-    { to: '/me/finance/roi', label: 'MBA ROI' },
+    { to: '/me/finance/roi', label: 'ROI' },
   ],
   wellbeing: [
     { to: '/me/wellbeing', label: 'Breathing', end: true },

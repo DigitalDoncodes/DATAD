@@ -23,11 +23,11 @@ exports.summariseNote = async ({ title, subject, content }) => {
     messages: [
       {
         role: 'system',
-        content: 'You are an MBA study assistant. Be concise, precise, and practically useful for an Indian MBA student preparing for placements and exams.',
+        content: 'You are a study assistant. Be concise, precise, and practically useful for a student preparing for placements and exams.',
       },
       {
         role: 'user',
-        content: `Summarise the following MBA note in three parts:
+        content: `Summarise the following note in three parts:
 1. A 2-3 sentence executive summary.
 2. Five bullet-point key takeaways (each ≤ 15 words).
 3. Relevant business frameworks or concepts mentioned (comma-separated, max 5).
@@ -69,11 +69,11 @@ exports.reviewResume = async (resume) => {
     messages: [
       {
         role: 'system',
-        content: 'You are a senior career counsellor at an Indian B-school specialising in placement preparation. Be direct, specific, and actionable. Never generic.',
+        content: 'You are a senior career counsellor specialising in placement preparation. Be direct, specific, and actionable. Never generic.',
       },
       {
         role: 'user',
-        content: `Review this MBA resume for placement readiness. Give exactly 3 improvements, each tied to a specific gap you can see.
+        content: `Review this resume for placement readiness. Give exactly 3 improvements, each tied to a specific gap you can see.
 
 ${lines.join('\n')}
 
@@ -94,11 +94,11 @@ exports.generateCaseFramework = async ({ title, category, scenario, question }) 
     messages: [
       {
         role: 'system',
-        content: 'You are an MBA case interview coach. Write clear, structured frameworks for Indian B-school students.',
+        content: 'You are a case interview coach. Write clear, structured frameworks for students.',
       },
       {
         role: 'user',
-        content: `Generate a concise suggested framework (3-5 bullet points, ≤ 200 words total) for this daily MBA case.
+        content: `Generate a concise suggested framework (3-5 bullet points, ≤ 200 words total) for this daily case.
 
 Category: ${category}
 Title: ${title}

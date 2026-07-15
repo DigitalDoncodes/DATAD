@@ -26,7 +26,7 @@ function Avatar({ name, avatar, size = 'md' }) {
 export default function DirectoryPage() {
   useDocumentTitle('Student Directory');
   const [profiles, setProfiles] = useState(null);
-  [myProfile, setMyProfile] = useState(null);
+  const [myProfile, setMyProfile] = useState(null);
   const [search, setSearch] = useState('');
   const [specFilter, setSpecFilter] = useState('');
   const [view, setView] = useState(null);
@@ -131,7 +131,7 @@ export default function DirectoryPage() {
                   <p className="font-semibold">{p.user?.name}</p>
                   {p.user?.rollNumber && <p className="text-[11px] font-mono text-indigo-500 dark:text-indigo-400">{p.user.rollNumber}</p>}
                   {p.specialization && <p className="text-xs text-gray-500">{p.specialization}</p>}
-                  {p.preMbaDomain && <p className="text-[11px] text-amber-600 dark:text-amber-400">{p.preMbaDomain}</p>}
+                  {p.preMbaDomain && <p className="text-[11px] text-amber-600 dark:text-amber-400">ex-{p.preMbaDomain}</p>}
                 </div>
               </div>
               {p.bio && <p className="mb-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{p.bio}</p>}
@@ -185,8 +185,8 @@ export default function DirectoryPage() {
           <input {...register('portfolio')} placeholder="Portfolio / website URL (optional)" className={inputClass} />
           <input {...register('lookingFor')} placeholder="Looking for (e.g. study partner, project teammate)" className={inputClass} />
           <select {...register('preMbaDomain')} className={inputClass}>
-            <option value="">Past work domain (optional)</option>
-            {['IT / Software','Banking / Finance','Consulting','Manufacturing / Ops','Healthcare','FMCG / Retail','Govt / PSU','Media / Content','Startup','Other'].map((d) => <option key={d}>{d}</option>)}
+            <option value="">Pre-MBA background (optional)</option>
+            {['IT / Software','Banking / Finance','Consulting','Manufacturing / Ops','Healthcare','FMCG / Retail','Govt / PSU','Media / Content','Startup','Fresher','Other'].map((d) => <option key={d}>{d}</option>)}
           </select>
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={() => setEditOpen(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>

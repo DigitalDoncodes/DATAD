@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "SubjectRegistry",
+  "type": "object",
+  "required": ["_id", "label"],
+  "properties": {
+    "_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "label": { "type": "string" },
+    "description": { "type": "string" },
+    "programs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "enablesFinanceHub":   { "type": "boolean" },
+    "enablesWellbeingHub": { "type": "boolean" },
+    "enablesCareerHub":    { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

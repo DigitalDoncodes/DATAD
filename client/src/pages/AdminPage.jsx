@@ -111,7 +111,7 @@ function PlacementDateForm() {
           <input
             type="text"
             maxLength={100}
-            placeholder="e.g. MBA 2024–26"
+            placeholder="e.g. Batch 2024–26"
             value={form.batchName}
             onChange={(e) => setForm((f) => ({ ...f, batchName: e.target.value }))}
             className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
@@ -187,7 +187,7 @@ export default function AdminPage() {
     {
       to: '/admin/cases',
       icon: BrainCircuit,
-      title: 'Daily MBA cases',
+      title: 'Daily Cases',
       description: 'Publish the daily case that anchors the morning habit',
     },
     {
@@ -243,7 +243,7 @@ export default function AdminPage() {
       {/* Operational stats */}
       <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className="rounded-2xl border border-gray-200/80 bg-white p-4 dark:border-gray-800/80 dark:bg-gray-900">
-          <div className="flex items-center gap-2 text-xs text-gray-400">
+          <div className="fc items-center gap-2 text-xs text-gray-400">
             <Activity className="h-4 w-4 text-emerald-500" /> Active (7d)
           </div>
           <AnimatedNumber value={stats.activeUsers ?? 0} className="mt-1 block text-2xl font-bold tabular-nums" />

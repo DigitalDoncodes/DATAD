@@ -1,11 +1,12 @@
 // Resend transactional email via HTTP API — no SDK needed.
 const RESEND_URL = 'https://api.resend.com/emails';
+const RESEND_BATCH_URL = 'https://api.resend.com/emails/batch';
 
 const enabled = () => Boolean(process.env.RESEND_API_KEY && process.env.MAIL_FROM);
 
 const send = async ({ to, subject, html }) => {
   if (!enabled()) {
-    console.warn('Mailer disabled: RESEND_API_KEY or MAIL_FROM not set');
+    logger.warn('Mailer disabled: RESEND_API_KEY or MAIL_FROM not set');
     return;
   }
   // Resend expects `to` as an array of strings ("Name <email>" or plain email)
@@ -60,7 +61,7 @@ exports.sendWelcomeEmail = (user) =>
        </ul>
        <p>See you inside! 🚀</p>`
     ),
-  });
+  }).catch((err) => logger.error('Welcome email failed:', { error: err.message }));
 
 exports.sendAccountApprovedEmail = (user) =>
   send({
@@ -72,7 +73,7 @@ exports.sendAccountApprovedEmail = (user) =>
        <p>Your personal referral code is <strong>${user.referralCode}</strong>. It works exactly once —
        share it with one batchmate and they'll skip the approval queue.</p>`
     ),
-  });
+  }).catch((err) => logger.error('Approval email failed:', { error: err.message }));
 
 exports.sendPasswordResetEmail = (user, link) =>
   send({
@@ -86,11 +87,37 @@ exports.sendPasswordResetEmail = (user, link) =>
        <span style="color:#6b7280;word-break:break-all">${link}</span></p>
        <p>If you didn't request this, you can safely ignore this email.</p>`
     ),
-  });
+  }).catch((err) => logger.error('Reset email failed:', { error: err.message }));
 
-exports.sendAnnouncementEmail = (recipients, announcement) =>
-  send({
-    to: recipients.map((u) => ({ email: u.email, name: u.name })),
-    subject: `📢 ${announcement.title}`,
-    html: wrap(announcement.title, `<p>${announcement.body.replace(/\n/g, '<br/>')}</p>`),
-  });
+// Fan-out via Resend's batch endpoint: one email per recipient, so nobody
+// sees anyone else's address and we stay clear of the 50-recipient `to` cap.
+// Batch calls accept up to 100 emails each.
+exports.sendAnnouncementEmail = async (recipients, announcement) => {
+  if (!enabled()) {
+    logger.warn('Mailer disabled: RESEND_API_KEY or MAIL_FROM not set');
+    return;
+  }
+  const subject = `📢 ${announcement.title}`;
+  const html = wrap(announcement.title, `<p>${announcement.body.replace(/\n/g, '<br/>')}</p>`);
+  const emails = recipients.map((u) => ({
+    from: `DATAD <${process.env.MAIL_FROM}>`,
+    to: [u.name ? `${u.name} <${u.email}>` : u.email],
+    subject,
+    html,
+  }));
+
+  for (let i = 0; i < emails.length; i += 100) {
+    const res = await fetch(RESEND_BATCH_URL, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(emails.slice(i, i + 100)),
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Resend batch ${res.status}: ${body}`);
+    }
+  }
+};

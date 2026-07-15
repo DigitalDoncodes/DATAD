@@ -48,9 +48,9 @@ export default function CreatorPage() {
           </p>
           <h1 className="mt-2 text-4xl font-bold">Dhatchina Moorthi</h1>
           <p className="mx-auto mt-4 max-w-xl text-gray-500 dark:text-gray-400">
-            MBA student, psychology graduate and independent builder. Created{' '}
+            Psychology graduate and independent builder. Created{' '}
             <span className="font-semibold text-gray-700 dark:text-gray-200">DATAD</span> — a
-            Student Operating System that gives his batch one place for notes, memories,
+            Student Operating System that gives students one place for notes, memories,
             planning, personal finance, resumes and placements.
           </p>
 
@@ -96,7 +96,7 @@ export default function CreatorPage() {
             <GraduationCap className="mx-auto mb-2 h-6 w-6 text-indigo-500" />
             <h2 className="font-semibold">Want in?</h2>
             <p className="mx-auto mt-1 max-w-md text-sm text-gray-500 dark:text-gray-400">
-              DATAD is free for the batch. Create an account to explore, or become an early
+              DATAD is free for the student community. Create an account to explore, or become an early
               supporter and help shape what it becomes.
             </p>
             <div className="mt-4 flex justify-center gap-3">

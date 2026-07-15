@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProgramRegistry",
+  "type": "object",
+  "required": ["_id", "label"],
+  "properties": {
+    "_id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "label": { "type": "string" },
+    "description": { "type": "string" },
+    "dashboardOrder": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "promptSet": { "type": "string" },
+    "features": {
+      "type": "object",
+      "properties": {
+        "financeHub":    { "type": "boolean" },
+        "wellbeingHub":  { "type": "boolean" },
+        "careerHub":     { "type": "boolean" },
+        "community":     { "type": "boolean" },
+        "aiChat":        { "type": "boolean" },
+        "dailyBriefing": { "type": "boolean" },
+        "dailyCase":     { "type": "boolean" },
+        "planner":       { "type": "boolean" },
+        "resources":     { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

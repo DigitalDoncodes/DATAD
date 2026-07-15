@@ -61,11 +61,11 @@ function SmallWin({ streak, note }) {
   return null;
 }
 
-function WorkExNudge() {
+function ExperienceToolkit() {
   return (
     <div className="rounded-2xl border border-amber-200/80 bg-amber-50 p-4 dark:border-amber-900/40 dark:bg-amber-950/20">
       <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
-        Work experience toolkit
+        Experience toolkit
       </p>
       <div className="space-y-2">
         <Link to="/career/stories" className="flex items-center justify-between rounded-xl bg-white/70 px-3 py-2.5 text-sm transition-colors hover:bg-white dark:bg-gray-900/50 dark:hover:bg-gray-900">
@@ -85,7 +85,7 @@ function WorkExNudge() {
         <Link to="/me/finance/roi" className="flex items-center justify-between rounded-xl bg-white/70 px-3 py-2.5 text-sm transition-colors hover:bg-white dark:bg-gray-900/50 dark:hover:bg-gray-900">
           <div className="flex items-center gap-2.5">
             <TrendingUp className="h-4 w-4 shrink-0 text-emerald-500" />
-            <span className="font-medium text-gray-800 dark:text-gray-200">MBA ROI Calculator</span>
+            <span className="font-medium text-gray-800 dark:text-gray-200">ROI Calculator</span>
           </div>
           <ArrowRight className="h-3.5 w-3.5 text-gray-400" />
         </Link>
@@ -162,8 +162,8 @@ export default function DashboardPage() {
       <div className="space-y-3">
         {/* 2 — One suggested action */}
         <TodayFocus data={data} />
-        {/* 3 — Work experience toolkit (experienced students only) */}
-        {user?.studentType === 'experienced' && <WorkExNudge />}
+        {/* 3 — Experience toolkit (for those with experience) */}
+        {user?.studentType === 'experienced' && <ExperienceToolkit />}
         {/* 4 — One small optional positive stat */}
         <SmallWin streak={data.streak} note={data.lastNote} />
       </div>

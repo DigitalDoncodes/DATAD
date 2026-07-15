@@ -3,7 +3,7 @@ require('dotenv').config();
 const REQUIRED_ENV = ['MONGODB_URI', 'JWT_SECRET', 'CLIENT_URL'];
 const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
 if (missing.length) {
-  console.error(`Missing required env vars: ${missing.join(', ')}`);
+  logger.error('Missing required env vars', { missing });
   process.exit(1);
 }
 
@@ -18,6 +18,7 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const { generalLimiter, authLimiter } = require('./middleware/rateLimiters');
 const entertainmentRoutes = require('./routes/entertainmentRoutes');
+const logger = require('./utils/logger');
 const app = express();
 
 // Behind a hosting proxy (Render/Railway/Vercel) the client IP is in
@@ -131,10 +132,10 @@ const { register: registerSchedulers } = require('./schedulers');
 
 connectDB()
   .then(() => {
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
     registerSchedulers();
   })
   .catch((err) => {
-    console.error('Failed to connect to MongoDB:', err.message);
+    logger.error('Failed to connect to MongoDB', { error: err.message });
     process.exit(1);
   });

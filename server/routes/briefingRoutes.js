@@ -22,7 +22,7 @@ router.get('/today', verifyToken, checkTier('trial'), async (req, res, next) => 
 
     // Phase 8 — surface most-relevant sections for user's specialization
     const mem = await getUserMemory(req.user.userId).catch(() => null);
-    const spec = mem?.mbaSpecialization;
+    const spec = mem?.specialization;
     const prioritySections = spec ? (SPEC_SECTIONS[spec] || []) : [];
 
     res.json({ ...briefing, _personalization: { specialization: spec || null, prioritySections } });

@@ -15,6 +15,42 @@ const userProfileSchema = new mongoose.Schema(
     bio: { type: String, trim: true, maxlength: 300 },
     lookingFor: { type: String, trim: true },
     preMbaDomain: { type: String, trim: true, maxlength: 80 },
+
+    // New fields for the Student/Learning Profile
+    college: { type: String, trim: true },
+    course: { type: String, trim: true },
+    department: { type: String, trim: true },
+    semester: { type: String, trim: true }, // e.g., "Semester 3" or "3"
+    graduationYear: { type: Number, min: 1900, max: 2100 },
+    dreamRole: { type: String, trim: true },
+    preferredIndustries: [{ type: String, trim: true }],
+    careerInterests: [{ type: String, trim: true }],
+    favouriteSubjects: [{ type: String, trim: true }],
+    difficultSubjects: [{ type: String, trim: true }],
+    learningStyle: {
+      type: String,
+      enum: ['Visual', 'Auditory', 'Reading/Writing', 'Kinesthetic', 'Multimodal', 'Other'],
+      default: 'Other'
+    },
+    goals: {
+      placement: { type: Boolean, default: false },
+      higherStudies: { type: Boolean, default: false },
+      entrepreneurship: { type: Boolean, default: false },
+      financialLiteracy: { type: Boolean, default: false },
+      leadership: { type: Boolean, default: false },
+      communication: { type: Boolean, default: false },
+      research: { type: Boolean, default: false },
+      certifications: { type: Boolean, default: false }
+    },
+    experience: {
+      years: { type: Number, min: 0, max: 50, default: 0 },
+      type: {
+        type: String,
+        enum: ['fresher', 'intern', 'entry-level', 'mid-level', 'senior', 'other'],
+        default: 'fresher'
+      },
+      pastDomain: { type: String, trim: true } // e.g., IT, Finance, Marketing
+    }
   },
   { timestamps: true }
 );

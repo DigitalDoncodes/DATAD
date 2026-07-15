@@ -5,7 +5,7 @@ export default function PrivacyPage() {
     <LegalLayout title="Privacy Policy" updated="July 2026">
       <p>
         DATAD ("the platform") is an independent project built and maintained by a student,
-        Dhatchina Moorthi, for use by his MBA batch. This page explains what data the platform
+        Dhatchina Moorthi, for use by the batch. This page explains what data the platform
         stores, where it lives, and who can see it. Plain and honest — no legalese padding.
       </p>
 
@@ -21,7 +21,7 @@ export default function PrivacyPage() {
         <ul className="ml-5 list-disc space-y-1">
           <li><strong>MongoDB Atlas</strong> — your account and content (text data).</li>
           <li><strong>Cloudinary</strong> — photos you upload.</li>
-          <li><strong>Brevo</strong> — used only to send you the welcome email and batch announcements; your email is shared with Brevo solely to deliver those.</li>
+          <li><strong>Resend</strong> — used only to send you the welcome email and batch announcements; your email is shared with Resend solely to deliver those.</li>
         </ul>
       </LegalSection>
 

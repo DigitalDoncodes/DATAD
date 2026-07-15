@@ -5,12 +5,12 @@ import { sendMessage, getChatHistory, clearChat } from '../../api/chat';
 import { useAuth } from '../../context/AuthContext';
 import ConfirmModal from '../common/ConfirmModal';
 
-const WELCOME = `Hi! I'm DATAD AI — your MBA study companion.\n\nAsk me anything: case frameworks, placement prep, resume tips, or just "what should I focus on today?"`;
+const WELCOME = `Hi! I'm DATAD AI — your academic companion.\n\nAsk me anything: study strategies, career advice, resume tips, or just "what should I focus on today?"`;
 
 const PROMPT_CHIPS = [
   'What should I focus on today?',
-  'Give me a quick case framework',
-  'How do I answer "Why this company?"',
+  'Give me a quick study framework',
+  'How do I answer "Tell me about yourself?"',
 ];
 
 function Bubble({ role, content }) {
@@ -132,7 +132,7 @@ export default function ChatBot() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Open DATAD AI chat"
-        className="fixed bottom-24 right-4 z-50 flex h-13 w-13 items-center justify-center rounded-full bg-indigo-600 shadow-lg shadow-indigo-500/30 transition-transform hover:scale-105 hover:bg-indigo-700 active:scale-95 lg:bottom-6 print:hidden"
+        className="fixed bottom-24 right-4 z-50 flex h-13 w-13 items-center justify-center rounded-full bg-indigo-600 shadow-lg shadow-indigo-500/30 transform hover:scale-105 hover:bg-indigo-700 active:scale-95 lg:bottom-6 print:hidden"
         style={{ height: 52, width: 52 }}
       >
         {open

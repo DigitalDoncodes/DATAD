@@ -10,7 +10,7 @@ const userMemorySchema = new mongoose.Schema(
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true, index: true },
 
     // Career profile
-    mbaSpecialization: { type: String, maxlength: 80 },        // Finance, Marketing, Operations, HR, etc.
+    specialization: { type: String, maxlength: 80 },        // e.g., Finance, Marketing, Operations, HR, etc.
     careerInterests:   { type: [String], default: [] },        // ['consulting', 'investment banking']
     targetCompanies:   { type: [String], default: [] },
     targetRoles:       { type: [String], default: [] },

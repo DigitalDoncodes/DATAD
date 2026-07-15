@@ -1,4 +1,5 @@
 const ActivityLog = require('../models/ActivityLog');
+const logger = require('./logger');
 
 // Fire-and-forget: activity logging must never break the main request.
 const logActivity = (type, message, user = {}, meta = {}) => {
@@ -8,7 +9,7 @@ const logActivity = (type, message, user = {}, meta = {}) => {
     actorName: user.name || '',
     actorEmail: user.email || '',
     meta,
-  }).catch((err) => console.error('Activity log failed:', err.message));
+  }).catch((err) => logger.error('Activity log failed:', { error: err.message, type, message }));
 };
 
 module.exports = logActivity;

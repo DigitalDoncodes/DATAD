@@ -62,7 +62,7 @@ async function llmAnalysis(item, extracted) {
     .map((d) => `- "${d.key}": ${d.label} — ${d.description}`)
     .join('\n');
 
-  const prompt = `You are the content-classification engine of DATAD, an MBA batch platform.
+  const prompt = `You are the content-classification engine of DATAD, a student batch platform.
 Analyse this uploaded file and reply with ONLY a JSON object, no other text.
 
 Filename: ${item.file.originalName}

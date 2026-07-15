@@ -1,5 +1,5 @@
 /**
- * AI news enhancement — turns cached articles into MBA prep material.
+ * AI news enhancement — turns cached articles into preparation material for students.
  * Uses the new AI runner (provider-agnostic, retry, proper SDK calls).
  */
 const { run } = require('../ai/runner');

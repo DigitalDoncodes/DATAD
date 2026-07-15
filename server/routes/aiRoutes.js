@@ -28,8 +28,8 @@ router.post('/summarise/:noteId', checkTier('trial'), aiQuota, async (req, res, 
 
     const { result, meta } = await runPipeline({
       task: 'summarise-note',
-      systemPrompt: 'You are an MBA study assistant. Be concise, precise, and practically useful for an Indian MBA student preparing for placements and exams.',
-      userPrompt: `Summarise the following MBA note in three parts:\n1. A 2-3 sentence executive summary.\n2. Five bullet-point key takeaways (each ≤ 15 words).\n3. Relevant business frameworks or concepts mentioned (comma-separated, max 5).\n\nNote title: ${note.title}\nSubject: ${note.subject}\nContent:\n${note.content}\n\nReply in this exact JSON format:\n{"summary":"…","keyPoints":["…","…","…","…","…"],"frameworks":"…"}`,
+      systemPrompt: 'You are a study assistant. Be concise, precise, and practically useful for a student preparing for placements and exams.',
+      userPrompt: `Summarise the following note in three parts:\n1. A 2-3 sentence executive summary.\n2. Five bullet-point key takeaways (each ≤ 15 words).\n3. Relevant business frameworks or concepts mentioned (comma-separated, max 5).\n\nNote title: ${note.title}\nSubject: ${note.subject}\nContent:\n${note.content}\n\nReply in this exact JSON format:\n{"summary":"…","keyPoints":["…","…","…","…","…"],"frameworks":"…"}`,
       memoryContext: formatMemoryContext(mem),
       json: true,
     });
@@ -75,8 +75,8 @@ router.post('/review-resume', checkTier('trial'), aiQuota, async (req, res, next
 
     const { result, meta } = await runPipeline({
       task: 'review-resume',
-      systemPrompt: 'You are a senior career counsellor at an Indian B-school specialising in placement preparation. Be direct, specific, and actionable. Never generic.',
-      userPrompt: `Review this MBA resume for placement readiness. Give exactly 3 improvements, each tied to a specific gap you can see.\n\n${resumeLines}\n\nReply in this exact JSON format:\n{"overallImpression":"one sentence","improvements":[{"area":"…","issue":"specific problem","fix":"concrete action ≤ 20 words"},{"area":"…","issue":"…","fix":"…"},{"area":"…","issue":"…","fix":"…"}]}`,
+      systemPrompt: 'You are a senior career counsellor specialising in placement preparation. Be direct, specific, and actionable. Never generic.',
+      userPrompt: `Review this resume for placement readiness. Give exactly 3 improvements, each tied to a specific gap you can see.\n\n${resumeLines}\n\nReply in this exact JSON format:\n{"overallImpression":"one sentence","improvements":[{"area":"…","issue":"specific problem","fix":"concrete action ≤ 20 words"},{"area":"…","issue":"…","fix":"…"},{"area":"…","issue":"…","fix":"…"}]}`,
       ragContext: ragCtx.contextText,
       memoryContext: formatMemoryContext(mem),
       sourceCount: Object.values(ragCtx.sources).filter(Boolean).length,
@@ -100,8 +100,8 @@ router.post('/case-framework', checkRole('admin'), async (req, res, next) => {
     const { title, category, scenario, question } = req.body;
     const { result, meta } = await runPipeline({
       task: 'case-framework',
-      systemPrompt: 'You are an MBA case interview coach. Write clear, structured frameworks for Indian B-school students.',
-      userPrompt: `Generate a concise suggested framework (3-5 bullet points, ≤ 200 words total) for this daily MBA case.\n\nCategory: ${category}\nTitle: ${title}\nScenario: ${scenario}\nQuestion: ${question}\n\nReply with plain text only — no JSON, no markdown headers.`,
+      systemPrompt: 'You are a case interview coach. Write clear, structured frameworks for students.',
+      userPrompt: `Generate a concise suggested framework (3-5 bullet points, ≤ 200 words total) for this daily case.\n\nCategory: ${category}\nTitle: ${title}\nScenario: ${scenario}\nQuestion: ${question}\n\nReply with plain text only — no JSON, no markdown headers.`,
       json: false,
     });
     res.json({ framework: result, _meta: { provider: meta.provider, model: meta.model } });
@@ -122,7 +122,7 @@ router.post('/planner-suggest', checkTier('trial'), aiQuota, async (req, res, ne
 
     const { result, meta } = await runPipeline({
       task: 'planner-suggest',
-      systemPrompt: 'You are an MBA placement advisor. Help prioritize tasks and study plans for Indian B-school students targeting campus placements.',
+      systemPrompt: 'You are a placement advisor. Help prioritize tasks and study plans for students targeting campus placements.',
       userPrompt: `Based on this student's current tasks and notes, suggest 3 priority actions for today.\n\nReturn JSON:\n{"priorities":["action 1","action 2","action 3"],"focusArea":"one sentence","motivationalNote":"one sentence"}`,
       ragContext: ragCtx.contextText,
       memoryContext: formatMemoryContext(mem),
@@ -150,7 +150,7 @@ router.post('/career-advice', checkTier('max'), aiQuota, async (req, res, next) 
 
     const { result, meta } = await runPipeline({
       task: 'career-advice',
-      systemPrompt: 'You are an expert MBA placement advisor with deep knowledge of Indian campus recruitment. Give personalized, specific advice based on the student profile and company data provided.',
+      systemPrompt: 'You are an expert placement advisor with deep knowledge of campus recruitment. Give personalized, specific advice based on the student profile and company data provided.',
       userPrompt: `Student question: ${question || 'How should I prepare for this company?'}\n\nReturn JSON:\n{"answer":"detailed 3-4 sentence answer","actionItems":["item 1","item 2","item 3"],"keyFocus":"one sentence on where to concentrate effort"}`,
       ragContext: ragCtx.contextText,
       memoryContext: formatMemoryContext(mem),
@@ -178,8 +178,8 @@ router.post('/interview-simulator', checkTier('max'), aiQuota, async (req, res, 
 
     const { result, meta } = await runPipeline({
       task: 'interview-simulator',
-      systemPrompt: 'You are a senior interviewer at a top Indian campus recruiter running a realistic MBA placement mock interview. Be specific and demanding — tailor everything to the student profile provided, never generic.',
-      userPrompt: `Run one round of a mock placement interview.\nTarget role: ${role || 'any MBA campus role'}\nTarget company: ${company || 'a typical campus recruiter'}\nQuestion category: ${category || 'mixed (HR / technical / case)'}\n\nReturn JSON:\n{"question":"one interview question tailored to this student","framework":"the structure or framework a strong answer should follow","idealAnswer":"a model answer outline in 3-4 sentences","followUps":["likely follow-up 1","likely follow-up 2"],"trap":"one sentence on the mistake most candidates make on this question"}`,
+      systemPrompt: 'You are a senior interviewer at a top campus recruiter running a realistic placement mock interview. Be specific and demanding — tailor everything to the student profile provided, never generic.',
+      userPrompt: `Run one round of a mock placement interview.\nTarget role: ${role || 'any campus role'}\nTarget company: ${company || 'a typical campus recruiter'}\nQuestion category: ${category || 'mixed (HR / technical / case)'}\n\nReturn JSON:\n{"question":"one interview question tailored to this student","framework":"the structure or framework a strong answer should follow","idealAnswer":"a model answer outline in 3-4 sentences","followUps":["likely follow-up 1","likely follow-up 2"],"trap":"one sentence on the mistake most candidates make on this question"}`,
       ragContext: ragCtx.contextText,
       memoryContext: formatMemoryContext(mem),
       sourceCount: Object.values(ragCtx.sources).filter(Boolean).length,
@@ -214,7 +214,7 @@ router.post('/compare-companies', checkTier('max'), aiQuota, async (req, res, ne
 
     const { result, meta } = await runPipeline({
       task: 'compare-companies',
-      systemPrompt: 'You are an MBA placement advisor comparing campus recruiters for an Indian B-school student. Be decisive and concrete — students need a verdict, not a survey.',
+      systemPrompt: 'You are a placement advisor comparing campus recruiters for a student. Be decisive and concrete — students need a verdict, not a survey.',
       userPrompt: `Compare these two recruiters for a student deciding where to focus preparation.\n\nCompany A:\n${brief(a)}\n\nCompany B:\n${brief(b)}\n\nReturn JSON:\n{"verdict":"2-3 sentence overall comparison and recommendation","chooseAIf":"one sentence — the student profile that should prefer ${a.name}","chooseBIf":"one sentence — the student profile that should prefer ${b.name}","prepDifference":"2-3 sentences on how preparation differs between the two"}`,
       memoryContext: formatMemoryContext(mem),
       json: true,
@@ -282,7 +282,7 @@ router.get('/memory', async (req, res, next) => {
 
 router.patch('/memory', async (req, res, next) => {
   try {
-    const allowed = ['mbaSpecialization', 'careerInterests', 'targetCompanies', 'targetRoles', 'preferredExplanationStyle'];
+    const allowed = ['specialization', 'careerInterests', 'targetCompanies', 'targetRoles', 'preferredExplanationStyle'];
     const patch = {};
     for (const key of allowed) {
       if (req.body[key] !== undefined) patch[key] = req.body[key];

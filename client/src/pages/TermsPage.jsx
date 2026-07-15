@@ -5,7 +5,7 @@ export default function TermsPage() {
     <LegalLayout title="Terms of Use" updated="July 2026">
       <p>
         By creating an account on DATAD, you agree to these simple terms. This is a free,
-        student-run platform for an MBA batch — please use it in good faith.
+        student-run platform for a student batch — please use it in good faith.
       </p>
 
       <LegalSection heading="Acceptable use">
