@@ -101,6 +101,7 @@ async function _executeViaRuntimeV2({ task, systemPrompt, userPrompt, ragContext
     response = await providerInstance.generate({
       system: enrichedSystem, user: userPrompt, context: ragContext,
       query: userPrompt, taskName: task, intent: routing.intent, userId,
+      model: routing.model,
     });
     circuitBreaker.recordSuccess(routing.provider);
   } catch (err) {

@@ -27,10 +27,11 @@ class OpenAICompatibleProvider {
     return Boolean(this._config.apiKey);
   }
 
-  async complete({ messages, maxTokens, temperature, responseFormat }) {
+  async complete({ messages, maxTokens, temperature, responseFormat, model }) {
     const start = Date.now();
+    const resolvedModel = model || this.model;
     const params = {
-      model: this.model,
+      model: resolvedModel,
       messages,
       max_tokens: maxTokens || this.maxTokens,
       temperature: temperature ?? this.temperature,
@@ -42,12 +43,22 @@ class OpenAICompatibleProvider {
     return {
       text,
       provider: this.name,
-      model: this.model,
+      model: resolvedModel,
       tokensUsed: res.usage?.total_tokens || 0,
       promptTokens: res.usage?.prompt_tokens || 0,
       completionTokens: res.usage?.completion_tokens || 0,
       latencyMs: Date.now() - start,
     };
+  }
+
+  async generate({ system, user, context, query, taskName, intent, userId, model }) {
+    const messages = [
+      ...(context ? [{ role: 'system', content: context }] : []),
+      ...(system ? [{ role: 'system', content: system }] : []),
+      ...(user ? [{ role: 'user', content: user }] : []),
+      ...(query ? [{ role: 'user', content: query }] : []),
+    ];
+    return this.complete({ messages, model });
   }
 }
 
