@@ -6,7 +6,7 @@ const dailyReflectionSchema = new mongoose.Schema({
   reflection:      { type: String },
   challenge:       { type: String },
   productivityTip: { type: String },
-  mbaConcept:      { concept: String, whyToday: String },
+  dailyConcept:    { concept: String, whyToday: String },
   gratitude:       { type: String },
   generatedBy:     { type: String },
   model:           { type: String },

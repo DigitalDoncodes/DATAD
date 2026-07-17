@@ -29,7 +29,7 @@ async function generateDailyReflection() {
       reflection: result.reflection,
       challenge: result.challenge,
       productivityTip: result.productivityTip,
-      mbaConcept: result.mbaConcept || {},
+      dailyConcept: result.concept || {},
       gratitude: result.gratitude,
       generatedBy: meta.provider,
       model: meta.model,

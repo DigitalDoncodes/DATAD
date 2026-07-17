@@ -50,7 +50,7 @@ async function bootstrapMemory(userId) {
   if (!identity) {
     const [user, profile] = await Promise.all([
       User.findById(userId).select('interests bio name').lean(),
-      UserProfile.findOne({ user: userId }).select('specialization careerInterests college course preMbaDomain learningStyle goals experience').lean(),
+      UserProfile.findOne({ user: userId }).select('specialization careerInterests college course priorDomain learningStyle goals experience').lean(),
     ]);
     careerInterests = profile?.careerInterests || user?.interests || [];
     bio = user?.bio || '';
@@ -58,7 +58,7 @@ async function bootstrapMemory(userId) {
     course = profile?.course || '';
     learningStyle = profile?.learningStyle || '';
     workExYears = user?.workExYears || profile?.experience?.years || null;
-    pastDomain = profile?.experience?.pastDomain || profile?.preMbaDomain || '';
+    pastDomain = profile?.experience?.pastDomain || profile?.priorDomain || '';
     if (profile?.goals) {
       goals = StudentIdentity.goalsSubdocToArray ? StudentIdentity.goalsSubdocToArray(profile.goals) : [];
     }

@@ -31,7 +31,7 @@ export default function ExperienceStep() {
   const studentType = watch('studentType', 'fresher');
   const learningStyle = watch('learningStyle', '');
   const timeAvailable = watch('timeAvailable', '');
-  const preMbaDomain = watch('preMbaDomain', '');
+  const priorDomain = watch('priorDomain', '');
 
   return (
     <motion.div
@@ -93,13 +93,13 @@ export default function ExperienceStep() {
             <div>
               <SmartSelect
                 options={DOMAINS}
-                value={preMbaDomain}
-                onChange={(val) => setValue('preMbaDomain', val)}
+                value={priorDomain}
+                onChange={(val) => setValue('priorDomain', val)}
                 label="Domain"
                 placeholder="Select…"
                 allowOther={true}
                 variant="dropdown"
-                name="preMbaDomain"
+                name="priorDomain"
               />
             </div>
           </div>

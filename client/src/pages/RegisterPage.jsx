@@ -42,7 +42,7 @@ const DEFAULT_VALUES = {
   challenges: [],
   studentType: 'fresher',
   workExYears: '',
-  preMbaDomain: '',
+  priorDomain: '',
 };
 
 export default function RegisterPage() {
@@ -82,7 +82,7 @@ export default function RegisterPage() {
         experience: isExp ? {
           years: Number(data.workExYears) || 0,
           type: 'experienced',
-          pastDomain: data.preMbaDomain || '',
+          pastDomain: data.priorDomain || '',
         } : {
           years: 0,
           type: 'fresher',

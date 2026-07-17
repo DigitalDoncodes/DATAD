@@ -37,7 +37,7 @@ export default function SummaryStep() {
   const academic = [d.course, d.specialization].filter(Boolean).join(' · ');
   const institution = [d.college, d.graduationYear ? `Graduating ${d.graduationYear}` : ''].filter(Boolean).join(' · ');
   const experience = d.studentType === 'experienced'
-    ? `Work experience${d.workExYears ? ` · ${d.workExYears} yrs` : ''}${d.preMbaDomain ? ` · ${d.preMbaDomain}` : ''}`
+    ? `Work experience${d.workExYears ? ` · ${d.workExYears} yrs` : ''}${d.priorDomain ? ` · ${d.priorDomain}` : ''}`
     : 'Fresher';
   const learning = [d.learningStyle, d.timeAvailable].filter(Boolean).join(' · ');
 

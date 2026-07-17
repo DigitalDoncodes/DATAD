@@ -13,7 +13,7 @@ const newsItemSchema = new mongoose.Schema(
 
     // Reserved for the future AI enhancement layer.
     whyItMatters: String,
-    mbaConcepts: [String],
+    concepts: [String],
     industries: [String],
     interviewRelevance: String,
     keyTakeaways: [String],

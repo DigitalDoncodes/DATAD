@@ -23,7 +23,7 @@ async function enhanceBatch(articles) {
       {
         $set: {
           whyItMatters: e.whyItMatters,
-          mbaConcepts: (e.mbaConcepts || []).slice(0, 4),
+          concepts: (e.concepts || []).slice(0, 4),
           keyTakeaways: [e.keyTakeaway].filter(Boolean),
           interviewRelevance: e.interviewRelevance || 'medium',
         },

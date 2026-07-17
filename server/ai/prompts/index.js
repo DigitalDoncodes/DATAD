@@ -66,7 +66,7 @@ Return ONLY valid JSON:
 
 Return ONLY valid JSON:
 {
-  "quote": { "text": "an insightful quote relevant to business or leadership", "author": "full name and role/company" },
+  "quote": { "text": "an insightful quote relevant to academic growth, career, or leadership", "author": "full name and role/company" },
   "reflection": "a 2-3 sentence thought-provoking reflection specific to the student's journey",
   "challenge": "one concrete 15-minute challenge the student can do today (specific action)",
   "productivityTip": "one productivity or study tip, backed by a method or framework",

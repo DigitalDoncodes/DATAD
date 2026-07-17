@@ -93,14 +93,14 @@ export default function IntelligenceCard({ article, onToggleBookmark, isAdmin, o
         )}
       </div>
 
-      {(article.mbaConcepts?.length > 0 || article.industries?.length > 0) && (
+      {(article.concepts?.length > 0 || article.industries?.length > 0) && (
         <div className="mt-3 space-y-2">
-          {article.mbaConcepts?.length > 0 && (
+          {article.concepts?.length > 0 && (
             <div>
               <p className="mb-1 flex items-center gap-1.5 text-xs text-gray-400">
                 <Lightbulb className="h-3.5 w-3.5" /> Key concepts
               </p>
-              <Chips items={article.mbaConcepts} />
+              <Chips items={article.concepts} />
             </div>
           )}
           {article.industries?.length > 0 && (

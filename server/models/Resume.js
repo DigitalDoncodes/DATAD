@@ -43,7 +43,7 @@ const resumeSchema = new mongoose.Schema(
     },
     achievements: { type: [short(300)], validate: cap(30) },
     leadership: { type: [short(300)], validate: cap(30) },
-    preMbaSummary: long(1500),
+    priorExperienceSummary: long(1500),
   },
   { timestamps: true }
 );

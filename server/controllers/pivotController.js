@@ -10,7 +10,7 @@ exports.get = async (req, res, next) => {
 
 exports.upsert = async (req, res, next) => {
   try {
-    const allowed = ['fromDomain', 'fromRole', 'fromYears', 'toDomain', 'toRole', 'whyMba', 'skillGaps', 'targetCompanies'];
+    const allowed = ['fromDomain', 'fromRole', 'fromYears', 'toDomain', 'toRole', 'motivation', 'skillGaps', 'targetCompanies'];
     const update = {};
     allowed.forEach((f) => { if (req.body[f] !== undefined) update[f] = req.body[f]; });
     const plan = await PivotPlan.findOneAndUpdate(

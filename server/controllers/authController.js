@@ -236,7 +236,7 @@ exports.register = async (req, res, next) => {
       portfolio: '',
       bio: '',
       lookingFor: '',
-      preMbaDomain: pastDomain
+      priorDomain: pastDomain
     };
 
     // Create UserProfile (backward compat)

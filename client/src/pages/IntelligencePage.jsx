@@ -126,7 +126,7 @@ export default function IntelligencePage() {
         </div>
       </div>
       <p className="mb-4 text-xs text-gray-400">
-        Live business news for MBA students — auto-updated from the newsroom, sorted by topic.
+        Live business news, auto-updated from the newsroom and sorted by topic — useful for placement prep and staying market-aware, whatever you're studying.
       </p>
 
       {/* Market snapshot (live) */}

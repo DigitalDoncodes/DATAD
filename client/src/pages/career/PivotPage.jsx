@@ -48,7 +48,7 @@ export default function PivotPage() {
       fromYears: r.data.fromYears ?? '',
       toDomain: r.data.toDomain || '',
       toRole: r.data.toRole || '',
-      whyMba: r.data.whyMba || '',
+      motivation: r.data.motivation || '',
       targetCompanies: r.data.targetCompanies?.join(', ') || '',
     });
   }).catch(() => {});
@@ -157,8 +157,8 @@ export default function PivotPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1">Why MBA? (your pivot narrative)</label>
-                <textarea rows={3} value={form.whyMba} onChange={set('whyMba')} placeholder="3–4 sentences you'd say in an interview…" className={inp} />
+                <label className="block text-xs font-semibold text-gray-500 mb-1">Why this move? (your pivot narrative)</label>
+                <textarea rows={3} value={form.motivation} onChange={set('motivation')} placeholder="3–4 sentences you'd say in an interview…" className={inp} />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1">Target companies (comma-separated)</label>
@@ -189,10 +189,10 @@ export default function PivotPage() {
             <p className="text-sm text-gray-400">Click Edit to set up your pivot.</p>
           )}
 
-          {!editing && plan?.whyMba && (
+          {!editing && plan?.motivation && (
             <div className="rounded-lg bg-gray-50 dark:bg-gray-800/50 p-3">
               <p className="text-xs font-semibold text-gray-400 mb-1">Your pivot narrative</p>
-              <p className="text-sm text-gray-700 dark:text-gray-300">{plan.whyMba}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-300">{plan.motivation}</p>
             </div>
           )}
 

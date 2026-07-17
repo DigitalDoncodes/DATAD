@@ -54,7 +54,7 @@ const studentIdentitySchema = new mongoose.Schema({
   studentType: { type: String, enum: ['fresher', 'experienced'], default: 'fresher' },
   workExYears: { type: Number, min: 0, max: 40, default: null },
   pastDomain: { type: String, trim: true, default: '' },
-  preMbaDomain: { type: String, trim: true, maxlength: 80, default: '' },
+  priorDomain: { type: String, trim: true, maxlength: 80, default: '' },
   lookingFor: { type: String, trim: true, default: '' },
 
   // ── Preferences & Interests ─────────────────────────────────────────────

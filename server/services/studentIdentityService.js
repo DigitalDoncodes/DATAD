@@ -45,12 +45,12 @@ async function upsertFromRegistration(userId, data) {
     identityData.studentType = data.studentType || 'fresher';
     identityData.workExYears = data.experience.years || null;
     identityData.pastDomain = data.experience.pastDomain || '';
-    identityData.preMbaDomain = data.experience.pastDomain || '';
+    identityData.priorDomain = data.experience.pastDomain || '';
   } else {
     identityData.studentType = data.studentType || 'fresher';
     identityData.workExYears = data.workExYears || null;
     identityData.pastDomain = data.pastDomain || '';
-    identityData.preMbaDomain = data.preMbaDomain || '';
+    identityData.priorDomain = data.priorDomain || '';
   }
 
   const identity = await StudentIdentity.findOneAndUpdate(
@@ -107,7 +107,7 @@ async function syncToUserProfile(userId, identity) {
   if (identity.specialization !== undefined) profileUpdates.specialization = identity.specialization;
   if (identity.bio !== undefined) profileUpdates.bio = identity.bio;
   if (identity.lookingFor !== undefined) profileUpdates.lookingFor = identity.lookingFor;
-  if (identity.preMbaDomain !== undefined) profileUpdates.preMbaDomain = identity.preMbaDomain;
+  if (identity.priorDomain !== undefined) profileUpdates.priorDomain = identity.priorDomain;
   if (identity.college !== undefined) profileUpdates.college = identity.college;
   if (identity.course !== undefined) profileUpdates.course = identity.course;
   if (identity.department !== undefined) profileUpdates.department = identity.department;
@@ -134,8 +134,8 @@ async function syncToUserProfile(userId, identity) {
       profileUpdates['experience.pastDomain'] = identity.pastDomain;
     }
   }
-  if (identity.preMbaDomain !== undefined) {
-    profileUpdates.preMbaDomain = identity.preMbaDomain;
+  if (identity.priorDomain !== undefined) {
+    profileUpdates.priorDomain = identity.priorDomain;
   }
 
   if (Object.keys(profileUpdates).length > 0) {
@@ -198,7 +198,7 @@ async function bootstrapFromLegacy(userId) {
     studentType: user.studentType || 'fresher',
     workExYears: user.workExYears || null,
     pastDomain: profile?.experience?.pastDomain || '',
-    preMbaDomain: profile?.preMbaDomain || '',
+    priorDomain: profile?.priorDomain || '',
     lookingFor: profile?.lookingFor || '',
     interests: user.interests || profile?.interests || [],
     skills: profile?.skills || [],
@@ -234,7 +234,7 @@ async function updateIdentity(userId, updates) {
   const allowedFields = [
     'name', 'bio', 'linkedin', 'github', 'portfolio',
     'college', 'course', 'department', 'semester', 'batch', 'graduationYear',
-    'specialization', 'studentType', 'workExYears', 'pastDomain', 'preMbaDomain',
+    'specialization', 'studentType', 'workExYears', 'pastDomain', 'priorDomain',
     'lookingFor', 'interests', 'skills', 'clubs', 'languages',
     'careerInterests', 'favouriteSubjects', 'difficultSubjects',
     'preferredIndustries', 'dreamRole', 'targetCompanies', 'targetRoles',

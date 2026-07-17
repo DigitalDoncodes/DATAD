@@ -27,6 +27,7 @@ export default function DirectoryPage() {
   const [myProfile, setMyProfile] = useState(null);
   const [search, setSearch] = useState('');
   const [specFilter, setSpecFilter] = useState('');
+  const [domainFilter, setDomainFilter] = useState('');
   const [view, setView] = useState(null);
   const [editOpen, setEditOpen] = useState(false);
   const { register, handleSubmit, reset, setValue, watch, formState: { isSubmitting } } = useForm();
@@ -37,7 +38,7 @@ export default function DirectoryPage() {
     if (specFilter) params.specialization = specFilter;
     getDirectory(params).then((r) => {
       let list = r.data;
-      if (domainFilter) list = list.filter((p) => p.preMbaDomain === domainFilter);
+      if (domainFilter) list = list.filter((p) => p.priorDomain === domainFilter);
       setProfiles(list);
     }).catch(() => setProfiles([]));
   };
@@ -52,7 +53,7 @@ export default function DirectoryPage() {
         bio: data.bio, specialization: data.specialization, batch: data.batch,
         skills: arr('skills'), interests: arr('interests'), clubs: arr('clubs'), languages: arr('languages'),
         linkedin: data.linkedin, github: data.github, portfolio: data.portfolio, lookingFor: data.lookingFor,
-        preMbaDomain: data.preMbaDomain || '',
+        priorDomain: data.priorDomain || '',
       });
       setMyProfile(res.data);
       toast.success('Profile updated');
@@ -75,7 +76,7 @@ export default function DirectoryPage() {
         github: myProfile.github || '',
         portfolio: myProfile.portfolio || '',
         lookingFor: myProfile.lookingFor || '',
-        preMbaDomain: myProfile.preMbaDomain || '',
+        priorDomain: myProfile.priorDomain || '',
       });
     }
     setEditOpen(true);
@@ -94,8 +95,7 @@ export default function DirectoryPage() {
     'Healthcare', 'FMCG / Retail', 'Govt / PSU', 'Media / Content', 'Startup',
   ];
   const specs = [...new Set(profiles?.map((p) => p.specialization).filter(Boolean) || [])];
-  const domains = [...new Set(profiles?.map((p) => p.preMbaDomain).filter(Boolean) || [])];
-  const [domainFilter, setDomainFilter] = useState('');
+  const domains = [...new Set(profiles?.map((p) => p.priorDomain).filter(Boolean) || [])];
 
   return (
     <Page>
@@ -141,7 +141,7 @@ export default function DirectoryPage() {
                   <p className="font-semibold">{p.user?.name}</p>
                   {p.user?.rollNumber && <p className="text-[11px] font-mono text-indigo-500 dark:text-indigo-400">{p.user.rollNumber}</p>}
                   {p.specialization && <p className="text-xs text-gray-500">{p.specialization}</p>}
-                  {p.preMbaDomain && <p className="text-[11px] text-amber-600 dark:text-amber-400">{p.preMbaDomain}</p>}
+                  {p.priorDomain && <p className="text-[11px] text-amber-600 dark:text-amber-400">{p.priorDomain}</p>}
                 </div>
               </div>
               {p.bio && <p className="mb-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{p.bio}</p>}
@@ -205,13 +205,13 @@ export default function DirectoryPage() {
           <input {...register('lookingFor')} placeholder="Looking for (e.g. study partner, project teammate)" className="input" />
           <SmartSelect
             options={DIR_DOMAINS}
-            value={watch('preMbaDomain') || ''}
-            onChange={(val) => setValue('preMbaDomain', val)}
+            value={watch('priorDomain') || ''}
+            onChange={(val) => setValue('priorDomain', val)}
             label="Past work domain"
             placeholder="Select…"
             allowOther={true}
             variant="dropdown"
-            name="preMbaDomain"
+            name="priorDomain"
           />
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={() => setEditOpen(false)} className="rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>
