@@ -8,7 +8,7 @@
  * When aiGateway is configured, all calls route through the gateway
  * so it can decide V1 vs V2 based on the active mode.
  */
-const { getProvider } = require('./providers');
+const { getProviderChain } = require('./providers');
 const { parseJSON } = require('./parser');
 const cfg = require('../config/automation');
 const { estimateCost } = require('./router');
@@ -16,26 +16,53 @@ const { estimateCost } = require('./router');
 /**
  * Native V1 implementation — called directly when gateway is bypassed
  * or when gateway isn't configured.
+ *
+ * Iterates every statically-available provider candidate (getProviderChain),
+ * not just the first (getProvider). isAvailable() is a static "has a key"
+ * check, not a live reachability probe — Ollama's key is a hardcoded
+ * placeholder (config/automation.js), so a configured-but-not-actually-
+ * running local Ollama daemon reports available and only fails on the real
+ * call. Previously this loop retried the SAME resolved provider up to
+ * maxAttempts times with backoff — against a connection-refused endpoint
+ * that never becomes reachable, that's maxAttempts wasted round-trips, not
+ * a real retry. Confirmed live: forcing a Runtime V2 rollout task to fail
+ * so its V1 fallback ran for real (a free-tier user, whose routing prefers
+ * Ollama) reproduced exactly this — 3 failed attempts against the same dead
+ * provider, then a hard throw, even though Groq (the one provider with a
+ * real key in this environment) was available the whole time. Same category
+ * of bug already fixed for the chat path (aiGateway.js's messages branch);
+ * this brings the non-chat path to the same standard.
+ *
+ * One attempt per candidate, not maxAttempts-with-backoff per candidate:
+ * an earlier version of this fix kept a per-provider backoff-retry loop
+ * "for genuinely transient failures," but a live test proved that claim
+ * false — the loop broke out to the next provider on the very first
+ * failure regardless of error type, so the inner retry never actually ran.
+ * Distinguishing a transient error (rate limit) from a hard one (connection
+ * refused) from the message string alone is guesswork; rather than ship a
+ * claim the code doesn't back up, this tries each candidate once and moves
+ * on. cfg.retry's maxAttempts/delayMs/backoffMultiplier are unused here as
+ * a result — left in config for now rather than removed, since a real
+ * transient-vs-hard classification is a reasonable future improvement, not
+ * a reason to leave today's behavior misdescribed.
  */
 async function _nativeRun({ system, user, provider: preferredProvider, json = true, maxTokens }) {
-  const { maxAttempts, delayMs, backoffMultiplier } = cfg.retry;
+  const chain = getProviderChain(preferredProvider);
+  if (!chain.length) throw new Error('No AI provider available.');
+
   let lastError;
-  let attempt = 0;
+  let attempts = 0;
 
-  while (attempt < maxAttempts) {
-    attempt++;
-    const delay = attempt > 1 ? delayMs * Math.pow(backoffMultiplier, attempt - 2) : 0;
-    if (delay) await new Promise((r) => setTimeout(r, delay));
-
+  for (const p of chain) {
+    attempts++;
     try {
-      const p = getProvider(preferredProvider);
       const messages = [
         ...(system ? [{ role: 'system', content: system }] : []),
         { role: 'user', content: user },
       ];
 
       const raw = await p.complete({ messages, system, maxTokens });
-      const result = json ? parseJSON(raw.text, `attempt ${attempt}`) : raw.text;
+      const result = json ? parseJSON(raw.text, `attempt ${attempts}`) : raw.text;
 
       const costUsd = estimateCost(raw.provider, raw.promptTokens, raw.completionTokens);
       return {
@@ -48,16 +75,16 @@ async function _nativeRun({ system, user, provider: preferredProvider, json = tr
           completionTokens: raw.completionTokens,
           latencyMs: raw.latencyMs,
           estimatedCostUsd: parseFloat(costUsd.toFixed(6)),
-          attempts: attempt,
+          attempts,
         },
       };
     } catch (err) {
       lastError = err;
-      console.warn(`[AI Runner] attempt ${attempt}/${maxAttempts} failed: ${err.message}`);
+      console.warn(`[AI Runner] ${p.name} failed (candidate ${attempts}/${chain.length}): ${err.message}`);
     }
   }
 
-  throw new Error(`AI generation failed after ${maxAttempts} attempts: ${lastError?.message}`);
+  throw new Error(`AI generation failed after trying all ${chain.length} available provider(s): ${lastError?.message}`);
 }
 
 /**
