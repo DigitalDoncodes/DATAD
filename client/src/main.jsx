@@ -10,7 +10,8 @@ createRoot(document.getElementById('root')).render(
 );
 
 // Register service worker — PWAContext handles update prompts & lifecycle
-if ('serviceWorker' in navigator) {
+// Only in production: in dev it intercepts Vite's module/HMR requests and breaks the app.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker
       .register('/sw.js', { scope: '/' })

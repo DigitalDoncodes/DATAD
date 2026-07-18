@@ -126,7 +126,10 @@ async function staleWhileRevalidate(request, cacheName) {
     if (res.ok) cache.put(request, res.clone());
     return res;
   }).catch(() => null);
-  return cached || fetchPromise || caches.match('/offline.html');
+  if (cached) return cached;
+  const fetched = await fetchPromise;
+  if (fetched) return fetched;
+  return caches.match('/offline.html');
 }
 
 function isStaticAsset(pathname) {
