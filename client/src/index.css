@@ -13,6 +13,17 @@
     @apply bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'; /* Inter: open digits & alternates */
     text-rendering: optimizeLegibility;
+    /* Branded cursor -- same technique as any site with a custom pointer:
+       the browser native cursor property accepts an image URL, no JS
+       mouse-tracking involved. Hotspot (the x y pair) is the arrow tip. */
+    cursor: url('/cursors/default.svg') 4 3, auto;
+  }
+
+  /* Distinct cursor over anything clickable -- text inputs/textareas keep the
+     native text-beam cursor, intentionally excluded here. */
+  a, button, [role="button"], summary, select,
+  input[type="checkbox"], input[type="radio"], input[type="submit"] {
+    cursor: url('/cursors/pointer.svg') 14 14, pointer;
   }
 
   /* Typography scale — headings are tight and confident, never shouty. */
