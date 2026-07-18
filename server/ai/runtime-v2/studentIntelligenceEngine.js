@@ -48,7 +48,7 @@ async function processIntelligenceRequest({ userId, text, taskName, sourceCount,
   const prompt = promptRegistry.getPromptForIntent(intent.primaryIntent, taskName);
   const currentVersion = prompt?.currentVersion || '1.0';
 
-  const providerInstance = modelRouterV2.resolveProvider(routing.provider);
+  const providerInstance = await modelRouterV2.resolveProvider(routing.provider);
 
   let rawOutput;
   let verification;

@@ -93,7 +93,7 @@ export default function ResumePage() {
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const { register, control, handleSubmit, reset, formState: { errors } } = useForm({ defaultValues: { personal: { fullName: '', email: '', phone: '', linkedin: '' }, summary: '', skills: [], education: [{ degree: '', institution: '', year: '' }], experience: [{ company: '', role: '', duration: '', description: '' }], projects: [{ title: '', description: '', technologies: '' }], achievements: [{ title: '', description: '' }], certifications: [{ name: '', issuer: '', year: '' }] } });
+  const { register, control, handleSubmit, reset, watch, getValues, formState: { errors } } = useForm({ defaultValues: { personal: { fullName: '', email: '', phone: '', linkedin: '' }, summary: '', skills: [], education: [{ degree: '', institution: '', year: '' }], experience: [{ company: '', role: '', duration: '', description: '' }], projects: [{ title: '', description: '', technologies: '' }], achievements: [{ title: '', description: '' }], certifications: [{ name: '', issuer: '', year: '' }] } });
 
   const { fields: eduFields, append: addEdu, remove: rmEdu } = useFieldArray({ control, name: 'education' });
   const { fields: expFields, append: addExp, remove: rmExp } = useFieldArray({ control, name: 'experience' });
@@ -106,16 +106,16 @@ export default function ResumePage() {
   const addSkill = () => {
     const val = skillInput.trim();
     if (!val) return;
-    const current = control._getFieldValue('skills') || [];
+    const current = getValues('skills') || [];
     if (!current.includes(val)) {
-      reset({ ...control._getFormValues(), skills: [...current, val] });
+      reset({ ...getValues(), skills: [...current, val] });
     }
     setSkillInput('');
   };
 
   const removeSkill = (idx) => {
-    const current = control._getFieldValue('skills') || [];
-    reset({ ...control._getFormValues(), skills: current.filter((_, i) => i !== idx) });
+    const current = getValues('skills') || [];
+    reset({ ...getValues(), skills: current.filter((_, i) => i !== idx) });
   };
 
   useEffect(() => {
@@ -185,7 +185,7 @@ export default function ResumePage() {
 
         <Section title="Skills">
           <div className="flex flex-wrap gap-2 mb-3">
-            {(control._getFieldValue('skills') || []).map((s, i) => (
+            {(watch('skills') || []).map((s, i) => (
               <span key={i} className="inline-flex items-center gap-1 rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
                 {s} <button type="button" onClick={() => removeSkill(i)} className="hover:text-rose-500">&times;</button>
               </span>

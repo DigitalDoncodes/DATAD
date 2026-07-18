@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+const logger = require('./utils/logger');
+
 const REQUIRED_ENV = ['MONGODB_URI', 'JWT_SECRET', 'CLIENT_URL'];
 const missing = REQUIRED_ENV.filter((key) => !process.env[key]);
 if (missing.length) {
@@ -18,7 +20,6 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const { generalLimiter, authLimiter } = require('./middleware/rateLimiters');
 const entertainmentRoutes = require('./routes/entertainmentRoutes');
-const logger = require('./utils/logger');
 const app = express();
 
 // Behind a hosting proxy (Render/Railway/Vercel) the client IP is in
@@ -129,7 +130,6 @@ aiTelemetry.install();
 app.use('/api/admin/ai', require('./routes/observabilityRoutes'));
 
 // Public read for placement countdown (available to all authenticated members).
-const { generalLimiter: _gl } = require('./middleware/rateLimiters');
 const verifyToken = require('./middleware/verifyToken');
 const SiteMeta = require('./models/SiteMeta');
 app.get('/api/meta', verifyToken, async (req, res, next) => {

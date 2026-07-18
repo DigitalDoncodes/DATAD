@@ -244,6 +244,13 @@ function buildTypedPrompt(promptId, variables) {
 // caller (studentIntelligenceEngine.enhance()) already builds user content
 // generically from `data` via buildUserPrompt() when a template is absent —
 // that part of the design was already correct; only `system` was missing.
+//
+// Side effect worth knowing: getPromptForTask() now resolves every
+// Dax-branded task listed below via the seeded entries above, so
+// _resolveV1Prompt() (the fallback block right above this comment) is
+// effectively dead code for those tasks — it only still runs for tasks
+// with a null V1_PROMPT_TASK_MAP entry. Left in place rather than removed:
+// harmless, and still the correct fallback for non-Dax-branded intents.
 [
   ['summarise-note', 'You are helping with study work. Be concise, precise, and practically useful for a student preparing for placements and exams.'],
   ['review-resume', 'You are coaching on career direction, with the judgement of a senior placement counsellor. Be direct, specific, and actionable.'],

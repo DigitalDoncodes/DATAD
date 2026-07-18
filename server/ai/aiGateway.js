@@ -308,7 +308,20 @@ async function _execV2(request) {
     _profile: profile || null,
   };
 
-  const v2Result = await v2Engine.processIntelligenceRequest(v2Request);
+  // studentIntelligenceEngine only exports a page/action-oriented enhance()
+  // (enhance({ userId, page, action, data, tier, strategy })), not a
+  // task/text-oriented processIntelligenceRequest() — the two AI runtimes
+  // use incompatible calling conventions (see AI_ARCHITECTURE_REPORT.md).
+  // Calling a nonexistent function here used to throw an opaque
+  // "processIntelligenceRequest is not a function" TypeError; this is the
+  // same failure, made diagnosable, until the gateway's V2 mode is either
+  // wired to a real task-based V2 entry point or retired.
+  throw new Error(
+    'aiGateway V2 mode is not wired to a working V2 execution path — ' +
+    'studentIntelligenceEngine only exposes a page/action-oriented enhance(), ' +
+    'not the task/text-oriented request this gateway builds. Keep AI_GATEWAY_MODE ' +
+    'on v1_only until this is resolved.'
+  );
 
   return {
     result: v2Result.result,

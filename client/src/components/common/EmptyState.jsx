@@ -33,7 +33,11 @@ export default function EmptyState({ icon: Icon, title, description, subtitle, c
           </Link>
         )
       )}
-      {action}
+      {action && (
+        <Button onClick={action.onClick} icon={action.icon} iconRight={action.icon ? undefined : ArrowRight}>
+          {action.label}
+        </Button>
+      )}
     </div>
   );
 }
