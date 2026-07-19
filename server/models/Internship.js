@@ -12,6 +12,10 @@ const internshipSchema = new mongoose.Schema(
     deadline: { type: Date },
     eligibility: { type: String, trim: true },
     tags: [{ type: String, trim: true }],
+    // Precomputed from title/tags via utils/domainClassifier so listings can
+    // be ranked by relevance to a student's field without reclassifying on
+    // every request.
+    domainTags: [{ type: String, index: true }],
     postedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     active: { type: Boolean, default: true },
   },

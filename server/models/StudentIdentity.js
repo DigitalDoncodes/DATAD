@@ -50,6 +50,12 @@ const studentIdentitySchema = new mongoose.Schema({
   graduationYear: { type: Number, min: 1900, max: 2100, default: null },
   specialization: { type: String, trim: true, default: '' },
 
+  // ── Personalization ─────────────────────────────────────────────────────
+  // Precomputed by utils/domainClassifier so news/opportunities/briefing can
+  // filter/rank cheaply without reclassifying free text on every request.
+  domainPrimary: { type: String, default: 'general', index: true },
+  domainTags: [{ type: String, index: true }],
+
   // ── Professional ────────────────────────────────────────────────────────
   studentType: { type: String, enum: ['fresher', 'experienced'], default: 'fresher' },
   workExYears: { type: Number, min: 0, max: 40, default: null },

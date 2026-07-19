@@ -12,6 +12,22 @@ const ActivityLog = require('../models/ActivityLog');
 const logActivity = require('../utils/logActivity');
 const publishService = require('../services/publishing/publishService');
 const logger = require('../utils/logger');
+const StudentIdentity = require('../models/StudentIdentity');
+const { getIdentity } = require('../services/studentIdentityService');
+
+const PROFILE_FIELDS = [
+  'college', 'course', 'department', 'semester', 'batch', 'graduationYear', 'specialization',
+  'domainPrimary', 'domainTags', 'dreamRole', 'preferredIndustries', 'careerInterests',
+  'favouriteSubjects', 'difficultSubjects', 'skills', 'interests', 'learningStyle',
+  'timeAvailable', 'goals', 'challenges', 'studentType', 'workExYears', 'pastDomain',
+];
+
+function pickProfileFields(identity) {
+  if (!identity) return null;
+  const picked = {};
+  for (const f of PROFILE_FIELDS) picked[f] = identity[f];
+  return picked;
+}
 
 // ---- Overview ----
 
@@ -59,8 +75,40 @@ exports.listStudents = async (req, res, next) => {
   try {
     const students = await User.find()
       .select('-password -resetTokenHash -resetTokenExpires')
-      .sort({ status: -1, createdAt: -1 }); // 'pending' > 'approved', so pending first
-    res.json(students);
+      .sort({ status: -1, createdAt: -1 }) // 'pending' > 'approved', so pending first
+      .lean();
+
+    const ids = students.map((s) => s._id);
+    const identities = await StudentIdentity.find({ user: { $in: ids } }).lean();
+    const identityByUser = new Map(identities.map((i) => [String(i.user), i]));
+
+    // Students who registered before StudentIdentity existed have no doc yet —
+    // bootstrap them from legacy User/UserProfile fields so admins see full
+    // profiles for every account, not just ones created after this change.
+    const missingIds = ids.filter((id) => !identityByUser.has(String(id)));
+    if (missingIds.length > 0) {
+      const bootstrapped = await Promise.all(missingIds.map((id) => getIdentity(id).catch(() => null)));
+      bootstrapped.forEach((identity, i) => {
+        if (identity) identityByUser.set(String(missingIds[i]), identity);
+      });
+    }
+
+    const merged = students.map((s) => ({
+      ...s,
+      profile: pickProfileFields(identityByUser.get(String(s._id))),
+    }));
+
+    res.json(merged);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getStudentProfile = async (req, res, next) => {
+  try {
+    const identity = await getIdentity(req.params.id);
+    if (!identity) return res.status(404).json({ message: 'User not found' });
+    res.json(identity);
   } catch (err) {
     next(err);
   }

@@ -1,6 +1,7 @@
 const StudentIdentity = require('../models/StudentIdentity');
 const User = require('../models/User');
 const UserProfile = require('../models/UserProfile');
+const { classifyDomain } = require('../utils/domainClassifier');
 
 /**
  * Upsert StudentIdentity from registration payload.
@@ -52,6 +53,15 @@ async function upsertFromRegistration(userId, data) {
     identityData.pastDomain = data.pastDomain || '';
     identityData.priorDomain = data.priorDomain || '';
   }
+
+  const domain = classifyDomain({
+    course: identityData.course,
+    specialization: identityData.specialization,
+    careerInterests: identityData.careerInterests,
+    dreamRole: identityData.dreamRole,
+  });
+  identityData.domainPrimary = domain.primary;
+  identityData.domainTags = domain.tags;
 
   const identity = await StudentIdentity.findOneAndUpdate(
     { user: userId },
@@ -219,6 +229,15 @@ async function bootstrapFromLegacy(userId) {
     targetRoles: [],
   };
 
+  const domain = classifyDomain({
+    course: data.course,
+    specialization: data.specialization,
+    careerInterests: data.careerInterests,
+    dreamRole: data.dreamRole,
+  });
+  data.domainPrimary = domain.primary;
+  data.domainTags = domain.tags;
+
   return StudentIdentity.findOneAndUpdate(
     { user: userId },
     { $set: data },
@@ -254,6 +273,19 @@ async function updateIdentity(userId, updates) {
   }
 
   if (Object.keys(setFields).length === 0) return null;
+
+  const DOMAIN_INPUT_FIELDS = ['course', 'specialization', 'careerInterests', 'dreamRole'];
+  if (DOMAIN_INPUT_FIELDS.some((f) => setFields[f] !== undefined)) {
+    const current = await StudentIdentity.findOne({ user: userId }).lean();
+    const domain = classifyDomain({
+      course: setFields.course ?? current?.course,
+      specialization: setFields.specialization ?? current?.specialization,
+      careerInterests: setFields.careerInterests ?? current?.careerInterests,
+      dreamRole: setFields.dreamRole ?? current?.dreamRole,
+    });
+    setFields.domainPrimary = domain.primary;
+    setFields.domainTags = domain.tags;
+  }
 
   const identity = await StudentIdentity.findOneAndUpdate(
     { user: userId },

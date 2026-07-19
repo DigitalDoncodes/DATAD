@@ -14,6 +14,7 @@ const Announcement = require('../models/Announcement');
 const UserProfile = require('../models/UserProfile');
 const StudentIdentity = require('../models/StudentIdentity');
 const { upsertFromRegistration, updateIdentity } = require('../services/studentIdentityService');
+const { inferNewsInterests } = require('../utils/domainClassifier');
 const { sendWelcomeEmail, sendPasswordResetEmail } = require('../config/mailer');
 const logActivity = require('../utils/logActivity');
 const cloudinary = require('../config/cloudinary');
@@ -209,13 +210,6 @@ exports.register = async (req, res, next) => {
       logActivity('register_pending', `${user.name} registered without a code — waiting for approval`, user);
     }
 
-    if (!approved) {
-      return res.status(201).json({
-        pending: true,
-        message: 'Account created — an admin will review and approve it shortly.',
-      });
-    }
-
     // Normalise learningStyle client values → schema enum
     const ClientLS = { Videos: 'Visual', Reading: 'Reading/Writing', Practice: 'Kinesthetic', Discussion: 'Auditory', AI: 'Other', Mixed: 'Multimodal' };
     const normalisedLS = ClientLS[learningStyle] || (['Visual', 'Auditory', 'Reading/Writing', 'Kinesthetic', 'Multimodal', 'Other'].includes(learningStyle) ? learningStyle : 'Other');
@@ -260,7 +254,7 @@ exports.register = async (req, res, next) => {
     // Populate canonical StudentIdentity (single source of truth).
     // Explicitly construct data — never spread req.body (which contains password).
     try {
-      await upsertFromRegistration(user._id, {
+      const identity = await upsertFromRegistration(user._id, {
         name, email, rollNumber: rollNumber || '',
         studentType, workExYears,
         college: college || '', course: course || '', department: department || '',
@@ -278,6 +272,17 @@ exports.register = async (req, res, next) => {
         timeAvailable: timeAvailable || '',
         challenges: Array.isArray(challenges) ? challenges : [],
       });
+
+      // Auto-follow news topics that match the student's field, so the
+      // Intelligence Center's "For you" feed isn't empty on day one.
+      const newsInterests = inferNewsInterests({
+        domainPrimary: identity?.domainPrimary,
+        specialization: identity?.specialization,
+        careerInterests: identity?.careerInterests,
+      });
+      if (newsInterests.length > 0) {
+        await User.updateOne({ _id: user._id }, { $set: { interests: newsInterests } });
+      }
     } catch (err) {
       logger.error('StudentIdentity creation failed', {
         error: err.message, stack: err.stack,
@@ -288,6 +293,17 @@ exports.register = async (req, res, next) => {
         { _id: user._id },
         { $set: { needsIdentityBackfill: true } }
       ).catch(() => {});
+    }
+
+    // Profile data (course, specialization, interests, etc.) is now saved
+    // above regardless of approval status — this gate only controls the
+    // response/token/email, so a pending signup's registration data isn't
+    // silently discarded while they wait for an admin to approve them.
+    if (!approved) {
+      return res.status(201).json({
+        pending: true,
+        message: 'Account created — an admin will review and approve it shortly.',
+      });
     }
 
     // Fire-and-forget: registration must not fail if the mail service is down.
