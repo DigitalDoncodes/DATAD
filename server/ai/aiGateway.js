@@ -201,10 +201,157 @@ async function _routeHybrid(request) {
 // provider dispatch) but yields text deltas instead of awaiting a full
 // result. No V2/hybrid/shadow branching — streaming always uses V1 dispatch,
 // same as processRequest() already forces for any messages-array request.
+// How many times the model may call tools and be asked again within one turn.
+// Read-only tools cannot cascade into anything harmful, so this exists to bound
+// latency and token spend, and to stop a small model that has got stuck in a
+// call-the-same-tool loop from doing it forever.
+const MAX_TOOL_ROUNDS = 3;
+
+/**
+ * Streams a reply, servicing any tool calls the model makes along the way.
+ *
+ * Yields only user-visible text. A tool round produces no text — the model
+ * emits tool calls instead of content — so those rounds are silent from the
+ * client's point of view and the visible reply is whatever the model says once
+ * it has its data back.
+ *
+ * Falls back to a plain stream when the provider has no rich streaming or no
+ * tools were requested, so non-NVIDIA providers keep working untouched.
+ */
+async function* _streamWithTools(provider, { messages, system, model, maxTokens, signal, userId, tools, conversationId, onProposal }) {
+  if (!tools?.length || typeof provider.completeStreamRich !== 'function') {
+    yield* provider.completeStream({ messages, system, model, maxTokens, signal });
+    return;
+  }
+
+  const { executeTool, isWriteTool } = require('./tools');
+  const proposalService = require('./proposalService');
+  const working = [...messages];
+
+  for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
+    // Tools are withheld on the final round so the model is forced to answer
+    // with text rather than requesting yet another call it will never get.
+    const offerTools = round < MAX_TOOL_ROUNDS;
+    const rawCalls = [];
+    let sawText = false;
+
+    // Small models sometimes emit a scrap of text alongside their tool calls —
+    // llama-3.1-8b-instruct produced a bare ";;" in testing — which would be
+    // streamed to the student as if it were the answer. So the first few
+    // characters of a tool-eligible round are held back: once the text grows
+    // past PREFIX_HOLD it is clearly a real answer and streams through with no
+    // further delay, but if the round turns out to be a tool round the
+    // held-back scrap is discarded instead of shown.
+    const PREFIX_HOLD = 40;
+    let held = '';
+    let flowing = !offerTools; // final round can never be a tool round
+
+    for await (const ev of provider.completeStreamRich({
+      messages: working,
+      system,
+      model,
+      maxTokens,
+      signal,
+      tools: offerTools ? tools : undefined,
+    })) {
+      if (ev.type === 'text') {
+        sawText = true;
+        if (flowing) { yield ev.text; continue; }
+        held += ev.text;
+        if (held.length > PREFIX_HOLD) { flowing = true; yield held; held = ''; }
+      } else if (ev.type === 'tool_calls') {
+        rawCalls.push(...ev.toolCalls);
+      }
+    }
+
+    // Identical calls in one round are pure duplicated latency — the observed
+    // 8B model asked for get_my_resume twice in a single turn.
+    const seen = new Set();
+    const pendingCalls = rawCalls.filter((c) => {
+      const key = `${c.name}:${c.arguments || ''}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    if (!pendingCalls.length) {
+      // Not a tool round after all — the held prefix was genuine content.
+      if (held) yield held;
+      return;
+    }
+
+    // Some models emit a sentence before their tool calls. That text has
+    // already been streamed to the student, so it must be preserved in the
+    // assistant turn — dropping it would leave the transcript and the model's
+    // own history disagreeing about what was said.
+    working.push({
+      role: 'assistant',
+      content: sawText ? undefined : null,
+      tool_calls: pendingCalls.map((c) => ({
+        id: c.id,
+        type: 'function',
+        function: { name: c.name, arguments: c.arguments || '{}' },
+      })),
+    });
+
+    // Write calls are batched into ONE proposal so a single student intent
+    // ("reschedule all three") becomes one card with one Confirm, rather than
+    // three cards to click through.
+    const writeCalls = pendingCalls.filter((c) => isWriteTool(c.name));
+    const readCalls = pendingCalls.filter((c) => !isWriteTool(c.name));
+
+    const results = await Promise.all(
+      readCalls.map(async (call) => ({
+        role: 'tool',
+        tool_call_id: call.id,
+        // userId comes from the authenticated request, never from model
+        // output — a tool cannot be talked into reading another user's data.
+        content: JSON.stringify(await executeTool(call, userId)),
+      }))
+    );
+
+    if (writeCalls.length) {
+      let proposal = null;
+      let rejected = [];
+      try {
+        const parsed = writeCalls.map((c) => {
+          let args = {};
+          try { args = c.arguments ? JSON.parse(c.arguments) : {}; } catch { /* validator reports it */ }
+          return { tool: c.name, args };
+        });
+        ({ proposal, rejected } = await proposalService.propose(userId, conversationId, parsed));
+      } catch (err) {
+        rejected = writeCalls.map((c) => ({ tool: c.name, error: err.message }));
+      }
+
+      if (proposal) onProposal?.(proposal);
+
+      // Every write call gets a tool result, whether or not it made the card —
+      // an unanswered tool_call_id leaves the provider's message history
+      // malformed and the next round errors.
+      for (const call of writeCalls) {
+        const problem = rejected.find((r) => r.tool === call.name);
+        results.push({
+          role: 'tool',
+          tool_call_id: call.id,
+          content: JSON.stringify(
+            problem
+              ? { proposed: false, reason: problem.error }
+              : { proposed: true, awaitingConfirmation: true,
+                  note: 'Shown to the student as a confirmation card. Tell them briefly what you have suggested; do not claim it is done.' }
+          ),
+        });
+      }
+    }
+
+    working.push(...results);
+  }
+}
+
 async function* processStream(request) {
   const normalized = _normalizeRequest(request);
   const profile = await _buildProfile(normalized);
-  const { system, messages, provider, maxTokens, signal } = normalized;
+  const { system, messages, provider, model, maxTokens, signal } = normalized;
 
   if (!messages) throw new Error('processStream requires a messages array');
 
@@ -228,7 +375,25 @@ async function* processStream(request) {
     }
 
     try {
-      const gen = p.completeStream({ messages: enrichedMessages, system: enrichedSystem || undefined, maxTokens, signal });
+      // Model names are provider-scoped: "llama-3.3-70b-versatile" exists on
+      // Groq and not on NVIDIA. Passing the requested model to every provider in
+      // the fallback chain meant that when the preferred provider failed, the
+      // next one was asked for a model it has never heard of and 404'd — so the
+      // fallback could never actually rescue the request. Only the provider the
+      // model was chosen for gets it; the rest use their own default.
+      const modelForProvider = p.name === (provider || chain[0]?.name) ? model : undefined;
+
+      const gen = _streamWithTools(p, {
+        messages: enrichedMessages,
+        system: enrichedSystem || undefined,
+        model: modelForProvider,
+        maxTokens,
+        signal,
+        userId: normalized.userId,
+        tools: normalized.tools,
+        conversationId: normalized.conversationId,
+        onProposal: normalized.onProposal,
+      });
       const first = await gen.next();
       if (first.done) return;
       yield first.value;
@@ -238,7 +403,10 @@ async function* processStream(request) {
       usageMeter.chargeCredits({
         userId: normalized.userId,
         tier: normalized.tier,
-        model: p.defaultModel || p.name,
+        // The requested model when one was chosen, else the provider's own
+        // default — `p.defaultModel` does not exist, so this used to record
+        // the provider name ("nvidia") for every streamed chat.
+        model: model || p.model || p.name,
         provider: p.name,
         task: normalized.task || normalized.taskName || 'chat',
       }).catch(() => {});

@@ -1,33 +1,32 @@
-// Resend transactional email via HTTP API — no SDK needed.
-const RESEND_URL = 'https://api.resend.com/emails';
-const RESEND_BATCH_URL = 'https://api.resend.com/emails/batch';
+const nodemailer = require('nodemailer');
+const logger = require('../utils/logger');
 
-const enabled = () => Boolean(process.env.RESEND_API_KEY && process.env.MAIL_FROM);
+const getTransporter = () => {
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    logger.warn('Mailer disabled: GMAIL_USER or GMAIL_APP_PASSWORD not set');
+    return null;
+  }
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_APP_PASSWORD.replace(/\s+/g, ''),
+    },
+  });
+};
 
 const send = async ({ to, subject, html }) => {
-  if (!enabled()) {
-    logger.warn('Mailer disabled: RESEND_API_KEY or MAIL_FROM not set');
-    return;
-  }
-  // Resend expects `to` as an array of strings ("Name <email>" or plain email)
-  const toAddresses = to.map((r) => (r.name ? `${r.name} <${r.email}>` : r.email));
-  const res = await fetch(RESEND_URL, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: `DATAD <${process.env.MAIL_FROM}>`,
-      to: toAddresses,
-      subject,
-      html,
-    }),
+  const transporter = getTransporter();
+  if (!transporter) return;
+
+  const toAddresses = to.map((r) => (r.name ? `"${r.name}" <${r.email}>` : r.email));
+
+  await transporter.sendMail({
+    from: `"DATAD" <${process.env.GMAIL_USER}>`,
+    to: toAddresses.join(', '),
+    subject,
+    html,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Resend ${res.status}: ${body}`);
-  }
 };
 
 const wrap = (heading, body) => `
@@ -89,35 +88,22 @@ exports.sendPasswordResetEmail = (user, link) =>
     ),
   }).catch((err) => logger.error('Reset email failed:', { error: err.message }));
 
-// Fan-out via Resend's batch endpoint: one email per recipient, so nobody
-// sees anyone else's address and we stay clear of the 50-recipient `to` cap.
-// Batch calls accept up to 100 emails each.
 exports.sendAnnouncementEmail = async (recipients, announcement) => {
-  if (!enabled()) {
-    logger.warn('Mailer disabled: RESEND_API_KEY or MAIL_FROM not set');
-    return;
-  }
+  const transporter = getTransporter();
+  if (!transporter) return;
+
   const subject = `📢 ${announcement.title}`;
   const html = wrap(announcement.title, `<p>${announcement.body.replace(/\n/g, '<br/>')}</p>`);
-  const emails = recipients.map((u) => ({
-    from: `DATAD <${process.env.MAIL_FROM}>`,
-    to: [u.name ? `${u.name} <${u.email}>` : u.email],
-    subject,
-    html,
-  }));
 
-  for (let i = 0; i < emails.length; i += 100) {
-    const res = await fetch(RESEND_BATCH_URL, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(emails.slice(i, i + 100)),
-    });
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Resend batch ${res.status}: ${body}`);
+  for (const user of recipients) {
+    try {
+      await send({
+        to: [{ email: user.email, name: user.name }],
+        subject,
+        html,
+      });
+    } catch (err) {
+      logger.error('Announcement email failed for ' + user.email, { error: err.message });
     }
   }
 };

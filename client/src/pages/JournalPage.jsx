@@ -13,6 +13,7 @@ import { FeedSkeleton } from '../components/common/Skeleton';
 import EmptyState from '../components/common/EmptyState';
 import Modal from '../components/common/Modal';
 import ConfirmModal from '../components/common/ConfirmModal';
+import DateInput from '../components/common/DateInput';
 import Button from '../components/common/Button';
 
 const MOODS = [
@@ -159,7 +160,7 @@ export default function JournalPage() {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label htmlFor="j-date" className="mb-1 block text-sm font-medium">Date</label>
-              <input id="j-date" type="date" {...register('entryDate', { required: true })} className="input" />
+              <DateInput id="j-date" {...register('entryDate', { required: true })} />
             </div>
             <div>
               <label htmlFor="j-mood" className="mb-1 block text-sm font-medium">Mood</label>

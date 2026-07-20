@@ -28,6 +28,7 @@ const { routeTask, estimateCost } = require('../router');
  * @param {number}   [opts.sourceCount]
  * @param {boolean}  [opts.json]
  * @param {number}   [opts.maxTokens]
+ * @param {string}   [opts.userId]       - Passed to aiGateway for V2 context
  */
 async function runPipeline(opts) {
   const {
@@ -40,6 +41,7 @@ async function runPipeline(opts) {
     sourceCount = 0,
     json = true,
     maxTokens,
+    userId,
   } = opts;
 
   const pipelineMeta = {
@@ -65,6 +67,7 @@ async function runPipeline(opts) {
     maxTokens,
     task,
     sourceCount,
+    userId,
   });
 
   const result = gatewayResult.result;

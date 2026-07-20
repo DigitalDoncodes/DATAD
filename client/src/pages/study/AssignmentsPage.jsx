@@ -5,6 +5,7 @@ import { listTasks, createTask } from '../../api/tasks';
 import { daysUntil, formatDate } from '../../utils/dateUtils';
 import { FeedSkeleton } from '../../components/common/Skeleton';
 import EmptyState from '../../components/common/EmptyState';
+import DateInput from '../../components/common/DateInput';
 import { Page } from '../../components/common/motion';
 import toast from 'react-hot-toast';
 import { TASK_TYPES } from '../../utils/constants';
@@ -37,7 +38,7 @@ function NewAssignmentModal({ onClose, onCreated }) {
       <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-6 shadow-2xl dark:border-gray-700 dark:bg-gray-900">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-semibold">New self-planned assignment</h2>
-          <button onClick={onClose} className="rounded-lg p-1 hover:bg-gray-100 dark:hover:bg-gray-800"><X className="h-4 w-4" /></button>
+          <button onClick={onClose} className="rounded-full p-1 hover:bg-gray-100 dark:hover:bg-gray-800"><X className="h-4 w-4" /></button>
         </div>
         <div className="space-y-3">
           <div>
@@ -53,7 +54,7 @@ function NewAssignmentModal({ onClose, onCreated }) {
             </div>
             <div>
               <label className="mb-1 block text-xs font-medium text-gray-500">Due date</label>
-              <input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} className="input" />
+              <DateInput value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} />
             </div>
           </div>
           <div>
@@ -66,8 +67,8 @@ function NewAssignmentModal({ onClose, onCreated }) {
           </div>
         </div>
         <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">Cancel</button>
-          <button onClick={handleSave} disabled={saving} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">
+          <button onClick={onClose} className="rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800">Cancel</button>
+          <button onClick={handleSave} disabled={saving} className="rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 hover:shadow-md transition-all disabled:opacity-50">
             {saving ? 'Adding…' : 'Add assignment'}
           </button>
         </div>
@@ -104,19 +105,19 @@ export default function AssignmentsPage() {
         />
       )}
 
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Assignments</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Case studies, exams and self-planned tasks</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Assignments</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Case studies, exams and self-planned tasks</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowModal(true)}
-            className="flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="flex items-center gap-1.5 rounded-full bg-primary-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 hover:shadow-md transition-all"
           >
             <Plus className="h-4 w-4" /> New assignment
           </button>
-          <Link to="/me/planner" className="flex items-center gap-1 text-xs font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+          <Link to="/me/planner" className="flex items-center gap-1 text-xs font-medium text-primary-600 hover:underline dark:text-primary-400">
             Planner <ArrowRight className="h-3 w-3" />
           </Link>
         </div>
@@ -130,7 +131,7 @@ export default function AssignmentsPage() {
             {open.map((t) => {
               const days = daysUntil(t.dueDate);
               return (
-                <li key={t._id} className="flex items-center justify-between gap-3 rounded-2xl border border-gray-200/80 bg-white p-4 text-sm dark:border-gray-800/80 dark:bg-gray-900">
+                <li key={t._id} className="card card-hover flex items-center justify-between gap-3 p-4 text-sm">
                   <div className="min-w-0">
                     <p className="truncate font-medium">{t.title}</p>
                     <p className="text-xs text-gray-400">
@@ -138,7 +139,7 @@ export default function AssignmentsPage() {
                       {t.subject ? ` · ${t.subject}` : ''}
                     </p>
                   </div>
-                  <span className={`shrink-0 text-xs font-medium ${days < 0 ? 'text-red-500' : days <= 1 ? 'text-amber-500' : 'text-gray-400'}`}>
+                  <span className={`shrink-0 text-xs font-medium ${days < 0 ? 'text-danger-600' : days <= 1 ? 'text-warn-700' : 'text-gray-400'}`}>
                     {days < 0 ? 'Overdue · ' : days === 0 ? 'Today · ' : days === 1 ? 'Tomorrow · ' : ''}
                     {formatDate(t.dueDate)}
                   </span>

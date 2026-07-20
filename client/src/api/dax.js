@@ -4,8 +4,8 @@ export function daxTask(task, payload = {}) {
   return api.post('/dax', { task, ...payload });
 }
 
-export function daxChat(message) {
-  return api.post('/dax', { task: 'chat', message });
+export function daxChat(message, config) {
+  return api.post('/dax', { task: 'chat', message }, config);
 }
 
 export function getDaxMemory() {
@@ -20,12 +20,59 @@ export function forgetDaxMemory() {
   return api.delete('/dax/memory');
 }
 
-export function getChatHistory() {
-  return api.get('/dax/chat/history');
+export function getChatHistory(conversationId) {
+  return api.get('/dax/chat/history', {
+    params: conversationId ? { conversationId } : undefined,
+  });
 }
 
 export function clearChat() {
   return api.delete('/dax/chat');
+}
+
+// ── Conversations ───────────────────────────────────────────────
+// Conversations are server-owned objects. They used to exist only in
+// localStorage, which meant the sidebar and the model disagreed about what a
+// conversation was, and nothing survived a change of device.
+
+export function listConversations() {
+  return api.get('/dax/conversations');
+}
+
+export function createConversationRemote(payload = {}) {
+  return api.post('/dax/conversations', payload);
+}
+
+export function getConversationRemote(id) {
+  return api.get(`/dax/conversations/${id}`);
+}
+
+export function updateConversationRemote(id, patch) {
+  return api.patch(`/dax/conversations/${id}`, patch);
+}
+
+export function deleteConversationRemote(id) {
+  return api.delete(`/dax/conversations/${id}`);
+}
+
+// One-time upload of pre-existing localStorage conversations. Idempotent
+// server-side on (user, clientId), so a retry cannot duplicate history.
+export function importConversations(conversations) {
+  return api.post('/dax/conversations/import', { conversations });
+}
+
+// ── Model Selection ──────────────────────────────────────────
+
+export function getAvailableModels() {
+  return api.get('/dax/models');
+}
+
+export function getModelPreference() {
+  return api.get('/dax/model/preference');
+}
+
+export function setModelPreference(modelId) {
+  return api.put('/dax/model/preference', { modelId });
 }
 
 // ── New AI Features ─────────────────────────────────────────────
@@ -70,3 +117,26 @@ export const summariseDoc = (text) => daxTask('summarise-doc', { text });
 export const askCareerAdvice = (question) => daxTask('career-advice', { question });
 export const simulateInterview = (payload) => daxTask('interview-simulator', payload);
 export const compareCompanies = (slugA, slugB) => daxTask('compare-companies', { slugA, slugB });
+
+// ── Proposed writes ─────────────────────────────────────────────
+// Confirm/reject take an id only — the arguments were validated and stored
+// server-side when the proposal was made, so nothing here can alter what
+// actually gets written.
+
+export function confirmProposal(id) {
+  return api.post(`/dax/proposals/${id}/confirm`);
+}
+
+export function rejectProposal(id) {
+  return api.post(`/dax/proposals/${id}/reject`);
+}
+
+export function undoProposal(id) {
+  return api.post(`/dax/proposals/${id}/undo`);
+}
+
+export function listPendingProposals(conversationId) {
+  return api.get('/dax/proposals', {
+    params: conversationId ? { conversationId } : undefined,
+  });
+}

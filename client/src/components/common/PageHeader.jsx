@@ -16,12 +16,12 @@ export default function PageHeader({
     <div className={`mb-6 ${className}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="flex items-center gap-2.5 text-2xl font-semibold tracking-tight text-balance">
-            {Icon && <Icon className="h-5 w-5 shrink-0 text-gray-400 dark:text-gray-500" />}
+          <h1 className="flex items-center gap-3 text-3xl font-semibold tracking-tight text-balance">
+            {Icon && <Icon className="h-6 w-6 shrink-0 text-primary-500" />}
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400 text-balance">
+            <p className="mt-1.5 text-base text-gray-500 dark:text-gray-400 text-balance">
               {subtitle}
             </p>
           )}
@@ -37,7 +37,7 @@ export default function PageHeader({
         )}
       </div>
       {insight && (
-        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-medium text-indigo-700 dark:border-indigo-800/60 dark:bg-indigo-900/30 dark:text-indigo-300">
+        <div className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700 dark:border-primary-800/60 dark:bg-primary-900/30 dark:text-primary-300">
           <Sparkles className="h-3 w-3 shrink-0" />
           {insight}
         </div>

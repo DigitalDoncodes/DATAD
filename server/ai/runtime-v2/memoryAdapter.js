@@ -1,90 +1,64 @@
-const Memory = require('../../models/Memory');
-
-async function getRecentMemory(userId, limit = 10) {
-  try {
-    return await Memory.find({ userId })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .lean();
-  } catch {
-    return [];
-  }
-}
-
-async function getMemoryByType(userId, type, limit = 10) {
-  try {
-    return await Memory.find({ userId, type })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .lean();
-  } catch {
-    return [];
-  }
-}
+const UserMemory = require('../../models/UserMemory');
 
 async function saveMemory(userId, entry) {
   try {
-    return await Memory.create({
-      userId,
-      type: entry.type || 'general',
-      key: entry.key || null,
-      value: entry.value || null,
-      metadata: entry.metadata || {},
-      tags: entry.tags || [],
-      source: entry.source || 'ai-runtime-v2',
-      ttl: entry.ttl || null,
-    });
+    const patch = {};
+    if (entry.value?.query) {
+      patch.$push = { recentTopics: { $each: [entry.value.query.slice(0, 80)], $slice: -10 } };
+    }
+    if (entry.value?.intent) {
+      patch.lastIntent = entry.value.intent;
+    }
+    patch.lastInteractionAt = new Date();
+    await UserMemory.findOneAndUpdate(
+      { user: userId },
+      patch,
+      { upsert: true }
+    );
+    return true;
   } catch (err) {
     console.warn('[memoryAdapter] Failed to save memory:', err.message);
     return null;
   }
 }
 
-async function getMemoryByKey(userId, key) {
+async function getRecentMemory(userId, limit = 10) {
   try {
-    return await Memory.findOne({ userId, key }).lean();
+    const mem = await UserMemory.findOne({ user: userId }).lean();
+    if (!mem) return [];
+    return (mem.recentTopics || []).slice(-limit).map((topic, i) => ({
+      key: `topic:${i}`,
+      value: topic,
+      createdAt: mem.lastInteractionAt,
+    }));
   } catch {
-    return null;
+    return [];
   }
+}
+
+async function getMemoryByType(userId, type, limit = 10) {
+  return [];
+}
+
+async function getMemoryByKey(userId, key) {
+  return null;
 }
 
 async function deleteMemory(userId, memoryId) {
-  try {
-    return await Memory.deleteOne({ _id: memoryId, userId });
-  } catch {
-    return false;
-  }
+  return false;
 }
 
 async function searchMemory(userId, query, limit = 10) {
-  try {
-    return await Memory.find({
-      userId,
-      $or: [
-        { value: { $regex: query, $options: 'i' } },
-        { tags: { $in: [query] } },
-        { key: { $regex: query, $options: 'i' } },
-      ],
-    })
-      .sort({ createdAt: -1 })
-      .limit(limit)
-      .lean();
-  } catch {
-    return [];
-  }
+  const mem = await UserMemory.findOne({ user: userId }).lean();
+  if (!mem) return [];
+  const topics = (mem.recentTopics || []).filter((t) =>
+    t.toLowerCase().includes(query.toLowerCase())
+  );
+  return topics.slice(0, limit).map((t) => ({ key: t, value: t }));
 }
 
 async function getMemorySummary(userId) {
-  try {
-    const memories = await Memory.aggregate([
-      { $match: { userId } },
-      { $group: { _id: '$type', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-    ]);
-    return memories;
-  } catch {
-    return [];
-  }
+  return [];
 }
 
 module.exports = {

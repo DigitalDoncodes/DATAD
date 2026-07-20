@@ -67,22 +67,22 @@ export default function NotificationBell() {
       <button
         onClick={() => { setOpen((o) => !o); if (!open) load(); }}
         aria-label="Notifications"
-        className="relative rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+        className="relative rounded-full p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
       >
         <Bell className="h-5 w-5" />
         {unread > 0 && (
-          <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[10px] font-bold text-white">
+          <span className="absolute right-1 top-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger-600 text-[10px] font-bold text-white">
             {unread > 9 ? '9+' : unread}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
+        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-xl dark:border-gray-800 dark:bg-gray-900">
           <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-800">
             <p className="text-sm font-semibold">Notifications</p>
             {unread > 0 && (
-              <button onClick={handleMarkAll} className="flex items-center gap-1 text-xs text-indigo-600 hover:underline dark:text-indigo-400">
+              <button onClick={handleMarkAll} className="flex items-center gap-1 text-xs text-primary-600 hover:underline dark:text-primary-400">
                 <Check className="h-3.5 w-3.5" /> Mark all read
               </button>
             )}
@@ -95,9 +95,9 @@ export default function NotificationBell() {
               <li
                 key={n._id}
                 onClick={() => handleClick(n)}
-                className={`group flex cursor-pointer items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 ${!n.read ? 'bg-indigo-50/50 dark:bg-indigo-900/10' : ''}`}
+                className={`group flex cursor-pointer items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 ${!n.read ? 'bg-primary-50/50 dark:bg-primary-900/10' : ''}`}
               >
-                <div className={`mt-0.5 h-2 w-2 shrink-0 rounded-full ${!n.read ? 'bg-indigo-500' : 'bg-transparent'}`} />
+                <div className={`mt-0.5 h-2 w-2 shrink-0 rounded-full ${!n.read ? 'bg-primary-500' : 'bg-transparent'}`} />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">{n.title}</p>
                   {n.body && <p className="truncate text-xs text-gray-500 dark:text-gray-400">{n.body}</p>}

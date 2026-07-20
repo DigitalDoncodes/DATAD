@@ -12,6 +12,8 @@ import ProtectedRoute from './components/common/ProtectedRoute';
 import AppShell from './components/layout/AppShell';
 import WorkspaceLayout from './components/layout/WorkspaceLayout';
 import Loader from './components/common/Loader';
+import SectionTransition from './components/common/SectionTransition';
+import RouteBeacon from './components/common/RouteBeacon';
 import ErrorBoundary from './components/common/ErrorBoundary';
 
 
@@ -28,7 +30,6 @@ const NoteDetailPage = lazy(() => import('./pages/NoteDetailPage'));
 const NoteEditorPage = lazy(() => import('./pages/NoteEditorPage'));
 const PlannerPage = lazy(() => import('./pages/PlannerPage'));
 const FinanceHubPage        = lazy(() => import('./pages/me/FinanceHubPage'));
-const FinanceOverviewPage   = lazy(() => import('./pages/me/FinanceOverviewPage'));
 const FinanceTrackerPage    = lazy(() => import('./pages/me/FinanceTrackerPage'));
 const FinanceCalculatorPage = lazy(() => import('./pages/me/FinanceCalculatorPage'));
 const FinanceLearnPage      = lazy(() => import('./pages/me/FinanceLearnPage'));
@@ -59,14 +60,16 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const SubscribePage = lazy(() => import('./pages/SubscribePage'));
 const AdminSubscriptionsPage = lazy(() => import('./pages/admin/AdminSubscriptionsPage'));
+const CalendarPage = lazy(() => import('./pages/me/CalendarPage'));
 const StudyHubPage = lazy(() => import('./pages/study/StudyHubPage'));
 const WellbeingPage         = lazy(() => import('./pages/me/WellbeingPage'));
 const WellbeingStudyPage    = lazy(() => import('./pages/me/WellbeingStudyPage'));
 const WellbeingMemoryPage   = lazy(() => import('./pages/me/WellbeingMemoryPage'));
 const WellbeingRoutinesPage = lazy(() => import('./pages/me/WellbeingRoutinesPage'));
 const WellbeingSupportPage  = lazy(() => import('./pages/me/WellbeingSupportPage'));
+const SearchPage = lazy(() => import('./pages/SearchPage'));
 const WorkPage = lazy(() => import('./pages/study/WorkPage'));
-const ReadinessPage = lazy(() => import('./pages/career/ReadinessPage'));
+const CareerHubPage = lazy(() => import('./pages/career/CareerHubPage'));
 const OpportunitiesPage = lazy(() => import('./pages/career/OpportunitiesPage'));
 const InterviewQuestionsPage = lazy(() => import('./pages/career/InterviewQuestionsPage'));
 const CommunityHubPage  = lazy(() => import('./pages/community/CommunityHubPage'));
@@ -82,9 +85,12 @@ const ResourcesPage     = lazy(() => import('./pages/study/ResourcesPage'));
 const StudyToolsPage    = lazy(() => import('./pages/study/StudyToolsPage'));
 const SkillExchangePage = lazy(() => import('./pages/career/SkillExchangePage'));
 const AdminAICenterPage = lazy(() => import('./pages/admin/AdminAICenterPage'));
+const AdminAIDashboardPage = lazy(() => import('./pages/admin/AdminAIDashboardPage'));
 const PivotPage         = lazy(() => import('./pages/career/PivotPage'));
 const StarStoriesPage   = lazy(() => import('./pages/career/StarStoriesPage'));
 const FinanceROIPage    = lazy(() => import('./pages/me/FinanceROIPage'));
+const ReflectionPage    = lazy(() => import('./pages/ReflectionPage'));
+const DaxPage           = lazy(() => import('./pages/DaxPage'));
 
 function AdminRoute({ children }) {
   const { user } = useAuth();
@@ -129,6 +135,7 @@ export default function App() {
           <BrowserRouter>
             <OfflineBanner />
             <UpdateBanner />
+            <SectionTransition />
             <Toaster
               position="top-center"
               toastOptions={{
@@ -139,6 +146,8 @@ export default function App() {
               }}
             />
           <Suspense fallback={<Loader />}>
+            {/* Inside Suspense on purpose — see RouteBeacon. */}
+            <RouteBeacon />
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -150,6 +159,16 @@ export default function App() {
               <Route path="/terms" element={<TermsPage />} />
               {/* "/" is reserved for the public landing page — always, logged in or not. */}
               <Route path="/" element={<HomeGate />} />
+              <Route
+                path="/dax"
+                element={
+                  <ProtectedRoute>
+                    <ErrorBoundary>
+                      <DaxPage />
+                    </ErrorBoundary>
+                  </ProtectedRoute>
+                }
+              />
               <Route element={<AppLayout />}>
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/briefing" element={<IntelligencePage />} />
@@ -172,8 +191,10 @@ export default function App() {
                 </Route>
 
                 <Route path="/career" element={<WorkspaceLayout workspace="career" title="Career" />}>
-                  {/* Readiness IS the overview: score + what to do today */}
-                  <Route index element={<ReadinessPage />} />
+                  {/* The hub is the overview: placement journey, countdown,
+                      readiness score and its breakdown (absorbed from the old
+                      standalone ReadinessPage). /career/readiness still lands here. */}
+                  <Route index element={<CareerHubPage />} />
                   <Route path="resume" element={<ResumePage />} />
                   <Route path="resume/preview" element={<ResumePreviewPage />} />
                   <Route path="companies" element={<CompaniesPage />} />
@@ -211,23 +232,27 @@ export default function App() {
                   <Route path="planner" element={<PlannerPage />} />
                   <Route path="settings" element={<SettingsPage />} />
                   <Route path="journal" element={<JournalPage />} />
+                  <Route path="reflection" element={<ReflectionPage />} />
+                  <Route path="calendar" element={<CalendarPage />} />
                 </Route>
 
-                <Route path="/me/finance" element={<WorkspaceLayout workspace="finance" title="Finance" />}>
-                  <Route index element={<FinanceOverviewPage />} />
+                <Route path="/finance" element={<WorkspaceLayout workspace="finance" title="Finance" />}>
+                  <Route index element={<FinanceHubPage />} />
                   <Route path="tracker" element={<FinanceTrackerPage />} />
                   <Route path="calculator" element={<FinanceCalculatorPage />} />
                   <Route path="learn" element={<FinanceLearnPage />} />
                   <Route path="roi" element={<FinanceROIPage />} />
                 </Route>
 
-                <Route path="/me/wellbeing" element={<WorkspaceLayout workspace="wellbeing" title="Wellbeing" />}>
+                <Route path="/wellbeing" element={<WorkspaceLayout workspace="wellbeing" title="Wellbeing" />}>
                   <Route index element={<WellbeingPage />} />
                   <Route path="study" element={<WellbeingStudyPage />} />
                   <Route path="memory" element={<WellbeingMemoryPage />} />
                   <Route path="routines" element={<WellbeingRoutinesPage />} />
                   <Route path="support" element={<WellbeingSupportPage />} />
                 </Route>
+
+                <Route path="/search" element={<SearchPage />} />
 
                 <Route path="/subscribe" element={<SubscribePage />} />
                 <Route path="/support" element={<SupportPage />} />
@@ -243,14 +268,18 @@ export default function App() {
                 <Route path="/admin/cases" element={<AdminRoute><AdminCasesPage /></AdminRoute>} />
                 <Route path="/admin/automation" element={<AdminRoute><AdminAutomationPage /></AdminRoute>} />
                 <Route path="/admin/ai-center" element={<AdminRoute><AdminAICenterPage /></AdminRoute>} />
+                <Route path="/admin/ai-runtime" element={<AdminRoute><AdminAIDashboardPage /></AdminRoute>} />
                 <Route path="/admin/subscriptions" element={<AdminRoute><AdminSubscriptionsPage /></AdminRoute>} />
 
                 {/* Legacy routes → new workspace homes */}
                 <Route path="/notes/*" element={<LegacyRedirect from="/notes" to="/study/notes" />} />
+                <Route path="/calendar" element={<Navigate to="/me/calendar" replace />} />
                 <Route path="/planner" element={<Navigate to="/me/planner" replace />} />
-                <Route path="/finance" element={<Navigate to="/me/finance" replace />} />
+                <Route path="/me/finance/*" element={<LegacyRedirect from="/me/finance" to="/finance" />} />
+                <Route path="/me/wellbeing/*" element={<LegacyRedirect from="/me/wellbeing" to="/wellbeing" />} />
                 <Route path="/settings" element={<Navigate to="/me/settings" replace />} />
                 <Route path="/journal" element={<Navigate to="/me/journal" replace />} />
+                <Route path="/reflection" element={<Navigate to="/me/reflection" replace />} />
                 <Route path="/news" element={<Navigate to="/briefing" replace />} />
                 <Route path="/resume/*" element={<LegacyRedirect from="/resume" to="/career/resume" />} />
                 <Route path="/companies/*" element={<LegacyRedirect from="/companies" to="/career/companies" />} />

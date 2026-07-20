@@ -7,14 +7,15 @@ import { listProjects, createProject, getProject, createProjectTask, updateProje
 import { FeedSkeleton, RowSkeleton } from '../../components/common/Skeleton';
 import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
+import DateInput from '../../components/common/DateInput';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { Page } from '../../components/common/motion';
 
 
 const COLUMNS = [
   { key: 'todo', label: 'To Do', color: 'border-gray-300 dark:border-gray-700' },
-  { key: 'in-progress', label: 'In Progress', color: 'border-amber-400' },
-  { key: 'done', label: 'Done', color: 'border-emerald-500' },
+  { key: 'in-progress', label: 'In Progress', color: 'border-warn-400' },
+  { key: 'done', label: 'Done', color: 'border-success-500' },
 ];
 
 function TaskCard({ task, projectId, onUpdate, onDelete }) {
@@ -22,7 +23,7 @@ function TaskCard({ task, projectId, onUpdate, onDelete }) {
     <div className="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-800">
       <div className="flex items-start justify-between gap-2">
         <p className="text-sm font-medium">{task.title}</p>
-        <button onClick={() => onDelete(task._id)} className="text-gray-300 hover:text-red-400"><X className="h-3.5 w-3.5" /></button>
+        <button onClick={() => onDelete(task._id)} className="text-gray-300 hover:text-danger-400"><X className="h-3.5 w-3.5" /></button>
       </div>
       {task.assignee && <p className="mt-1 text-xs text-gray-400">👤 {task.assignee.name}</p>}
       {task.dueDate && <p className="mt-1 text-xs text-gray-400">📅 {new Date(task.dueDate).toLocaleDateString()}</p>}
@@ -85,10 +86,10 @@ function KanbanView({ project, onRefresh }) {
               ))}
               {addingCol === col.key && (
                 <form onSubmit={handleSubmit((d) => onAddTask(col.key, d))} className="space-y-2">
-                  <input {...register('title', { required: true })} placeholder="Task title" autoFocus className="w-full rounded-lg border border-indigo-400 bg-white px-3 py-1.5 text-sm focus:outline-none dark:bg-gray-800" />
+                  <input {...register('title', { required: true })} placeholder="Task title" autoFocus className="w-full rounded-lg border border-primary-400 bg-white px-3 py-1.5 text-sm focus:outline-none dark:bg-gray-800" />
                   <div className="flex gap-1">
-                    <button type="submit" className="flex-1 rounded-lg bg-indigo-600 py-1 text-xs font-medium text-white">Add</button>
-                    <button type="button" onClick={() => setAddingCol(null)} className="rounded-lg border border-gray-300 px-2 py-1 text-xs dark:border-gray-700">✕</button>
+                    <button type="submit" className="flex-1 rounded-full bg-primary-600 py-1 text-xs font-medium text-white">Add</button>
+                    <button type="button" onClick={() => setAddingCol(null)} className="rounded-full border border-gray-300 px-2 py-1 text-xs dark:border-gray-700">✕</button>
                   </div>
                 </form>
               )}
@@ -134,15 +135,15 @@ export default function ProjectsPage() {
       {selected && selectedData ? (
         <>
           <div className="mb-4 flex items-center gap-3">
-            <button onClick={() => setSelected(null)} className="text-sm text-gray-500 hover:text-indigo-600">← Back</button>
-            <h1 className="text-xl font-bold">{selectedData.title}</h1>
-            {selectedData.subject && <span className="rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">{selectedData.subject}</span>}
+            <button onClick={() => setSelected(null)} className="text-sm text-gray-500 hover:text-primary-600">← Back</button>
+            <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">{selectedData.title}</h1>
+            {selectedData.subject && <span className="rounded-full bg-primary-100 px-2.5 py-0.5 text-xs text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">{selectedData.subject}</span>}
           </div>
           <div className="mb-4 flex items-center gap-3">
             <Users className="h-4 w-4 text-gray-400" />
             <div className="flex gap-1">
               {[selectedData.createdBy, ...(selectedData.members || [])].map((m) => m && (
-                <span key={m._id} className="flex h-7 w-7 items-center justify-center rounded-full bg-indigo-100 text-xs font-semibold text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+                <span key={m._id} className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-xs font-semibold text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">
                   {m.name?.[0]?.toUpperCase()}
                 </span>
               ))}
@@ -164,10 +165,10 @@ export default function ProjectsPage() {
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {projects.map((p) => (
-                <button key={p._id} onClick={() => setSelected(p._id)} className="group rounded-2xl border border-gray-200/80 bg-white p-5 text-left hover:border-indigo-300 dark:border-gray-800/80 dark:bg-gray-900">
+                <button key={p._id} onClick={() => setSelected(p._id)} className="card card-hover group p-5 text-left hover:border-primary-200">
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="font-semibold group-hover:text-indigo-600">{p.title}</p>
-                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-indigo-500" />
+                    <p className="font-semibold group-hover:text-primary-600">{p.title}</p>
+                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-primary-500" />
                   </div>
                   {p.subject && <p className="mb-2 text-xs text-gray-500">{p.subject}</p>}
                   {p.description && <p className="mb-3 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{p.description}</p>}
@@ -187,10 +188,10 @@ export default function ProjectsPage() {
           <input {...register('title', { required: true })} placeholder="Project title *" className="input" />
           <textarea {...register('description')} placeholder="What's this project about?" rows={2} className="input" />
           <input {...register('subject')} placeholder="Subject / course" className="input" />
-          <input type="date" {...register('deadline')} className="input" />
+          <DateInput {...register('deadline')} />
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={() => { setShowAdd(false); reset(); }} className="rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>
-            <button type="submit" disabled={isSubmitting} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">Create</button>
+            <button type="button" onClick={() => { setShowAdd(false); reset(); }} className="rounded-full border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>
+            <button type="submit" disabled={isSubmitting} className="rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 hover:shadow-md transition-all disabled:opacity-50">Create</button>
           </div>
         </form>
       </Modal>

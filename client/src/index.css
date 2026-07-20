@@ -3,27 +3,33 @@
 @tailwind utilities;
 
 /* ── DATAD design system ──────────────────────────────────────────────
-   Calm, flat, dark-first. Neutral surfaces come from the gray token
-   scale (tailwind.config.js). Color communicates meaning only:
-   indigo = action · emerald = success · amber = warning · rose = danger.
-   Motion: 150–250ms, ease-out, subtle. Typography carries hierarchy. */
+   Bright, white-dominant, light-first. Neutral surfaces come from the gray
+   token scale (tailwind.config.js). Color communicates meaning only:
+   primary (blue) = action · success (green) = done · warn (yellow) =
+   highlight · danger (red) = deadline/error. White dominates; accents
+   never fill a background. Motion: 150–250ms, ease-out, subtle. */
 
 @layer base {
   body {
     @apply bg-gray-50 text-gray-900 antialiased dark:bg-gray-950 dark:text-gray-100;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11'; /* Inter: open digits & alternates */
     text-rendering: optimizeLegibility;
-    /* Branded cursor -- same technique as any site with a custom pointer:
-       the browser native cursor property accepts an image URL, no JS
-       mouse-tracking involved. Hotspot (the x y pair) is the arrow tip. */
-    cursor: url('/cursors/default.svg') 4 3, auto;
+    /* Branded cursor — same technique as any site with a custom pointer:
+       the browser's native `cursor` property accepts an image URL, no JS
+       mouse-tracking involved. Hotspot (the "x y" pair) is the arrow's tip. */
+    --cursor-arrow: url('/cursors/default.svg') 3 2;
+    --cursor-pointer: url('/cursors/default.svg') 3 2;
+    cursor: var(--cursor-arrow), auto;
   }
 
-  /* Distinct cursor over anything clickable -- text inputs/textareas keep the
-     native text-beam cursor, intentionally excluded here. */
+  :root.dark body {
+    --cursor-arrow: url('/cursors/default-light.svg') 3 2;
+    --cursor-pointer: url('/cursors/default-light.svg') 3 2;
+  }
+
   a, button, [role="button"], summary, select,
   input[type="checkbox"], input[type="radio"], input[type="submit"] {
-    cursor: url('/cursors/pointer.svg') 14 14, pointer;
+    cursor: var(--cursor-pointer), pointer;
   }
 
   /* Typography scale — headings are tight and confident, never shouty. */
@@ -33,7 +39,7 @@
 
   /* Keyboard focus is always visible; mouse focus stays quiet. */
   :focus-visible {
-    outline: 2px solid theme('colors.indigo.500');
+    outline: 2px solid theme('colors.primary.500');
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -62,21 +68,21 @@
 }
 
 @layer components {
-  /* Standard raised surface. Hairline border, no shadow at rest. */
+  /* Standard raised surface. Hairline border + a soft ambient shadow at rest. */
   .card {
-    @apply rounded-2xl border border-gray-200/80 bg-white p-5 dark:border-gray-800/80 dark:bg-gray-900;
+    @apply rounded-2xl border border-gray-200/80 bg-white p-5 shadow-[0_1px_2px_rgba(60,64,67,0.06),0_1px_3px_rgba(60,64,67,0.08)] dark:border-gray-800/80 dark:bg-gray-900 dark:shadow-none;
   }
 
-  /* Interactive surfaces respond with a whisper of depth — no lift, no glow.
-     (box-shadow, so it never fights the element's own border utilities) */
+  /* Interactive surfaces lift on hover — a soft, Material-style elevation. */
   .card-hover {
-    @apply transition-shadow duration-150 ease-out;
+    @apply transition-all duration-200 ease-out;
   }
   .card-hover:hover {
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(60, 64, 67, 0.08), 0 6px 16px rgba(60, 64, 67, 0.1);
   }
   .dark .card-hover:hover {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
   }
 
   /* Buttons live in components/common/Button.jsx, not here — it is the single
@@ -84,19 +90,19 @@
 
   /* Input system. */
   .input {
-    @apply w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-150 focus:border-indigo-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:focus:border-indigo-500;
+    @apply w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2 text-sm text-gray-900 placeholder:text-gray-400 transition-colors duration-150 focus:border-primary-400 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100 dark:focus:border-primary-500;
   }
 
   /* Solid overlay surface (nav bars, sticky headers). Barely translucent —
      enough to feel layered, never frosted-glass decorative. */
   .glass {
-    @apply border border-gray-200/80 bg-gray-50/90 backdrop-blur-md dark:border-gray-800/80 dark:bg-gray-950/90;
+    @apply border border-gray-100 bg-white/90 backdrop-blur-md dark:border-gray-800/80 dark:bg-gray-950/90;
   }
 
-  /* Accent text — indigo for emphasis, never for body copy.
+  /* Accent text — primary blue for emphasis, never for body copy.
      Formerly called .gradient-text (when it was a gradient). */
   .accent-text {
-    @apply text-indigo-600 dark:text-indigo-400;
+    @apply text-primary-600 dark:text-primary-400;
   }
 
   /* Skeleton shimmer — matches card surface so it blends in. */
@@ -195,6 +201,179 @@
     animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── DATAD Loader — traveling-gap wordmark ─────────────────────────────────
+   Ported from the uiverse.io "dot + shapes" loader by mobinkakei. The letters
+   are never hidden; a gap slides around each closed letterform forever.
+
+   The math that makes the loop seamless (same rule the original uses on its
+   rect/triangle/circle): for a closed path of length L, the dash pattern is
+   `D G D G` with D + G = L, so the pattern totals exactly 2L. The path only
+   ever exposes half the pattern, which means exactly one gap is visible at a
+   time. Animating stroke-dashoffset by exactly L slides that gap around one
+   full lap and lands back on an identical state — no visible jump.
+
+   Offsets start at -G/2 so the gap begins centred on the path's end point,
+   which puts it in phase with the dot (offset-distance 100% -> 0%). Both use
+   the same easing, so they stay locked together. Lengths were measured
+   numerically, not eyeballed — changing a `d` attribute means re-measuring. */
+
+.loader-datad {
+  --path: theme('colors.gray.900');
+  --dot: theme('colors.primary.600');
+  --duration: 3s;
+  --ease: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  aspect-ratio: 435 / 100;
+}
+
+:root.dark .loader-datad {
+  --path: theme('colors.gray.100');
+  --dot: theme('colors.primary.300');
+}
+
+.loader-datad svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.loader-datad path {
+  fill: none;
+  stroke: var(--path);
+  stroke-width: 6;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  animation-duration: var(--duration);
+  animation-timing-function: var(--ease);
+  animation-iteration-count: infinite;
+}
+
+/* L values: D=191.80  A=180.00  T=220.00 */
+.loader-datad .ld-d1,
+.loader-datad .ld-d2 { stroke-dasharray: 138.10 53.70 138.10 53.70; animation-name: ldGapD; }
+.loader-datad .ld-a1,
+.loader-datad .ld-a2 { stroke-dasharray: 129.60 50.40 129.60 50.40; animation-name: ldGapA; }
+.loader-datad .ld-t  { stroke-dasharray: 158.40 61.60 158.40 61.60; animation-name: ldGapT; }
+
+@keyframes ldGapD {
+  from { stroke-dashoffset: -26.85; }
+  to   { stroke-dashoffset: 164.95; }
+}
+@keyframes ldGapA {
+  from { stroke-dashoffset: -25.20; }
+  to   { stroke-dashoffset: 154.80; }
+}
+@keyframes ldGapT {
+  from { stroke-dashoffset: -30.80; }
+  to   { stroke-dashoffset: 189.20; }
+}
+
+/* The dot rides the gap. offset-path repeats each letter's `d` verbatim —
+   these must stay in sync with the paths in DATADLoader.jsx. */
+.loader-datad .ld-dot {
+  fill: var(--dot);
+  offset-rotate: 0deg;
+  animation: ldDotRun var(--duration) var(--ease) infinite;
+}
+
+@keyframes ldDotRun {
+  from { offset-distance: 100%; }
+  to   { offset-distance: 0%; }
+}
+
+.loader-datad .ld-dot-d1 { offset-path: path("M 30,20 L 30,80 L 55,80 Q 75,80 75,50 Q 75,20 55,20 Z"); }
+.loader-datad .ld-dot-a1 { offset-path: path("M 115,80 L 140,20 L 165,80 Z"); }
+.loader-datad .ld-dot-t  { offset-path: path("M 195,20 L 245,20 L 220,20 L 220,80 L 220,20 Z"); }
+.loader-datad .ld-dot-a2 { offset-path: path("M 280,80 L 305,20 L 330,80 Z"); }
+.loader-datad .ld-dot-d2 { offset-path: path("M 360,20 L 360,80 L 385,80 Q 405,80 405,50 Q 405,20 385,20 Z"); }
+
+/* Without offset-path the dots would pile up at the origin, which reads as a
+   rendering bug. Only show them where the property actually resolves. */
+.loader-datad .ld-dot { display: none; }
+
+@supports (offset-path: path("M 0,0 L 1,1")) {
+  .loader-datad .ld-dot { display: block; }
+}
+
+/* The global reduced-motion rule neutralises these animations, which would
+   otherwise freeze each letter mid-gap. Show the wordmark whole instead. */
+@media (prefers-reduced-motion: reduce) {
+  .loader-datad path {
+    stroke-dasharray: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+  .loader-datad .ld-dot { display: none !important; }
+}
+
+/* ── Section transition overlay (glass) ────────────────────────────────────
+   Frosted layer carried between top-level sections. It is translucent on
+   purpose: the incoming page renders *behind* it, so its skeletons blur
+   through the glass and the exit reads as a focus pull onto real content
+   rather than a curtain being yanked away.
+
+   Timing is owned by SectionTransition.jsx, which holds the overlay until the
+   section's requests settle — so these are fixed enter/exit animations rather
+   than one lifecycle keyed to a known duration. .is-leaving must stay in sync
+   with EXIT_MS there. */
+
+.datad-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background: rgb(247 248 250 / 0.62); /* gray-50 */
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+  animation: datadGlassIn 260ms ease both;
+}
+
+:root.dark .datad-transition {
+  background: rgb(11 13 16 / 0.62); /* gray-950 */
+}
+
+.datad-transition.is-leaving {
+  animation: datadGlassOut 320ms ease both;
+}
+
+.datad-transition .loader-datad {
+  --duration: 1.4s;
+}
+
+@keyframes datadGlassIn {
+  from {
+    opacity: 0;
+    -webkit-backdrop-filter: blur(0) saturate(100%);
+    backdrop-filter: blur(0) saturate(100%);
+  }
+  to {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+  }
+}
+
+@keyframes datadGlassOut {
+  from {
+    opacity: 1;
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+  }
+  to {
+    opacity: 0;
+    -webkit-backdrop-filter: blur(0) saturate(100%);
+    backdrop-filter: blur(0) saturate(100%);
+  }
+}
+
+/* No backdrop-filter (older Firefox, blur disabled for power saving) means a
+   62%-opaque scrim would leave the page legible but muddy behind the wordmark.
+   Go nearly opaque instead so it reads as a deliberate cover. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .datad-transition { background: rgb(247 248 250 / 0.97); }
+  :root.dark .datad-transition { background: rgb(11 13 16 / 0.97); }
 }
 
 /* ── PWA / Mobile native feel ─────────────────────────────────────────────── */

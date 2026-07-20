@@ -62,6 +62,13 @@ const TASK_TO_INTENT = {
   'compare-companies':       'compare',
   'weekly-newsletter':       'generate',
   'fact-verify':             'reason',
+
+  'flashcard-generate':      'generate',
+  'quiz-generate':           'generate',
+  'finance-assist':          'explain',
+  'dashboard-insights':      'research',
+  'company-research':        'research',
+  'resume-ats':              'resume',
 };
 
 function classifyByKeywords(text) {

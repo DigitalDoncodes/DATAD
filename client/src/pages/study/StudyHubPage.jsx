@@ -129,6 +129,13 @@ export default function StudyHubPage() {
     weekday: 'short', day: 'numeric', month: 'short',
   });
 
+  const greeting = useMemo(() => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good morning';
+    if (h < 17) return 'Good afternoon';
+    return 'Good evening';
+  }, []);
+
   const encouragement = useMemo(
     () => PROMPTS[new Date().getDate() % PROMPTS.length],
     []
@@ -160,28 +167,29 @@ export default function StudyHubPage() {
 
   return (
     <Page>
-      {/* TOP BAR — date + secondary action */}
+      {/* TOP BAR — greeting + secondary action */}
       <div className="flex items-center justify-between py-4">
-        <span className="text-xs font-medium tracking-wide text-gray-400">
-          {dateLabel}
-        </span>
+        <div>
+          <p className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">
+            {greeting}
+          </p>
+          <span className="text-sm text-gray-400">{dateLabel}</span>
+        </div>
         <Link to="/study/notes/new">
-          <Button variant="ghost" size="sm" icon={PenSquare}>
+          <Button variant="secondary" size="sm" icon={PenSquare}>
             New note
           </Button>
         </Link>
       </div>
 
-      {/* YOUR SPACE — small label, not a hero */}
-      <p className="text-xs font-medium tracking-wide text-gray-400">
-        Your space
-      </p>
-
       {/* CONTINUE WHERE YOU LEFT OFF — the card IS the hero */}
-      <div className="mt-4">
+      <div className="mt-6">
         {data.recentNote ? (
-          <Card padding="lg">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+          <Card padding="lg" className="!rounded-3xl">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30">
+              <BookOpen className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+            </div>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
               Continue where you left off
             </p>
             <p className="mt-2 text-2xl font-semibold leading-snug text-gray-900 dark:text-gray-100">
@@ -201,8 +209,11 @@ export default function StudyHubPage() {
             </div>
           </Card>
         ) : (
-          <Card padding="lg">
-            <p className="text-xs font-semibold uppercase tracking-widest text-gray-400">
+          <Card padding="lg" className="!rounded-3xl">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/30">
+              <BookOpen className="h-5 w-5 text-primary-600 dark:text-primary-400" />
+            </div>
+            <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-gray-400">
               Begin your notes
             </p>
             <p className="mt-2 text-2xl font-semibold leading-snug text-gray-900 dark:text-gray-100">
@@ -228,7 +239,7 @@ export default function StudyHubPage() {
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Recent notes</span>
             {data.notesCount > 4 && (
-              <Link to="/study/notes" className="text-[10px] font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+              <Link to="/study/notes" className="text-[10px] font-medium text-primary-600 hover:underline dark:text-primary-400">
                 View all
               </Link>
             )}
@@ -261,7 +272,7 @@ export default function StudyHubPage() {
           <div className="mb-2 flex items-center justify-between">
             <span className="text-[11px] font-medium uppercase tracking-wide text-gray-400">Upcoming</span>
             {data.assignments.length > 4 && (
-              <Link to="/study/assignments" className="text-[10px] font-medium text-indigo-600 hover:underline dark:text-indigo-400">
+              <Link to="/study/assignments" className="text-[10px] font-medium text-primary-600 hover:underline dark:text-primary-400">
                 View all
               </Link>
             )}
@@ -277,9 +288,9 @@ export default function StudyHubPage() {
                     <span className="flex items-center justify-between rounded-lg px-3 py-2 text-sm">
                       <span className="truncate text-gray-700 dark:text-gray-200">{t.title}</span>
                       <span className={`ml-3 shrink-0 text-xs ${
-                        days < 0 ? 'text-rose-500 font-medium' :
-                        days === 0 ? 'text-amber-600 font-medium' :
-                        days <= 2 ? 'text-amber-600' :
+                        days < 0 ? 'text-danger-600 font-medium' :
+                        days === 0 ? 'text-warn-700 font-medium' :
+                        days <= 2 ? 'text-warn-700' :
                         'text-gray-400'
                       }`}>
                         {days < 0 ? 'Overdue' : days === 0 ? 'Today' : formatDateShort(t.dueDate)}
@@ -296,16 +307,18 @@ export default function StudyHubPage() {
       {/* DAX INSIGHT */}
       {insight && (
         <>
-          <div className="mt-10 border-t border-gray-200/60 dark:border-gray-800/60" />
+          <div className="mt-10 border-t border-gray-100 dark:border-gray-800/60" />
           <div className="py-10">
-            <div className="rounded-2xl border border-indigo-200/60 bg-indigo-50/80 p-5 dark:border-indigo-800/40 dark:bg-indigo-900/15">
+            <div className="rounded-2xl border border-primary-100 bg-primary-50/70 p-5 dark:border-primary-800/40 dark:bg-primary-900/15">
               <div className="flex items-start gap-3">
-                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-indigo-500" />
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900/40">
+                  <Sparkles className="h-3.5 w-3.5 text-primary-600 dark:text-primary-400" />
+                </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm leading-relaxed text-gray-700 dark:text-gray-200">{insight.insight}</p>
                   <Link
                     to={insight.action.to}
-                    className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+                    className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400"
                   >
                     {insight.action.label}
                     <ArrowRight className="h-3 w-3" />
@@ -318,13 +331,13 @@ export default function StudyHubPage() {
       )}
 
       {/* DAILY CASE */}
-      <div className="border-t border-gray-200/60 dark:border-gray-800/60" />
+      <div className="border-t border-gray-100 dark:border-gray-800/60" />
       <div className="py-10" id="daily-case">
         <DailyCaseCard />
       </div>
 
       {/* FOOTNOTE */}
-      <div className="border-t border-gray-200/60 dark:border-gray-800/60" />
+      <div className="border-t border-gray-100 dark:border-gray-800/60" />
       <div className="py-8">
         <p className="text-xs italic leading-relaxed text-gray-400">
           &ldquo;{encouragement}&rdquo;

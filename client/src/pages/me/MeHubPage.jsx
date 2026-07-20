@@ -13,8 +13,8 @@ import { Page } from '../../components/common/motion';
 const FEATURE_CARDS = [
   { to: '/me/journal', icon: BookLock, title: 'Journal', sub: 'Private reflection & mood tracking', color: 'text-primary-500', bg: 'bg-primary-50 dark:bg-primary-950/40' },
   { to: '/me/planner', icon: CalendarDays, title: 'Planner', sub: 'Tasks, goals and deadlines', color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-950/40' },
-  { to: '/me/finance', icon: Wallet, title: 'Finance', sub: 'Budget, calculators & tracker', color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-950/40' },
-  { to: '/me/wellbeing', icon: HeartHandshake, title: 'Wellbeing', sub: 'Breathe, meditate, recharge', color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-950/40' },
+  { to: '/finance', icon: Wallet, title: 'Finance', sub: 'Budget, calculators & tracker', color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-950/40' },
+  { to: '/wellbeing', icon: HeartHandshake, title: 'Wellbeing', sub: 'Breathe, meditate, recharge', color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-950/40' },
 ];
 
 export default function MeHubPage() {

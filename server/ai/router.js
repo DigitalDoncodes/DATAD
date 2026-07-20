@@ -1,82 +1,76 @@
 /**
- * Phase 7 — Intelligent Model Routing
- * Routes each task to the cheapest model that can handle it well.
- * Three tiers: fast (cheap), balanced (moderate), powerful (heavy reasoning).
+ * Capability-driven task router.
+ *
+ * Routes each task to the best model using the ModelRegistry's
+ * capability scoring system instead of hardcoded provider lists.
+ *
+ * Fallback chain:
+ *   NVIDIA NIM → Ollama (local) → Error
  */
 
 const cfg = require('../config/automation');
+const { rankModelsForIntent, findBestModelForCapability, scoreModelForIntent } = require('./runtime-v2/modelRegistry');
 
-// Approximate cost per 1M tokens in USD (input / output)
-const PROVIDER_COSTS = {
-  groq:        { input: 0.59,  output: 0.79  },
-  openai:      { input: 0.15,  output: 0.60  },    // gpt-4o-mini
-  anthropic:   { input: 0.25,  output: 1.25  },    // claude-haiku
-  gemini:      { input: 0.075, output: 0.30  },    // gemini-flash
-  openrouter:  { input: 0.59,  output: 0.79  },
-  ollama:      { input: 0,     output: 0     },    // local
-  nvidia:      { input: 0.59,  output: 0.79  },
+const TASK_CAPABILITY = {
+  'summarise-note':       'summarize',
+  'news-summary':         'summarize',
+  'moderation':           'administration',
+  'resume-tip':           'resume',
+  'daily-reflection':     'reflection',
+  'daily-briefing':       'summarize',
+  'daily-case':           'teach',
+  'company-enrichment':   'research',
+  'interview-questions':  'interview',
+  'planner-suggest':      'planner',
+  'chat':                 'explain',
+  'review-resume':        'review',
+  'career-advice':        'career',
+  'case-framework':       'teach',
+  'weekly-newsletter':    'generate',
+  'fact-verify':          'reason',
+
+  'flashcard-generate':   'generate',
+  'quiz-generate':        'generate',
+  'finance-assist':       'explain',
+  'dashboard-insights':   'research',
+  'company-research':     'research',
+  'resume-ats':           'resume',
 };
 
-// Task → tier mapping. Add new tasks here as the product grows.
-const TASK_TIER = {
-  // Fast tier — simple summarization, short outputs
-  'summarise-note':       'fast',
-  'news-summary':         'fast',
-  'moderation':           'fast',
-  'resume-tip':           'fast',
-  'daily-reflection':     'fast',
-
-  // Balanced tier — structured JSON, business explanations
-  'daily-briefing':       'balanced',
-  'daily-case':           'balanced',
-  'company-enrichment':   'balanced',
-  'interview-questions':  'balanced',
-  'planner-suggest':      'balanced',
-  'chat':                 'balanced',
-
-  // Powerful tier — complex reasoning, multi-step analysis
-  'review-resume':        'powerful',
-  'career-advice':        'powerful',
-  'case-framework':       'powerful',
-  'weekly-newsletter':    'powerful',
-  'fact-verify':          'powerful',
-};
-
-// Per-tier provider preferences (ordered by preference)
-const TIER_PROVIDERS = {
-  fast:     ['groq', 'gemini', 'ollama', 'openai', 'anthropic'],
-  balanced: ['openai', 'groq', 'anthropic', 'gemini', 'openrouter'],
-  powerful: ['anthropic', 'openai', 'openrouter', 'groq'],
-};
-
-/**
- * Returns the preferred provider name for a given task.
- * Falls back to the configured primary if the tier provider isn't set.
- */
 function routeTask(taskName) {
-  const tier = TASK_TIER[taskName] || 'balanced';
-  const preferred = TIER_PROVIDERS[tier] || [];
+  const capability = TASK_CAPABILITY[taskName] || 'explain';
 
-  // Pick first provider that has a key configured
-  for (const name of preferred) {
-    const p = cfg.providers[name];
-    if (p && p.apiKey && p.apiKey !== 'ollama') return name;
-    if (name === 'ollama') return name; // ollama never needs a key
+  const ranked = rankModelsForIntent(capability, 5);
+  for (const model of ranked) {
+    const providerCfg = cfg.providers[model.provider];
+    if (!providerCfg) continue;
+    if (model.provider === 'ollama') return model.provider;
+    if (model.provider === 'nvidia' && process.env.NVIDIA_API_KEY) return model.provider;
+    if (providerCfg.apiKey) return model.provider;
   }
 
-  return cfg.providers.primary || 'groq';
+  if (process.env.NVIDIA_API_KEY) return 'nvidia';
+  return 'ollama';
 }
 
-/**
- * Estimate cost for a completed AI call.
- * @param {string} provider
- * @param {number} promptTokens
- * @param {number} completionTokens
- * @returns {number} estimated USD cost
- */
 function estimateCost(provider, promptTokens = 0, completionTokens = 0) {
-  const rates = PROVIDER_COSTS[provider] || { input: 0, output: 0 };
+  const costScores = {
+    nvidia:  { input: 0.35, output: 0.45 },
+    ollama:  { input: 0,    output: 0    },
+    groq:    { input: 0.59, output: 0.79 },
+    openai:  { input: 0.15, output: 0.60 },
+    anthropic: { input: 0.25, output: 1.25 },
+    gemini:  { input: 0.075, output: 0.30 },
+    openrouter: { input: 0.59, output: 0.79 },
+    // Cloudflare Workers AI bills in "neurons", not tokens — these are a
+    // token-denominated approximation for llama-3.3-70b-fp8-fast so metering
+    // records a non-zero cost. Without an entry here the default placeholder
+    // rate rounds to $0.000000 and Cloudflare usage bills as free.
+    // TODO: reconcile against the Workers AI pricing page / neuron rate.
+    cloudflare: { input: 0.29, output: 2.25 },
+  };
+  const rates = costScores[provider] || { input: 0.005, output: 0.015 };
   return (promptTokens / 1_000_000) * rates.input + (completionTokens / 1_000_000) * rates.output;
 }
 
-module.exports = { routeTask, estimateCost, TASK_TIER, TIER_PROVIDERS, PROVIDER_COSTS };
+module.exports = { routeTask, estimateCost, TASK_CAPABILITY };

@@ -49,6 +49,16 @@ class AnthropicProvider {
       latencyMs: Date.now() - start,
     };
   }
+
+  async generate({ system, user, context, query, taskName, intent, userId }) {
+    const messages = [
+      ...(context ? [{ role: 'system', content: context }] : []),
+      ...(system ? [{ role: 'system', content: system }] : []),
+      ...(user ? [{ role: 'user', content: user }] : []),
+      ...(query ? [{ role: 'user', content: query }] : []),
+    ];
+    return this.complete({ messages, system });
+  }
 }
 
 module.exports = AnthropicProvider;

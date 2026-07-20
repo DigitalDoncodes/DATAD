@@ -53,7 +53,7 @@ exports.createExpense = async (req, res, next) => {
         const total = totalAgg[0]?.total || 0;
         const prev = total - Number(amount);
         if (total >= budget.monthlyAmount && prev < budget.monthlyAmount) {
-          notify({ user: req.user.userId, type: 'general', title: 'Monthly budget exceeded', body: `Spent ₹${total.toLocaleString('en-IN')} of ₹${budget.monthlyAmount.toLocaleString('en-IN')} budget`, link: '/me/finance' }).catch(() => {});
+          notify({ user: req.user.userId, type: 'general', title: 'Monthly budget exceeded', body: `Spent ₹${total.toLocaleString('en-IN')} of ₹${budget.monthlyAmount.toLocaleString('en-IN')} budget`, link: '/finance' }).catch(() => {});
         }
       }
     }

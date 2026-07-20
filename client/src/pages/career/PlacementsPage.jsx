@@ -6,6 +6,7 @@ import { listDrives, createDrive, updateDrive, deleteDrive, applyToDrive, listMy
 import { FeedSkeleton } from '../../components/common/Skeleton';
 import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
+import DateInput from '../../components/common/DateInput';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { Page } from '../../components/common/motion';
 import AIInsight from '../../components/common/AIInsight';
@@ -266,7 +267,7 @@ export default function PlacementsPage() {
           <input {...register('role')} placeholder="Role / position" className="input" />
           <input {...register('package')} placeholder="Package (e.g. ₹6–8 LPA)" className="input" />
           <input {...register('eligibility')} placeholder="Eligibility criteria" className="input" />
-          <input type="date" {...register('applicationDeadline')} className="input" />
+          <DateInput {...register('applicationDeadline')} />
           <input {...register('applyLink')} placeholder="Apply link (optional)" className="input" />
           <select {...register('status')} className="input">
             <option value="upcoming">Upcoming</option>

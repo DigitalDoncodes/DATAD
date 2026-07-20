@@ -9,6 +9,7 @@ import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { useAuth } from '../../context/AuthContext';
+import DateInput from '../../components/common/DateInput';
 import { Page } from '../../components/common/motion';
 
 
@@ -128,7 +129,7 @@ export default function InternshipsPage() {
           <input {...register('location')} placeholder="Location (e.g. Mumbai)" className="input" />
           <input {...register('stipend')} placeholder="Stipend (e.g. ₹15,000/month)" className="input" />
           <input {...register('duration')} placeholder="Duration (e.g. 2 months)" className="input" />
-          <input type="date" {...register('deadline')} className="input" />
+          <DateInput {...register('deadline')} />
           <input {...register('eligibility')} placeholder="Eligibility" className="input" />
           <input {...register('tags')} placeholder="Tags (comma-separated: Finance, Excel)" className="input" />
           <label className="flex items-center gap-2 text-sm">

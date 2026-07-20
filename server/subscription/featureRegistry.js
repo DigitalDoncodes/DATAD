@@ -35,6 +35,12 @@ const FEATURE = {
   MARKET_INTELLIGENCE: 'market_intelligence',
   CASE_GENERATOR: 'case_generator',
 
+  FLASHCARD_GENERATE: 'flashcard_generate',
+  QUIZ_GENERATE: 'quiz_generate',
+  FINANCE_ASSIST: 'finance_assist',
+  DASHBOARD_INSIGHTS: 'dashboard_insights',
+  COMPANY_RESEARCH: 'company_research',
+
   ADMIN_STUDIO: 'admin_studio',
   ADMIN_USERS: 'admin_users',
   ADMIN_ANALYTICS: 'admin_analytics',
@@ -68,6 +74,11 @@ const FEATURE_ACCESS = {
   [FEATURE.AI_COMPARE_COMPANIES]: 'max',
   [FEATURE.AI_CAREER_ADVICE]: 'max',
   [FEATURE.RESUME_ATS]: 'pro',
+  [FEATURE.FLASHCARD_GENERATE]: 'trial',
+  [FEATURE.QUIZ_GENERATE]: 'trial',
+  [FEATURE.FINANCE_ASSIST]: 'pro',
+  [FEATURE.DASHBOARD_INSIGHTS]: 'trial',
+  [FEATURE.COMPANY_RESEARCH]: 'pro',
   [FEATURE.READINESS_SCORE]: 'pro',
 
   [FEATURE.KNOWLEDGE_GRAPH]: 'max',

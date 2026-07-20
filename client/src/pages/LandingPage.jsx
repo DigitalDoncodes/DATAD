@@ -66,13 +66,13 @@ const FEATURES = [
     icon: Wallet,
     title: 'Money, explained simply',
     desc: 'SIPs, compounding, emergency funds — financial confidence before your first salary.',
-    to: '/me/finance',
+        to: '/finance',
   },
   {
     icon: HeartHandshake,
     title: 'Wellbeing',
     desc: 'Breathing exercises, study techniques and a human to talk to when it’s heavy.',
-    to: '/me/wellbeing',
+    to: '/wellbeing',
   },
   {
     icon: Sparkles,

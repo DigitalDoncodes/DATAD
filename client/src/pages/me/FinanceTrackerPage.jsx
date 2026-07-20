@@ -8,6 +8,7 @@ import Loader from '../../components/common/Loader';
 import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
 import ConfirmModal from '../../components/common/ConfirmModal';
+import DateInput from '../../components/common/DateInput';
 import { Page } from '../../components/common/motion';
 
 const CATEGORIES = ['Food', 'Travel', 'Rent', 'Books & Courses', 'Entertainment', 'Shopping', 'Other'];
@@ -165,7 +166,7 @@ export default function FinanceTrackerPage() {
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Date</label>
-            <input type="date" defaultValue={new Date().toISOString().slice(0, 10)} {...expenseForm.register('date')} className="input" />
+            <DateInput defaultValue={new Date().toISOString().slice(0, 10)} {...expenseForm.register('date')} />
           </div>
           <button type="submit" disabled={expenseForm.formState.isSubmitting}
             className={`w-full rounded-lg py-2 text-sm font-medium text-white disabled:opacity-50 ${entryModal === 'income' ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>

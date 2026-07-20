@@ -90,6 +90,7 @@ app.use('/api/skills', require('./routes/skillRoutes'));
 app.use('/api/resources', require('./routes/resourceRoutes'));
 app.use('/api/projects', require('./routes/projectRoutes'));
 app.use('/api/study-tools', require('./routes/studyToolsRoutes'));
+app.use('/api/calendar', require('./routes/calendarRoutes'));
 app.use('/api/feed', require('./routes/feedRoutes'));
 app.use('/api/directory', require('./routes/directoryRoutes'));
 app.use('/api/events', require('./routes/eventRoutes'));

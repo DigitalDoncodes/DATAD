@@ -1,0 +1,1422 @@
+{
+  "results": {
+    "/": {
+      "route": "/",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [
+        {
+          "url": "http://localhost:5173/",
+          "method": "GET",
+          "resourceType": "document",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 3202,
+      "screenshot": "index.png"
+    },
+    "/login": {
+      "route": "/login",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2178,
+      "screenshot": "login.png"
+    },
+    "/register": {
+      "route": "/register",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/register",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2159,
+      "screenshot": "register.png"
+    },
+    "/forgot-password": {
+      "route": "/forgot-password",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/forgot-password",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2103,
+      "screenshot": "forgot-password.png"
+    },
+    "/reset-password": {
+      "route": "/reset-password",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/reset-password",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2094,
+      "screenshot": "reset-password.png"
+    },
+    "/about": {
+      "route": "/about",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/about",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2479,
+      "screenshot": "about.png"
+    },
+    "/privacy": {
+      "route": "/privacy",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/privacy",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2093,
+      "screenshot": "privacy.png"
+    },
+    "/terms": {
+      "route": "/terms",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/terms",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2101,
+      "screenshot": "terms.png"
+    },
+    "/support": {
+      "route": "/support",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fsupport",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/support",
+          "to": "/login?next=%2Fsupport"
+        }
+      ],
+      "timing": 2107,
+      "screenshot": "support.png"
+    },
+    "/subscribe": {
+      "route": "/subscribe",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fsubscribe",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/subscribe",
+          "to": "/login?next=%2Fsubscribe"
+        }
+      ],
+      "timing": 2096,
+      "screenshot": "subscribe.png"
+    },
+    "/creator": {
+      "route": "/creator",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/creator",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [],
+      "timing": 2103,
+      "screenshot": "creator.png"
+    },
+    "/news": {
+      "route": "/news",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fnews",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/news",
+          "to": "/login?next=%2Fnews"
+        }
+      ],
+      "timing": 2103,
+      "screenshot": "news.png"
+    },
+    "/notes": {
+      "route": "/notes",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fnotes",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/notes",
+          "to": "/login?next=%2Fnotes"
+        }
+      ],
+      "timing": 2101,
+      "screenshot": "notes.png"
+    },
+    "/planner": {
+      "route": "/planner",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fplanner",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/planner",
+          "to": "/login?next=%2Fplanner"
+        }
+      ],
+      "timing": 2109,
+      "screenshot": "planner.png"
+    },
+    "/journal": {
+      "route": "/journal",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fjournal",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/journal",
+          "to": "/login?next=%2Fjournal"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "journal.png"
+    },
+    "/reflection": {
+      "route": "/reflection",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Freflection",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/reflection",
+          "to": "/login?next=%2Freflection"
+        }
+      ],
+      "timing": 2101,
+      "screenshot": "reflection.png"
+    },
+    "/finance": {
+      "route": "/finance",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Ffinance",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/finance",
+          "to": "/login?next=%2Ffinance"
+        }
+      ],
+      "timing": 2097,
+      "screenshot": "finance.png"
+    },
+    "/settings": {
+      "route": "/settings",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fsettings",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/settings",
+          "to": "/login?next=%2Fsettings"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "settings.png"
+    },
+    "/resume": {
+      "route": "/resume",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fresume",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/resume",
+          "to": "/login?next=%2Fresume"
+        }
+      ],
+      "timing": 2088,
+      "screenshot": "resume.png"
+    },
+    "/companies": {
+      "route": "/companies",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcompanies",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/companies",
+          "to": "/login?next=%2Fcompanies"
+        }
+      ],
+      "timing": 2105,
+      "screenshot": "companies.png"
+    },
+    "/albums": {
+      "route": "/albums",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Falbums",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/albums",
+          "to": "/login?next=%2Falbums"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "albums.png"
+    },
+    "/entertainment": {
+      "route": "/entertainment",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fentertainment",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/entertainment",
+          "to": "/login?next=%2Fentertainment"
+        }
+      ],
+      "timing": 2105,
+      "screenshot": "entertainment.png"
+    },
+    "/study": {
+      "route": "/study",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fstudy",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/study",
+          "to": "/login?next=%2Fstudy"
+        }
+      ],
+      "timing": 2106,
+      "screenshot": "study.png"
+    },
+    "/study/notes": {
+      "route": "/study/notes",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fstudy%2Fnotes",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/study/notes",
+          "to": "/login?next=%2Fstudy%2Fnotes"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "study_notes.png"
+    },
+    "/study/notes/new": {
+      "route": "/study/notes/new",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fstudy%2Fnotes%2Fnew",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/study/notes/new",
+          "to": "/login?next=%2Fstudy%2Fnotes%2Fnew"
+        }
+      ],
+      "timing": 2096,
+      "screenshot": "study_notes_new.png"
+    },
+    "/study/work": {
+      "route": "/study/work",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fstudy%2Fwork",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/study/work",
+          "to": "/login?next=%2Fstudy%2Fwork"
+        }
+      ],
+      "timing": 2103,
+      "screenshot": "study_work.png"
+    },
+    "/study/subject": {
+      "route": "/study/subject",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fstudy%2Fsubject",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/study/subject",
+          "to": "/login?next=%2Fstudy%2Fsubject"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "study_subject.png"
+    },
+    "/study/resources": {
+      "route": "/study/resources",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fstudy%2Fresources",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/study/resources",
+          "to": "/login?next=%2Fstudy%2Fresources"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "study_resources.png"
+    },
+    "/study/focus": {
+      "route": "/study/focus",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fstudy%2Ffocus",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/study/focus",
+          "to": "/login?next=%2Fstudy%2Ffocus"
+        }
+      ],
+      "timing": 2105,
+      "screenshot": "study_focus.png"
+    },
+    "/career": {
+      "route": "/career",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career",
+          "to": "/login?next=%2Fcareer"
+        }
+      ],
+      "timing": 2095,
+      "screenshot": "career.png"
+    },
+    "/career/resume": {
+      "route": "/career/resume",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer%2Fresume",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career/resume",
+          "to": "/login?next=%2Fcareer%2Fresume"
+        }
+      ],
+      "timing": 2100,
+      "screenshot": "career_resume.png"
+    },
+    "/career/resume/preview": {
+      "route": "/career/resume/preview",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer%2Fresume%2Fpreview",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career/resume/preview",
+          "to": "/login?next=%2Fcareer%2Fresume%2Fpreview"
+        }
+      ],
+      "timing": 2105,
+      "screenshot": "career_resume_preview.png"
+    },
+    "/career/companies": {
+      "route": "/career/companies",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer%2Fcompanies",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career/companies",
+          "to": "/login?next=%2Fcareer%2Fcompanies"
+        }
+      ],
+      "timing": 2100,
+      "screenshot": "career_companies.png"
+    },
+    "/career/questions": {
+      "route": "/career/questions",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer%2Fquestions",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career/questions",
+          "to": "/login?next=%2Fcareer%2Fquestions"
+        }
+      ],
+      "timing": 2100,
+      "screenshot": "career_questions.png"
+    },
+    "/career/opportunities": {
+      "route": "/career/opportunities",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer%2Fopportunities",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career/opportunities",
+          "to": "/login?next=%2Fcareer%2Fopportunities"
+        }
+      ],
+      "timing": 2102,
+      "screenshot": "career_opportunities.png"
+    },
+    "/career/pivot": {
+      "route": "/career/pivot",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer%2Fpivot",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career/pivot",
+          "to": "/login?next=%2Fcareer%2Fpivot"
+        }
+      ],
+      "timing": 2120,
+      "screenshot": "career_pivot.png"
+    },
+    "/career/stories": {
+      "route": "/career/stories",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcareer%2Fstories",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/career/stories",
+          "to": "/login?next=%2Fcareer%2Fstories"
+        }
+      ],
+      "timing": 2097,
+      "screenshot": "career_stories.png"
+    },
+    "/community": {
+      "route": "/community",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community",
+          "to": "/login?next=%2Fcommunity"
+        }
+      ],
+      "timing": 2106,
+      "screenshot": "community.png"
+    },
+    "/community/announcements": {
+      "route": "/community/announcements",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity%2Fannouncements",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community/announcements",
+          "to": "/login?next=%2Fcommunity%2Fannouncements"
+        }
+      ],
+      "timing": 2097,
+      "screenshot": "community_announcements.png"
+    },
+    "/community/feed": {
+      "route": "/community/feed",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity%2Ffeed",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community/feed",
+          "to": "/login?next=%2Fcommunity%2Ffeed"
+        }
+      ],
+      "timing": 2104,
+      "screenshot": "community_feed.png"
+    },
+    "/community/memories": {
+      "route": "/community/memories",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity%2Fmemories",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community/memories",
+          "to": "/login?next=%2Fcommunity%2Fmemories"
+        }
+      ],
+      "timing": 2102,
+      "screenshot": "community_memories.png"
+    },
+    "/community/directory": {
+      "route": "/community/directory",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity%2Fdirectory",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community/directory",
+          "to": "/login?next=%2Fcommunity%2Fdirectory"
+        }
+      ],
+      "timing": 2096,
+      "screenshot": "community_directory.png"
+    },
+    "/community/events": {
+      "route": "/community/events",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity%2Fevents",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community/events",
+          "to": "/login?next=%2Fcommunity%2Fevents"
+        }
+      ],
+      "timing": 2106,
+      "screenshot": "community_events.png"
+    },
+    "/community/marketplace": {
+      "route": "/community/marketplace",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity%2Fmarketplace",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community/marketplace",
+          "to": "/login?next=%2Fcommunity%2Fmarketplace"
+        }
+      ],
+      "timing": 2117,
+      "screenshot": "community_marketplace.png"
+    },
+    "/community/skills": {
+      "route": "/community/skills",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fcommunity%2Fskills",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/community/skills",
+          "to": "/login?next=%2Fcommunity%2Fskills"
+        }
+      ],
+      "timing": 2096,
+      "screenshot": "community_skills.png"
+    },
+    "/me": {
+      "route": "/me",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me",
+          "to": "/login?next=%2Fme"
+        }
+      ],
+      "timing": 2102,
+      "screenshot": "me.png"
+    },
+    "/me/planner": {
+      "route": "/me/planner",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fplanner",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/planner",
+          "to": "/login?next=%2Fme%2Fplanner"
+        }
+      ],
+      "timing": 2113,
+      "screenshot": "me_planner.png"
+    },
+    "/me/settings": {
+      "route": "/me/settings",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fsettings",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/settings",
+          "to": "/login?next=%2Fme%2Fsettings"
+        }
+      ],
+      "timing": 2116,
+      "screenshot": "me_settings.png"
+    },
+    "/me/journal": {
+      "route": "/me/journal",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fjournal",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/journal",
+          "to": "/login?next=%2Fme%2Fjournal"
+        }
+      ],
+      "timing": 2102,
+      "screenshot": "me_journal.png"
+    },
+    "/me/reflection": {
+      "route": "/me/reflection",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Freflection",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/reflection",
+          "to": "/login?next=%2Fme%2Freflection"
+        }
+      ],
+      "timing": 2093,
+      "screenshot": "me_reflection.png"
+    },
+    "/me/finance": {
+      "route": "/me/finance",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Ffinance",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/finance",
+          "to": "/login?next=%2Fme%2Ffinance"
+        }
+      ],
+      "timing": 2102,
+      "screenshot": "me_finance.png"
+    },
+    "/me/finance/tracker": {
+      "route": "/me/finance/tracker",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Ffinance%2Ftracker",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/finance/tracker",
+          "to": "/login?next=%2Fme%2Ffinance%2Ftracker"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "me_finance_tracker.png"
+    },
+    "/me/finance/calculator": {
+      "route": "/me/finance/calculator",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Ffinance%2Fcalculator",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/finance/calculator",
+          "to": "/login?next=%2Fme%2Ffinance%2Fcalculator"
+        }
+      ],
+      "timing": 2101,
+      "screenshot": "me_finance_calculator.png"
+    },
+    "/me/finance/learn": {
+      "route": "/me/finance/learn",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Ffinance%2Flearn",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/finance/learn",
+          "to": "/login?next=%2Fme%2Ffinance%2Flearn"
+        }
+      ],
+      "timing": 2108,
+      "screenshot": "me_finance_learn.png"
+    },
+    "/me/finance/roi": {
+      "route": "/me/finance/roi",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Ffinance%2Froi",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/finance/roi",
+          "to": "/login?next=%2Fme%2Ffinance%2Froi"
+        }
+      ],
+      "timing": 2099,
+      "screenshot": "me_finance_roi.png"
+    },
+    "/me/wellbeing": {
+      "route": "/me/wellbeing",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fwellbeing",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/wellbeing",
+          "to": "/login?next=%2Fme%2Fwellbeing"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "me_wellbeing.png"
+    },
+    "/me/wellbeing/study": {
+      "route": "/me/wellbeing/study",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fwellbeing%2Fstudy",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/wellbeing/study",
+          "to": "/login?next=%2Fme%2Fwellbeing%2Fstudy"
+        }
+      ],
+      "timing": 2097,
+      "screenshot": "me_wellbeing_study.png"
+    },
+    "/me/wellbeing/memory": {
+      "route": "/me/wellbeing/memory",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fwellbeing%2Fmemory",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/wellbeing/memory",
+          "to": "/login?next=%2Fme%2Fwellbeing%2Fmemory"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "me_wellbeing_memory.png"
+    },
+    "/me/wellbeing/routines": {
+      "route": "/me/wellbeing/routines",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fwellbeing%2Froutines",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/wellbeing/routines",
+          "to": "/login?next=%2Fme%2Fwellbeing%2Froutines"
+        }
+      ],
+      "timing": 2109,
+      "screenshot": "me_wellbeing_routines.png"
+    },
+    "/me/wellbeing/support": {
+      "route": "/me/wellbeing/support",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fme%2Fwellbeing%2Fsupport",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/me/wellbeing/support",
+          "to": "/login?next=%2Fme%2Fwellbeing%2Fsupport"
+        }
+      ],
+      "timing": 2108,
+      "screenshot": "me_wellbeing_support.png"
+    },
+    "/briefing": {
+      "route": "/briefing",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fbriefing",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/briefing",
+          "to": "/login?next=%2Fbriefing"
+        }
+      ],
+      "timing": 2096,
+      "screenshot": "briefing.png"
+    },
+    "/search": {
+      "route": "/search",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fsearch",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/search",
+          "to": "/login?next=%2Fsearch"
+        }
+      ],
+      "timing": 2115,
+      "screenshot": "search.png"
+    },
+    "/admin": {
+      "route": "/admin",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin",
+          "to": "/login?next=%2Fadmin"
+        }
+      ],
+      "timing": 2099,
+      "screenshot": "admin.png"
+    },
+    "/admin/students": {
+      "route": "/admin/students",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fstudents",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/students",
+          "to": "/login?next=%2Fadmin%2Fstudents"
+        }
+      ],
+      "timing": 2100,
+      "screenshot": "admin_students.png"
+    },
+    "/admin/studio": {
+      "route": "/admin/studio",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fstudio",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/studio",
+          "to": "/login?next=%2Fadmin%2Fstudio"
+        }
+      ],
+      "timing": 2142,
+      "screenshot": "admin_studio.png"
+    },
+    "/admin/announcements": {
+      "route": "/admin/announcements",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fannouncements",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/announcements",
+          "to": "/login?next=%2Fadmin%2Fannouncements"
+        }
+      ],
+      "timing": 2099,
+      "screenshot": "admin_announcements.png"
+    },
+    "/admin/logs": {
+      "route": "/admin/logs",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Flogs",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/logs",
+          "to": "/login?next=%2Fadmin%2Flogs"
+        }
+      ],
+      "timing": 2104,
+      "screenshot": "admin_logs.png"
+    },
+    "/admin/referrals": {
+      "route": "/admin/referrals",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Freferrals",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/referrals",
+          "to": "/login?next=%2Fadmin%2Freferrals"
+        }
+      ],
+      "timing": 2096,
+      "screenshot": "admin_referrals.png"
+    },
+    "/admin/archive": {
+      "route": "/admin/archive",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Farchive",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/archive",
+          "to": "/login?next=%2Fadmin%2Farchive"
+        }
+      ],
+      "timing": 2097,
+      "screenshot": "admin_archive.png"
+    },
+    "/admin/companies": {
+      "route": "/admin/companies",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fcompanies",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/companies",
+          "to": "/login?next=%2Fadmin%2Fcompanies"
+        }
+      ],
+      "timing": 2106,
+      "screenshot": "admin_companies.png"
+    },
+    "/admin/cases": {
+      "route": "/admin/cases",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fcases",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/cases",
+          "to": "/login?next=%2Fadmin%2Fcases"
+        }
+      ],
+      "timing": 2098,
+      "screenshot": "admin_cases.png"
+    },
+    "/admin/automation": {
+      "route": "/admin/automation",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fautomation",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/automation",
+          "to": "/login?next=%2Fadmin%2Fautomation"
+        }
+      ],
+      "timing": 2100,
+      "screenshot": "admin_automation.png"
+    },
+    "/admin/ai-center": {
+      "route": "/admin/ai-center",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fai-center",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/ai-center",
+          "to": "/login?next=%2Fadmin%2Fai-center"
+        }
+      ],
+      "timing": 2121,
+      "screenshot": "admin_ai-center.png"
+    },
+    "/admin/ai-runtime": {
+      "route": "/admin/ai-runtime",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fai-runtime",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/ai-runtime",
+          "to": "/login?next=%2Fadmin%2Fai-runtime"
+        }
+      ],
+      "timing": 2101,
+      "screenshot": "admin_ai-runtime.png"
+    },
+    "/admin/subscriptions": {
+      "route": "/admin/subscriptions",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fadmin%2Fsubscriptions",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/admin/subscriptions",
+          "to": "/login?next=%2Fadmin%2Fsubscriptions"
+        }
+      ],
+      "timing": 2100,
+      "screenshot": "admin_subscriptions.png"
+    },
+    "/nonexistent-route-test-xyz": {
+      "route": "/nonexistent-route-test-xyz",
+      "status": "visited",
+      "finalUrl": "http://localhost:5173/login?next=%2Fnonexistent-route-test-xyz",
+      "statusCode": 200,
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "networkFailures": [],
+      "slowRequests": [],
+      "jsErrors": [],
+      "redirectChain": [
+        {
+          "from": "/nonexistent-route-test-xyz",
+          "to": "/login?next=%2Fnonexistent-route-test-xyz"
+        }
+      ],
+      "timing": 2100,
+      "screenshot": "nonexistent-route-test-xyz.png"
+    }
+  },
+  "allConsoleErrors": [],
+  "allNetworkFailures": [
+    {
+      "url": "http://localhost:5173/",
+      "method": "GET",
+      "resourceType": "document",
+      "failure": "net::ERR_ABORTED",
+      "route": "/"
+    }
+  ],
+  "allSlowRequests": [],
+  "allJSErrors": []
+}

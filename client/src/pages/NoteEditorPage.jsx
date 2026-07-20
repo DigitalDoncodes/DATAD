@@ -95,15 +95,15 @@ export default function NoteEditorPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
-      <h1 className="mb-1 text-xl font-bold">{isEdit ? 'Edit note' : 'New note'}</h1>
+      <h1 className="mb-1.5 text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">{isEdit ? 'Edit note' : 'New note'}</h1>
       {!isEdit && (
-        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">
+        <p className="mb-5 text-sm text-gray-500 dark:text-gray-400">
           Paraphrase, don&rsquo;t copy — putting it in your own words is where the learning happens.
         </p>
       )}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900"
+        className="card space-y-5 p-6"
       >
         <div>
           <label htmlFor="title" className="mb-1 block text-sm font-medium">Title</label>
@@ -131,7 +131,7 @@ export default function NoteEditorPage() {
         {subject === 'Other' && (
           <div>
             <label htmlFor="customSubject" className="mb-1 block text-sm font-medium">
-              Specify subject <span className="text-red-500">*</span>
+              Specify subject <span className="text-danger-500">*</span>
             </label>
             <input
               id="customSubject"
@@ -140,7 +140,7 @@ export default function NoteEditorPage() {
               className="input"
             />
             {formState.errors.customSubject && (
-              <p className="mt-1 text-xs text-red-500">Please specify the subject name</p>
+              <p className="mt-1 text-xs text-danger-500">Please specify the subject name</p>
             )}
           </div>
         )}
@@ -164,13 +164,13 @@ export default function NoteEditorPage() {
           {attachments.length > 0 && (
             <ul className="mb-3 space-y-2">
               {attachments.map((att, i) => (
-                <li key={i} className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
+                <li key={i} className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
                   <AttachmentIcon fileType={att.fileType} />
-                  <a href={att.url} target="_blank" rel="noopener noreferrer" className="flex-1 truncate text-sm text-indigo-600 hover:underline dark:text-indigo-400">
+                  <a href={att.url} target="_blank" rel="noopener noreferrer" className="flex-1 truncate text-sm text-primary-600 hover:underline dark:text-primary-400">
                     {att.name}
                   </a>
                   <span className="shrink-0 text-xs text-gray-400 uppercase">{att.fileType}</span>
-                  <button type="button" onClick={() => removeAttachment(i)} className="shrink-0 text-gray-400 hover:text-red-500">
+                  <button type="button" onClick={() => removeAttachment(i)} className="shrink-0 text-gray-400 hover:text-danger-500">
                     <X className="h-3.5 w-3.5" />
                   </button>
                 </li>
@@ -191,7 +191,7 @@ export default function NoteEditorPage() {
             <button
               type="button"
               onClick={addLink}
-              className="flex shrink-0 items-center gap-1 rounded-lg border border-gray-300 px-3 py-2 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
+              className="flex shrink-0 items-center gap-1 rounded-full border border-gray-300 px-3.5 py-2 text-sm hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800"
             >
               <Link2 className="h-4 w-4" /> Add
             </button>
@@ -211,7 +211,7 @@ export default function NoteEditorPage() {
               type="button"
               onClick={() => fileInputRef.current?.click()}
               disabled={uploading}
-              className="flex items-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-3 w-full text-sm text-gray-500 hover:border-indigo-400 hover:text-indigo-600 dark:border-gray-700 dark:hover:border-indigo-500 disabled:opacity-60 transition-colors"
+              className="flex items-center gap-2 rounded-2xl border border-dashed border-gray-300 px-4 py-3 w-full text-sm text-gray-500 hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50/50 dark:border-gray-700 dark:hover:border-primary-500 disabled:opacity-60 transition-colors"
             >
               {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
               {uploading ? 'Uploading…' : 'Upload PDF, Word, Excel, PPT, or any file'}
@@ -224,7 +224,7 @@ export default function NoteEditorPage() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="rounded-lg px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+            className="rounded-full px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             Cancel
           </button>

@@ -15,13 +15,15 @@ const ICON_SIZE = {
 
 const VARIANTS = {
   primary:
-    'bg-indigo-600 text-white hover:bg-indigo-500 active:scale-[0.97]',
+    'bg-primary-600 text-white shadow-sm hover:bg-primary-700 hover:shadow-md active:scale-[0.97]',
   secondary:
     'border border-gray-200 bg-white text-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300 dark:hover:border-gray-700 dark:hover:bg-gray-800',
   ghost:
     'border-transparent bg-transparent text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  success:
+    'bg-success-600 text-white shadow-sm hover:bg-success-700 hover:shadow-md active:scale-[0.97]',
   danger:
-    'bg-rose-600 text-white hover:bg-rose-500 active:scale-[0.97]',
+    'bg-danger-600 text-white shadow-sm hover:bg-danger-700 hover:shadow-md active:scale-[0.97]',
 };
 
 const Button = forwardRef(function Button({
@@ -45,7 +47,7 @@ const Button = forwardRef(function Button({
       type={type}
       disabled={isDisabled}
       onClick={onClick}
-      className={`inline-flex items-center justify-center rounded-xl font-medium transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${SIZE_CLASS[size]} ${VARIANTS[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      className={`inline-flex items-center justify-center rounded-full font-medium transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed ${SIZE_CLASS[size]} ${VARIANTS[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
     >
       {loading ? (
         <Loader2 className={`${ICON_SIZE[size]} animate-spin shrink-0`} />

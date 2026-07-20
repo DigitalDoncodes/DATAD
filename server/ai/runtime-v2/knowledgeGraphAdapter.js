@@ -1,4 +1,3 @@
-const aiConfig = require('../../config/ai');
 const { getPromptForTask } = require('./promptRegistry');
 
 let _graphApi;

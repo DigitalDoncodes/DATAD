@@ -36,6 +36,12 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('activeProgram');
+    const toRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('dax:')) toRemove.push(key);
+    }
+    toRemove.forEach((k) => localStorage.removeItem(k));
     setToken(null);
   };
 

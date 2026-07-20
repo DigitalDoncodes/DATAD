@@ -7,10 +7,10 @@
 module.exports = {
   // ── AI Providers ────────────────────────────────────────────────────────────
   providers: {
-    // Primary provider for fast, cheap generation
-    primary: process.env.AI_PRIMARY_PROVIDER || 'groq',
-    // Fallback provider when primary fails
-    fallback: process.env.AI_FALLBACK_PROVIDER || 'openai',
+    // Primary provider — NVIDIA NIM
+    primary: process.env.AI_PRIMARY_PROVIDER || 'nvidia',
+    // Fallback provider — local Ollama (no API key needed)
+    fallback: process.env.AI_FALLBACK_PROVIDER || 'ollama',
 
     groq: {
       apiKey: process.env.GROQ_API_KEY,
@@ -35,7 +35,11 @@ module.exports = {
     gemini: {
       apiKey: process.env.GEMINI_API_KEY,
       baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai',
-      model: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
+      // The numbered aliases (gemini-2.0-flash, gemini-2.5-*) report
+      // "free_tier ... limit: 0" — no free-tier allocation at all, so they 429
+      // on every call regardless of usage. The -latest aliases do have free
+      // quota, so default there and let GEMINI_MODEL override on a paid plan.
+      model: process.env.GEMINI_MODEL || 'gemini-flash-lite-latest',
       maxTokens: 2048,
       temperature: 0.7,
     },
@@ -53,10 +57,36 @@ module.exports = {
       maxTokens: 2048,
       temperature: 0.7,
     },
+    // Cloudflare Workers AI. Sits directly behind NVIDIA in the failover chain
+    // (see ai/providers/index.js) as a cheap open-weights cushion, so transient
+    // NVIDIA failures are absorbed before any metered provider is reached.
+    //
+    // Needs BOTH a token and an account ID — the account ID is baked into the
+    // URL path, not sent as a header. The key is deliberately gated on both:
+    // isAvailable() only checks apiKey, so a token set without an account ID
+    // would leave baseURL null and the OpenAI SDK would fall back to its
+    // default host — quietly sending a Cloudflare token to api.openai.com.
+    // Reporting unavailable is the safe failure here.
+    cloudflare: {
+      apiKey:
+        process.env.CLOUDFLARE_AI_TOKEN && process.env.CLOUDFLARE_ACCOUNT_ID
+          ? process.env.CLOUDFLARE_AI_TOKEN
+          : undefined,
+      baseURL: process.env.CLOUDFLARE_ACCOUNT_ID
+        ? `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/v1`
+        : null,
+      // Workers AI model slugs are namespaced with a leading "@cf/".
+      model: process.env.CLOUDFLARE_MODEL || '@cf/meta/llama-3.3-70b-instruct-fp8-fast',
+      maxTokens: 2048,
+      temperature: 0.7,
+    },
     nvidia: {
       apiKey: process.env.NVIDIA_API_KEY,
       baseURL: 'https://integrate.api.nvidia.com/v1',
-      model: process.env.NVIDIA_MODEL || 'meta/llama-3.3-70b-instruct',
+      // 70b currently hangs indefinitely on this NVIDIA account (confirmed via
+      // direct API testing) — 8b responds instantly, so it's the safe default
+      // until 70B availability is confirmed with NVIDIA.
+      model: process.env.NVIDIA_MODEL || 'meta/llama-3.1-8b-instruct',
       maxTokens: 2048,
       temperature: 0.7,
     },

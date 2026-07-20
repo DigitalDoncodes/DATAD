@@ -8,6 +8,7 @@ import Modal from '../../components/common/Modal';
 import BudgetBar from '../../components/finance/BudgetBar';
 import CategoryChart from '../../components/finance/CategoryChart';
 import Loader from '../../components/common/Loader';
+import DateInput from '../../components/common/DateInput';
 import { Page } from '../../components/common/motion';
 
 const CATEGORIES = ['Food', 'Travel', 'Rent', 'Books & Courses', 'Entertainment', 'Shopping', 'Other'];
@@ -138,11 +139,11 @@ export default function FinanceOverviewPage() {
 
           {/* Quick links to other sections */}
           <div className="flex flex-wrap gap-3">
-            <Link to="/me/finance/tracker"
+            <Link to="/finance/tracker"
               className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800">
               <List className="h-4 w-4" /> All transactions <ArrowRight className="h-3.5 w-3.5" />
             </Link>
-            <Link to="/me/finance/calculator"
+            <Link to="/finance/calculator"
               className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-800">
               <Calculator className="h-4 w-4" /> Calculators <ArrowRight className="h-3.5 w-3.5" />
             </Link>
@@ -184,7 +185,7 @@ export default function FinanceOverviewPage() {
           </div>
           <div>
             <label className="mb-1 block text-sm font-medium">Date</label>
-            <input type="date" defaultValue={new Date().toISOString().slice(0, 10)} {...expenseForm.register('date')} className="input" />
+            <DateInput defaultValue={new Date().toISOString().slice(0, 10)} {...expenseForm.register('date')} />
           </div>
           <button type="submit" disabled={expenseForm.formState.isSubmitting}
             className={`w-full rounded-lg py-2 text-sm font-medium text-white disabled:opacity-50 ${entryModal === 'income' ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>

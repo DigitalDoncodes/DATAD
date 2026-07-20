@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { BrainCircuit, Loader2, Pencil, Sparkles, Trash2, X } from 'lucide-react';
 import { listCases, createCase, updateCase, deleteCase } from '../../api/dailyCase';
 import { generateFramework } from '../../api/dax';
+import DateInput from '../../components/common/DateInput';
 import { AdminShell, inputClass } from './shared';
 import Loader from '../../components/common/Loader';
 import ConfirmModal from '../../components/common/ConfirmModal';
@@ -117,7 +118,7 @@ export default function AdminCasesPage() {
           </div>
         )}
         <div className="grid gap-3 sm:grid-cols-3">
-          <input type="date" required value={form.dateKey} onChange={set('dateKey')} className={inputClass} />
+          <DateInput required value={form.dateKey} onChange={set('dateKey')} />
           <select value={form.category} onChange={set('category')} className={inputClass}>
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c}</option>

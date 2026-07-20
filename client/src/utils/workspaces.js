@@ -1,16 +1,16 @@
-import { Home, BookOpen, Briefcase, Users, Sun, Wallet, HeartHandshake } from 'lucide-react';
+import { Home, BookOpen, Briefcase, Users, Sun, Wallet, HeartHandshake, Sparkles } from 'lucide-react';
 
 export const WORKSPACES = [
   { key: 'dashboard', label: 'Home', to: '/', icon: Home, end: true },
+  { key: 'dax', label: 'Dax', to: '/dax?home', icon: Sparkles },
   { key: 'study', label: 'Study', to: '/study', icon: BookOpen },
   { key: 'career', label: 'Career', to: '/career', icon: Briefcase },
   { key: 'community', label: 'Community', to: '/community', icon: Users },
   { key: 'me', label: 'Life', to: '/me', icon: Sun },
-  { key: 'finance', label: 'Finance', to: '/me/finance', icon: Wallet },
-  { key: 'wellbeing', label: 'Wellbeing', to: '/me/wellbeing', icon: HeartHandshake },
+  { key: 'finance', label: 'Finance', to: '/finance', icon: Wallet },
+  { key: 'wellbeing', label: 'Wellbeing', to: '/wellbeing', icon: HeartHandshake },
 ];
 
-// Secondary tab rows inside each workspace.
 export const WORKSPACE_TABS = {
   study: [
     { to: '/study', label: 'Overview', end: true },
@@ -42,30 +42,34 @@ export const WORKSPACE_TABS = {
     { to: '/me', label: 'Overview', end: true },
     { to: '/me/journal', label: 'Journal' },
     { to: '/me/planner', label: 'Planner' },
+    { to: '/me/calendar', label: 'Calendar' },
   ],
   finance: [
-    { to: '/me/finance', label: 'Overview', end: true },
-    { to: '/me/finance/tracker', label: 'Tracker' },
-    { to: '/me/finance/calculator', label: 'Calculator' },
-    { to: '/me/finance/learn', label: 'Learn' },
-    { to: '/me/finance/roi', label: 'ROI' },
+    { to: '/finance', label: 'Overview', end: true },
+    { to: '/finance/tracker', label: 'Tracker' },
+    { to: '/finance/calculator', label: 'Calculator' },
+    { to: '/finance/learn', label: 'Learn' },
+    { to: '/finance/roi', label: 'ROI' },
   ],
   wellbeing: [
-    { to: '/me/wellbeing', label: 'Breathing', end: true },
-    { to: '/me/wellbeing/study', label: 'Study Tips' },
-    { to: '/me/wellbeing/memory', label: 'Memory' },
-    { to: '/me/wellbeing/routines', label: 'Routines' },
-    { to: '/me/wellbeing/support', label: 'Support' },
+    { to: '/wellbeing', label: 'Breathing', end: true },
+    { to: '/wellbeing/study', label: 'Study Tips' },
+    { to: '/wellbeing/memory', label: 'Memory' },
+    { to: '/wellbeing/routines', label: 'Routines' },
+    { to: '/wellbeing/support', label: 'Support' },
   ],
 };
 
-// Legacy route → new route, so old bookmarks and in-app links keep working.
 export const LEGACY_REDIRECTS = {
   '/notes': '/study/notes',
   '/planner': '/me/planner',
-  '/finance': '/me/finance',
+  '/finance': '/finance',
+  '/me/finance': '/finance',
+  '/settings': '/me/settings',
+  '/journal': '/me/journal',
+  '/reflection': '/me/reflection',
   '/resume': '/career/resume',
   '/companies': '/career/companies',
   '/albums': '/community/memories',
-  '/entertainment': '/community/archive', // bare /community/archive then forwards to Memories
+  '/entertainment': '/community/archive',
 };

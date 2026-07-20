@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, ArrowUpRight, Sparkles, Send, Loader2, FileText, Wallet,
-  CalendarDays, BookOpen, Briefcase, Newspaper, Flame, GraduationCap,
+  CalendarDays, BookOpen, Briefcase, Newspaper, Flame, GraduationCap, Bot,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { getReadiness } from '../../api/experience';
@@ -278,10 +278,11 @@ function AskDax() {
 
 function ContinueWorking({ latestNote }) {
   const LINKS = [
+    { icon: Bot, label: 'Dax AI', to: '/dax' },
     { icon: BookOpen, label: 'Notes', to: '/study/notes' },
     { icon: CalendarDays, label: 'Planner', to: '/me/planner' },
     { icon: FileText, label: 'Resume', to: '/career/resume' },
-    { icon: Wallet, label: 'Finance', to: '/me/finance' },
+    { icon: Wallet, label: 'Finance', to: '/finance' },
   ];
   return (
     <section>

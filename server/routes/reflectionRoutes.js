@@ -7,7 +7,7 @@ router.get('/today', verifyToken, async (req, res, next) => {
   try {
     const dateKey = new Date().toISOString().slice(0, 10);
     const reflection = await DailyReflection.findOne({ dateKey, status: 'published' }).lean();
-    if (!reflection) return res.status(404).json({ message: 'No reflection for today yet' });
+    if (!reflection) return res.json(null);
     res.json(reflection);
   } catch (err) { next(err); }
 });

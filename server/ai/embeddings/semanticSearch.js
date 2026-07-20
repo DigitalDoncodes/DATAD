@@ -42,7 +42,11 @@ async function search({ query, collections, k = 5, userId }) {
 
       const ids = hits.map((h) => h.docId);
       const filter = { _id: { $in: ids } };
-      if (col === 'notes' && userId) filter.user = userId;
+      // Note ownership is `author`, not `user` — filtering on a field the
+      // schema doesn't have matched nothing, so scoped note search silently
+      // returned zero results for every student. Same defect that was already
+      // fixed in ai/memory.js's bootstrapMemory() note count.
+      if (col === 'notes' && userId) filter.author = userId;
 
       const docs = await cfg.model
         .find(filter)

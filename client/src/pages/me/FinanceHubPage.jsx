@@ -9,6 +9,7 @@ import {
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { listExpenses, createExpense, getSummary, setBudget } from '../../api/finance';
 import Modal from '../../components/common/Modal';
+import DateInput from '../../components/common/DateInput';
 import Button from '../../components/common/Button';
 import BudgetBar from '../../components/finance/BudgetBar';
 import CategoryChart from '../../components/finance/CategoryChart';
@@ -43,10 +44,10 @@ const exportCSV = (expenses, month) => {
 };
 
 const QUICK_LINKS = [
-  { to: '/me/finance/tracker',    icon: List,       label: 'All transactions' },
-  { to: '/me/finance/calculator', icon: Calculator,  label: 'Calculators' },
-  { to: '/me/finance/learn',      icon: BookOpen,    label: 'Learn' },
-  { to: '/me/finance/roi',        icon: TrendingUp,  label: 'ROI' },
+  { to: '/finance/tracker',    icon: List,       label: 'All transactions' },
+  { to: '/finance/calculator', icon: Calculator,  label: 'Calculators' },
+  { to: '/finance/learn',      icon: BookOpen,    label: 'Learn' },
+  { to: '/finance/roi',        icon: TrendingUp,  label: 'ROI' },
 ];
 
 export default function FinanceHubPage() {
@@ -221,7 +222,7 @@ export default function FinanceHubPage() {
           </div>
           <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">Date</label>
-            <input type="date" {...register('date')} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800" />
+            <DateInput {...register('date')} />
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="ghost" size="sm" onClick={() => setShowModal(false)}>Cancel</Button>

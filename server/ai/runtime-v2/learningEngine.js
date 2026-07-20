@@ -1,3 +1,19 @@
+// ⚠️  NOT WIRED — this module is imported by studentIntelligenceEngine.js but
+// none of its functions are ever called. recordOutcome() has no call site, so
+// INTENT_MODEL_HISTORY and PROMPT_EFFECTIVENESS are always empty, and
+// getBestModelForIntent() always returns null. Nothing in modelRouterV2's
+// selection path consults this file, so no routing decision has ever been
+// influenced by observed outcomes.
+//
+// Two things must happen before this is real:
+//   1. A call site. telemetryEngine.recordCall() in daxService._executeViaRuntimeV2
+//      already receives every field recordOutcome() needs.
+//   2. Persistence. The state below is module-scoped and dies on restart, so
+//      even once wired it would never accumulate the minSamples (5) that
+//      getBestModelForIntent() requires under any realistic deploy cadence.
+//
+// Until both land, treat "Dax learns from usage" as unimplemented.
+// LEARNED_MODEL_PREFERENCES in particular is declared and never assigned.
 const LEARNED_MODEL_PREFERENCES = {};
 const INTENT_MODEL_HISTORY = {};
 const CAPABILITY_FEEDBACK = {};

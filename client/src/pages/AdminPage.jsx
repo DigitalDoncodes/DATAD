@@ -17,6 +17,7 @@ import {
   BrainCircuit,
   Bot,
   ChevronRight,
+  Cpu,
   Activity,
   DollarSign,
   Clock,
@@ -26,6 +27,7 @@ import { getStats, listStudents } from '../api/admin';
 import { getMeta, updateMeta } from '../api/meta';
 import { useAuth } from '../context/AuthContext';
 import Loader from '../components/common/Loader';
+import DateInput from '../components/common/DateInput';
 import { AnimatedNumber, Stagger, StaggerItem } from '../components/common/motion';
 
 function StatTile({ icon: Icon, label, value }) {
@@ -99,11 +101,9 @@ function PlacementDateForm() {
       <div className="flex flex-wrap gap-3">
         <div className="flex-1 min-w-[160px]">
           <label className="mb-1 block text-xs text-gray-500">Placement date</label>
-          <input
-            type="date"
+          <DateInput
             value={form.placementDate}
             onChange={(e) => setForm((f) => ({ ...f, placementDate: e.target.value }))}
-            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-400 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
           />
         </div>
         <div className="flex-1 min-w-[200px]">
@@ -207,6 +207,12 @@ export default function AdminPage() {
       icon: Bot,
       title: 'Dax Center',
       description: 'Live Dax usage, cost tracking and scheduler health',
+    },
+    {
+      to: '/admin/ai-runtime',
+      icon: Cpu,
+      title: 'AI Runtime',
+      description: 'Live AI observability, provider health, model registry',
     },
     {
       to: '/admin/subscriptions',

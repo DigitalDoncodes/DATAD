@@ -1,34 +1,47 @@
-/**
- * Phase 2 — Embeddings
- * Generates vector embeddings for semantic search.
- * Uses OpenAI's text-embedding-3-small when available; falls back to
- * a lightweight TF-IDF bag-of-words vector for zero-dependency operation.
- */
+const OpenAI = require('openai');
+
+const EMBEDDING_DIM = 1536;
 
 let _openai = null;
+let _nvidia = null;
 
 function _getOpenAI() {
   if (_openai) return _openai;
-  const { OpenAI } = require('openai');
   _openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
   return _openai;
 }
 
-const EMBEDDING_MODEL = 'text-embedding-3-small';
-const EMBEDDING_DIM   = 1536;
+function _getNvidia() {
+  if (_nvidia) return _nvidia;
+  _nvidia = new OpenAI({
+    apiKey: process.env.NVIDIA_API_KEY,
+    baseURL: 'https://integrate.api.nvidia.com/v1',
+  });
+  return _nvidia;
+}
 
-/**
- * Generate an embedding vector for the given text.
- * Returns a Float32Array-like number[].
- */
 async function embed(text) {
   const clean = (text || '').replace(/\s+/g, ' ').trim().slice(0, 8000);
   if (!clean) return null;
 
+  // Prefer NVIDIA embeddings when NVIDIA_API_KEY is set
+  if (process.env.NVIDIA_API_KEY) {
+    try {
+      const res = await _getNvidia().embeddings.create({
+        model: 'nvidia/nv-embedqa-e5-v5',
+        input: clean,
+      });
+      return res.data[0].embedding;
+    } catch (err) {
+      console.warn('[embed] NVIDIA embedding failed, falling back:', err.message);
+    }
+  }
+
+  // Fallback to OpenAI embeddings
   if (process.env.OPENAI_API_KEY) {
     try {
       const res = await _getOpenAI().embeddings.create({
-        model: EMBEDDING_MODEL,
+        model: 'text-embedding-3-small',
         input: clean,
       });
       return res.data[0].embedding;
@@ -37,14 +50,10 @@ async function embed(text) {
     }
   }
 
-  // Fallback: deterministic TF-IDF-inspired sparse vector (1536 dims)
+  // Deterministic TF-IDF fallback
   return _tfidfVector(clean, EMBEDDING_DIM);
 }
 
-/**
- * Cosine similarity between two vectors.
- * @returns {number} 0..1
- */
 function cosineSimilarity(a, b) {
   if (!a || !b || a.length !== b.length) return 0;
   let dot = 0, normA = 0, normB = 0;
@@ -56,8 +65,6 @@ function cosineSimilarity(a, b) {
   const denom = Math.sqrt(normA) * Math.sqrt(normB);
   return denom === 0 ? 0 : dot / denom;
 }
-
-// ── Fallback: sparse hash-based vector ─────────────────────────────────────
 
 function _tfidfVector(text, dims) {
   const vec = new Array(dims).fill(0);
@@ -75,7 +82,6 @@ function _tfidfVector(text, dims) {
     vec[idx] += count / tokens.length;
   }
 
-  // Normalize
   const norm = Math.sqrt(vec.reduce((s, v) => s + v * v, 0)) || 1;
   return vec.map((v) => v / norm);
 }

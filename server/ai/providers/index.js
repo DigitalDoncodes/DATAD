@@ -20,20 +20,37 @@ function buildProvider(name) {
   return providers[name];
 }
 
+// Failover order. NVIDIA is the primary; everything after it is a backup that
+// only gets used when the ones before it fail.
+//
+// Ollama is deliberately LAST despite being the configured fallback: its key
+// is a hardcoded placeholder (config/automation.js), so isAvailable() is true
+// even with no local daemon running. Sitting early in the chain, a dead Ollama
+// absorbed every NVIDIA failure and stalled the request before it could reach
+// a working cloud backup.
+const PROVIDER_ORDER = [
+  'nvidia',      // primary
+  'cloudflare',  // first backup — open-weights, absorbs NVIDIA blips cheaply
+  'groq',        // cloud backups, in preference order
+  'openrouter',
+  'gemini',
+  'openai',
+  'anthropic',
+  'ollama',      // local last resort — may not be running at all
+];
+
 function _candidateOrder(preferredName) {
   return [
     preferredName,
-    'nvidia',
-    'ollama',
     cfg.providers.primary,
+    ...PROVIDER_ORDER,
     cfg.providers.fallback,
-    'groq', 'openai', 'gemini', 'openrouter',
   ].filter(Boolean);
 }
 
 /**
  * Returns the best available provider.
- * Fallback chain: NVIDIA → Ollama → Error
+ * Fallback chain: PROVIDER_ORDER above, first statically-available wins.
  *
  * "Available" here means isAvailable() — a static check (does this provider
  * have a key configured), not a live reachability probe. Ollama's key is a

@@ -4,6 +4,7 @@ import {
   Sparkles, Loader2, AlertTriangle, CheckCircle2, RefreshCw, Trash2,
   CalendarClock, Save, Send, ExternalLink,
 } from 'lucide-react';
+import DateInput from '../../components/common/DateInput';
 import Button from '../../components/common/Button';
 import { AdminShell, inputClass } from './shared';
 import {
@@ -439,9 +440,9 @@ export default function AdminStudioReviewPage() {
             )}
             {showSchedule && editable && (
               <div className="flex items-center gap-2">
-                <input
+                <DateInput
                   type="datetime-local"
-                  className={inputClass + ' max-w-xs'}
+                  className="max-w-xs"
                   value={scheduleAt}
                   onChange={(e) => setScheduleAt(e.target.value)}
                 />

@@ -62,13 +62,13 @@ export default function NoteDetailPage() {
 
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{note.title}</h1>
-          {note.subject && <p className="mt-1 text-xs text-gray-400">{note.subject}</p>}
+          <h1 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">{note.title}</h1>
+          {note.subject && <p className="mt-2 text-xs text-gray-400">{note.subject}</p>}
           <p className="mt-1 text-xs text-gray-400">Updated {formatDateTime(note.updatedAt)}</p>
         </div>
         <div className="flex items-center gap-1 shrink-0">
-          <Link to={`/study/notes/${id}/edit`} className="rounded-lg p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800"><Pencil className="h-4 w-4" /></Link>
-          <button onClick={() => setShowDelete(true)} className="rounded-lg p-2 text-gray-400 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-950/30"><Trash2 className="h-4 w-4" /></button>
+          <Link to={`/study/notes/${id}/edit`} className="rounded-full p-2 text-gray-400 hover:bg-primary-50 hover:text-primary-600 dark:hover:bg-primary-900/30"><Pencil className="h-4 w-4" /></Link>
+          <button onClick={() => setShowDelete(true)} className="rounded-full p-2 text-gray-400 hover:bg-danger-50 hover:text-danger-500 dark:hover:bg-danger-950/30"><Trash2 className="h-4 w-4" /></button>
         </div>
       </div>
 
@@ -82,10 +82,10 @@ export default function NoteDetailPage() {
 
       {/* ── AI ENHANCEMENTS ── */}
       {hasContent && (
-        <div className="mt-10 border-t border-gray-200/60 dark:border-gray-800/60 pt-8">
+        <div className="mt-10 border-t border-gray-100 dark:border-gray-800/60 pt-8">
           <button
             onClick={() => setShowEnhancements((s) => !s)}
-            className="flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400"
+            className="flex items-center gap-2 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400"
           >
             <Sparkles className="h-4 w-4" />
             Dax enrichment

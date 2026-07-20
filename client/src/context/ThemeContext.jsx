@@ -3,12 +3,12 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
-  // Dark-first: new users get the dark theme unless their OS prefers light.
+  // Light-first: new users get the light theme unless their OS prefers dark.
   // An explicit choice (the in-app toggle) always wins.
   const [dark, setDark] = useState(() => {
     const saved = localStorage.getItem('theme');
     if (saved) return saved === 'dark';
-    return !window.matchMedia('(prefers-color-scheme: light)').matches;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   useEffect(() => {

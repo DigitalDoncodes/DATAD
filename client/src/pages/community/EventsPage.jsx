@@ -8,6 +8,7 @@ import { FeedSkeleton } from '../../components/common/Skeleton';
 import EmptyState from '../../components/common/EmptyState';
 import Modal from '../../components/common/Modal';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
+import DateInput from '../../components/common/DateInput';
 import { Page } from '../../components/common/motion';
 
 const CAT_COLORS = {
@@ -197,8 +198,8 @@ export default function EventsPage() {
           <input {...register('title', { required: true })} placeholder="Event title *" className="input" />
           <textarea {...register('description')} placeholder="Description" rows={2} className="input" />
           <div className="grid grid-cols-2 gap-2">
-            <input type="datetime-local" {...register('date', { required: true })} className="input" />
-            <input type="datetime-local" {...register('endDate')} className="input" />
+            <DateInput type="datetime-local" {...register('date', { required: true })} />
+            <DateInput type="datetime-local" {...register('endDate')} />
           </div>
           <select {...register('category')} className="input">
             {['academic', 'social', 'career', 'sports', 'other'].map((c) => <option key={c} value={c} className="capitalize">{c}</option>)}

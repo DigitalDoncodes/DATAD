@@ -54,12 +54,16 @@ function StartCard() {
   );
 }
 
-export default function ReadinessCard() {
-  const [data, setData] = useState(null);
+// `data` is optional: pass it when the parent already has readiness loaded
+// (the Career hub does) and this skips its own fetch.
+export default function ReadinessCard({ data: provided }) {
+  const [fetched, setFetched] = useState(null);
+  const data = provided ?? fetched;
 
   useEffect(() => {
-    getReadiness().then((res) => setData(res.data)).catch(() => {});
-  }, []);
+    if (provided) return;
+    getReadiness().then((res) => setFetched(res.data)).catch(() => {});
+  }, [provided]);
 
   if (!data) return null;
 

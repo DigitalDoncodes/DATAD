@@ -12,6 +12,7 @@ import Modal from '../components/common/Modal';
 import ConfirmModal from '../components/common/ConfirmModal';
 import TierGate from '../components/common/TierGate';
 import CrownBadge from '../components/common/CrownBadge';
+import DateInput from '../components/common/DateInput';
 import Button from '../components/common/Button';
 import AIEnhancement from '../components/common/AIEnhancement';
 import { DAX_CAPABILITY } from '../utils/dax';
@@ -194,7 +195,7 @@ export default function PlannerPage() {
             </div>
             <div>
               <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Due</label>
-              <input type="date" {...register('dueDate')} className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800" />
+              <DateInput {...register('dueDate')} />
             </div>
           </div>
           <div className="flex justify-end gap-2 pt-2">

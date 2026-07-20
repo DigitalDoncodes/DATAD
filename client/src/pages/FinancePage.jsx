@@ -11,6 +11,7 @@ import {
   listExpenses, createExpense, deleteExpense, getSummary, setBudget,
 } from '../api/finance';
 import { formatDate } from '../utils/dateUtils';
+import DateInput from '../components/common/DateInput';
 import Loader from '../components/common/Loader';
 import EmptyState from '../components/common/EmptyState';
 import Modal from '../components/common/Modal';
@@ -580,7 +581,7 @@ export default function FinancePage() {
           </div>
           <div>
             <label htmlFor="exp-date" className="mb-1 block text-sm font-medium">Date</label>
-            <input id="exp-date" type="date" defaultValue={new Date().toISOString().slice(0, 10)} {...expenseForm.register('date')} className="input" />
+            <DateInput id="exp-date" defaultValue={new Date().toISOString().slice(0, 10)} {...expenseForm.register('date')} />
           </div>
           <button type="submit" disabled={expenseForm.formState.isSubmitting} className={`w-full rounded-lg py-2 text-sm font-medium text-white disabled:opacity-50 ${entryModal === 'income' ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}>
             {entryModal === 'income' ? 'Add income' : 'Add expense'}

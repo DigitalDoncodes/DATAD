@@ -110,7 +110,49 @@ function buildEnrichedContext(collected, scores) {
     if (scores.confidence < 40) parts.push(`Confidence: Low — provide clear guidance`);
   }
 
+  // Delivery directives. scoringEngine computes recommendedTone /
+  // recommendedResponseLength / recommendedExamples on every request from
+  // stress level, rejection count, explanation-style preference, and the
+  // student's own average query length — but until now none of the three
+  // were ever emitted here, so they never reached a prompt and personalisation
+  // could only change *what* Dax knew, never *how* it spoke. These are
+  // phrased as instructions rather than facts because that is what they are;
+  // the surrounding lines ("Motivation: Low — needs encouragement") already
+  // follow the same convention.
+  const directives = buildDeliveryDirectives(scores);
+  if (directives) parts.push(directives);
+
   return parts.join(' | ');
+}
+
+const RESPONSE_LENGTH_GUIDANCE = {
+  short: 'keep it under ~120 words unless asked for more',
+  moderate: 'keep it under ~250 words unless asked for more',
+  long: 'a fuller answer is welcome — up to ~500 words',
+};
+
+/**
+ * Turns the scoringEngine's delivery recommendations into a single explicit
+ * instruction clause. Returns '' when there is nothing worth saying, so the
+ * caller can skip the segment entirely rather than emit a bare label.
+ */
+function buildDeliveryDirectives(scores) {
+  if (!scores) return '';
+  const clauses = [];
+
+  if (scores.recommendedTone && scores.recommendedTone !== 'neutral') {
+    clauses.push(`adopt a ${scores.recommendedTone} tone`);
+  }
+
+  const lengthGuidance = RESPONSE_LENGTH_GUIDANCE[scores.recommendedResponseLength];
+  if (lengthGuidance) clauses.push(lengthGuidance);
+
+  if (scores.recommendedExamples?.length) {
+    clauses.push(`where an example helps, draw it from: ${scores.recommendedExamples.join(', ')}`);
+  }
+
+  if (!clauses.length) return '';
+  return `How to respond: ${clauses.join('; ')}`;
 }
 
 module.exports = { createEmptyProfile, buildProfile, buildEnrichedContext };

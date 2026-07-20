@@ -23,17 +23,16 @@ const TYPE_ICONS = {
 };
 const TYPE_COLORS = {
   pdf: 'text-red-500', word: 'text-blue-500', excel: 'text-green-600',
-  ppt: 'text-orange-500', zip: 'text-yellow-600', video: 'text-purple-500', link: 'text-indigo-500',
+  ppt: 'text-orange-500', zip: 'text-yellow-600', video: 'text-purple-500', link: 'text-primary-500',
 };
 const TYPES = ['pdf', 'word', 'excel', 'ppt', 'zip', 'video', 'link'];
 
+// Folder accents cycle the four Google-ecosystem colors, never more.
 const FOLDER_COLORS = [
-  'text-indigo-500 bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200/80 dark:border-indigo-800/60',
-  'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200/80 dark:border-emerald-800/60',
-  'text-amber-500 bg-amber-50 dark:bg-amber-950/40 border-amber-200/80 dark:border-amber-800/60',
-  'text-purple-500 bg-purple-50 dark:bg-purple-950/40 border-purple-200/80 dark:border-purple-800/60',
-  'text-rose-500 bg-rose-50 dark:bg-rose-950/40 border-rose-200/80 dark:border-rose-800/60',
-  'text-cyan-500 bg-cyan-50 dark:bg-cyan-950/40 border-cyan-200/80 dark:border-cyan-800/60',
+  'text-primary-600 bg-primary-50 dark:bg-primary-950/40 border-primary-200/80 dark:border-primary-800/60',
+  'text-success-600 bg-success-50 dark:bg-success-950/40 border-success-200/80 dark:border-success-800/60',
+  'text-warn-700 bg-warn-50 dark:bg-warn-950/40 border-warn-200/80 dark:border-warn-800/60',
+  'text-danger-600 bg-danger-50 dark:bg-danger-950/40 border-danger-200/80 dark:border-danger-800/60',
 ];
 
 function groupBySubject(items) {
@@ -128,9 +127,9 @@ export default function ResourcesPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <input value={search} onChange={(e) => { setSearch(e.target.value); setOpenFolder(null); }}
             placeholder="Search resources…"
-            className="w-full rounded-xl border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900" />
+            className="w-full rounded-full border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm shadow-sm focus:border-primary-400 focus:outline-none dark:border-gray-700 dark:bg-gray-900" />
         </div>
-        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900">
+        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="rounded-full border border-gray-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none dark:border-gray-700 dark:bg-gray-900">
           <option value="newest">Newest</option>
           <option value="downloads">Most downloaded</option>
         </select>
@@ -139,21 +138,21 @@ export default function ResourcesPage() {
       {items === null ? <FeedSkeleton count={6} /> : items.length === 0 ? (
         <div className="flex flex-col items-center justify-center gap-4 py-20">
           <EmptyState icon={Files} title="No resources yet" description="Add the first resource for your batch" />
-          <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700">
+          <button onClick={() => setShowAdd(true)} className="flex items-center gap-2 rounded-full bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 hover:shadow-md transition-all">
             <Plus className="h-4 w-4" /> Add Resource
           </button>
         </div>
       ) : openFolder ? (
         /* ── Inside a folder ── */
         <>
-          <button onClick={() => setOpenFolder(null)} className="mb-4 flex items-center gap-2 text-sm text-indigo-600 hover:underline dark:text-indigo-400">
+          <button onClick={() => setOpenFolder(null)} className="mb-4 flex items-center gap-2 text-sm text-primary-600 hover:underline dark:text-primary-400">
             <ArrowLeft className="h-4 w-4" /> All folders
           </button>
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <FolderOpen className="h-5 w-5 text-indigo-500" />
-              <h2 className="font-semibold">{openFolder}</h2>
-              <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">{folderItems.length} file{folderItems.length !== 1 ? 's' : ''}</span>
+              <FolderOpen className="h-5 w-5 text-primary-500" />
+              <h2 className="text-xl font-semibold">{openFolder}</h2>
+              <span className="rounded-full bg-primary-100 px-2 py-0.5 text-xs text-primary-700 dark:bg-primary-900/40 dark:text-primary-300">{folderItems.length} file{folderItems.length !== 1 ? 's' : ''}</span>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -161,7 +160,7 @@ export default function ResourcesPage() {
               const Icon = TYPE_ICONS[item.type] || FileText;
               const iconColor = TYPE_COLORS[item.type] || 'text-gray-500';
               return (
-                <div key={item._id} className="rounded-2xl border border-gray-200/80 bg-white p-4 dark:border-gray-800/80 dark:bg-gray-900 hover:shadow-md transition-shadow">
+                <div key={item._id} className="card card-hover p-4">
                   <div className="mb-3 flex items-start gap-3">
                     <Icon className={`h-7 w-7 shrink-0 ${iconColor}`} />
                     <div className="min-w-0">
@@ -176,7 +175,7 @@ export default function ResourcesPage() {
                   )}
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-1 text-xs text-gray-400"><Download className="h-3.5 w-3.5" />{item.downloads}</span>
-                    <button onClick={() => handleOpen(item)} className="flex items-center gap-1 rounded-lg bg-indigo-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-indigo-700">
+                    <button onClick={() => handleOpen(item)} className="flex items-center gap-1 rounded-full bg-primary-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-primary-700">
                       Open <ExternalLink className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -192,7 +191,7 @@ export default function ResourcesPage() {
             const Icon = TYPE_ICONS[item.type] || FileText;
             const iconColor = TYPE_COLORS[item.type] || 'text-gray-500';
             return (
-              <div key={item._id} className="rounded-2xl border border-gray-200/80 bg-white p-4 dark:border-gray-800/80 dark:bg-gray-900">
+              <div key={item._id} className="card p-4">
                 <div className="mb-3 flex items-start gap-3">
                   <Icon className={`h-7 w-7 shrink-0 ${iconColor}`} />
                   <div className="min-w-0">
@@ -202,7 +201,7 @@ export default function ResourcesPage() {
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="flex items-center gap-1 text-xs text-gray-400"><Download className="h-3.5 w-3.5" />{item.downloads}</span>
-                  <button onClick={() => handleOpen(item)} className="flex items-center gap-1 rounded-lg bg-indigo-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-indigo-700">
+                  <button onClick={() => handleOpen(item)} className="flex items-center gap-1 rounded-full bg-primary-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-primary-700">
                     Open <ExternalLink className="h-3.5 w-3.5" />
                   </button>
                 </div>
@@ -220,7 +219,7 @@ export default function ResourcesPage() {
                 <button
                   key={subject}
                   onClick={() => setOpenFolder(subject)}
-                  className={`flex items-center gap-4 rounded-2xl border p-5 text-left hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 ${colors}`}
+                  className={`flex items-center gap-4 rounded-2xl border p-5 text-left shadow-[0_1px_2px_rgba(60,64,67,0.06),0_1px_3px_rgba(60,64,67,0.08)] hover:shadow-[0_2px_4px_rgba(60,64,67,0.08),0_6px_16px_rgba(60,64,67,0.1)] transition-all duration-200 hover:-translate-y-0.5 dark:shadow-none ${colors}`}
                 >
                   <FolderOpen className="h-8 w-8 shrink-0" />
                   <div className="min-w-0">
@@ -236,7 +235,7 @@ export default function ResourcesPage() {
           <div className="mt-10 flex justify-center">
             <button
               onClick={() => setShowAdd(true)}
-              className="flex items-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 bg-white px-8 py-5 text-sm font-medium text-gray-500 transition-colors hover:border-indigo-400 hover:text-indigo-600 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-indigo-500"
+              className="flex items-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 bg-white px-8 py-5 text-sm font-medium text-gray-500 transition-colors hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50/50 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-primary-500"
             >
               <Plus className="h-5 w-5" /> Add a new resource
             </button>
@@ -247,14 +246,14 @@ export default function ResourcesPage() {
       <Modal open={showAdd} onClose={closeModal} title="Add Resource">
         {user?.role === 'admin' && (
           <Link to="/admin/studio?dest=resources"
-            className="mb-4 flex items-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-medium text-indigo-700 transition-colors hover:bg-indigo-100 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-300">
+            className="mb-4 flex items-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-3 py-2 text-xs font-medium text-primary-700 transition-colors hover:bg-primary-100 dark:border-primary-900 dark:bg-primary-950/40 dark:text-primary-300">
             <Sparkles className="h-3.5 w-3.5" /> Admin tip: upload via the Content Studio and Dax fills the metadata →
           </Link>
         )}
-        <div className="mb-4 flex rounded-xl border border-gray-200 p-1 dark:border-gray-700">
+        <div className="mb-4 flex rounded-full border border-gray-200 p-1 dark:border-gray-700">
           {[['link', 'Link / URL'], ['file', 'Upload File']].map(([key, label]) => (
             <button key={key} onClick={() => setAddTab(key)}
-              className={`flex-1 rounded-lg py-1.5 text-sm font-medium transition-colors ${addTab === key ? 'bg-indigo-600 text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}>
+              className={`flex-1 rounded-full py-1.5 text-sm font-medium transition-colors ${addTab === key ? 'bg-primary-600 text-white' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400'}`}>
               {label}
             </button>
           ))}
@@ -269,16 +268,16 @@ export default function ResourcesPage() {
             <input {...register('professor')} placeholder="Professor name" className="input" />
             <input {...register('tags')} placeholder="Tags (comma-separated)" className="input" />
             <div className="flex justify-end gap-2 pt-2">
-              <button type="button" onClick={closeModal} className="rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>
-              <button type="submit" disabled={isSubmitting} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">Add</button>
+              <button type="button" onClick={closeModal} className="rounded-full border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>
+              <button type="submit" disabled={isSubmitting} className="rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 hover:shadow-md transition-all disabled:opacity-50">Add</button>
             </div>
           </form>
         ) : (
           <form onSubmit={handleSubmit(onUploadFile)} className="space-y-3">
             <input {...register('title', { required: true })} placeholder="Title *" className="input" />
-            <div onClick={() => fileRef.current?.click()} className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 py-6 hover:border-indigo-400 dark:border-gray-700">
+            <div onClick={() => fileRef.current?.click()} className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-gray-300 py-6 hover:border-primary-400 hover:bg-primary-50/50 dark:border-gray-700">
               <Upload className="h-7 w-7 text-gray-400" />
-              {selectedFile ? <p className="text-sm font-medium text-indigo-600">{selectedFile.name}</p> : <p className="text-sm text-gray-500">Click to select a file (PDF, PPT, Word, Excel, ZIP, Video · max 50 MB)</p>}
+              {selectedFile ? <p className="text-sm font-medium text-primary-600">{selectedFile.name}</p> : <p className="text-sm text-gray-500">Click to select a file (PDF, PPT, Word, Excel, ZIP, Video · max 50 MB)</p>}
               <input ref={fileRef} type="file" className="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.mp4,.webm" onChange={(e) => setSelectedFile(e.target.files[0] || null)} />
             </div>
             <input {...register('subject')} placeholder="Subject / folder name" className="input" />
@@ -286,8 +285,8 @@ export default function ResourcesPage() {
             <input {...register('professor')} placeholder="Professor name" className="input" />
             <input {...register('tags')} placeholder="Tags (comma-separated)" className="input" />
             <div className="flex justify-end gap-2 pt-2">
-              <button type="button" onClick={closeModal} className="rounded-lg border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>
-              <button type="submit" disabled={uploading} className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50">{uploading ? 'Uploading…' : 'Upload'}</button>
+              <button type="button" onClick={closeModal} className="rounded-full border border-gray-300 px-4 py-2 text-sm dark:border-gray-700">Cancel</button>
+              <button type="submit" disabled={uploading} className="rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-primary-700 hover:shadow-md transition-all disabled:opacity-50">{uploading ? 'Uploading…' : 'Upload'}</button>
             </div>
           </form>
         )}

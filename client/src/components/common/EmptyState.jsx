@@ -7,8 +7,8 @@ export default function EmptyState({ icon: Icon, title, description, subtitle, c
   return (
     <div className="flex flex-col items-center gap-4 py-16 text-center">
       {Icon && (
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100/80 ring-1 ring-gray-200/60 dark:bg-gray-800/80 dark:ring-gray-700/60">
-          <Icon className="h-8 w-8 text-gray-300 dark:text-gray-600" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary-50 dark:bg-primary-900/20">
+          <Icon className="h-8 w-8 text-primary-300 dark:text-primary-600" />
         </div>
       )}
       <div className="max-w-xs">
@@ -27,7 +27,7 @@ export default function EmptyState({ icon: Icon, title, description, subtitle, c
         ) : (
           <Link
             to={cta.to}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 active:scale-95 transition-transform"
+            className="inline-flex items-center gap-1.5 rounded-full bg-primary-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 hover:shadow-md active:scale-95 transition-all"
           >
             {cta.label} <ArrowRight className="h-3.5 w-3.5" />
           </Link>

@@ -18,6 +18,7 @@ const { generateWeeklyNewsletter }  = require('../automation/newsletter/generate
 const { sendPlannerReminders }      = require('../automation/planner/plannerReminders');
 const { sendOverdueReminders }      = require('../automation/reminders/overdueTasksReminder');
 const { sendRsvpReminders }         = require('../automation/reminders/rsvpEventReminder');
+const { sendCalendarEventReminders }= require('../automation/reminders/calendarEventReminder');
 const { sendTrialExpiryReminders }  = require('../automation/reminders/trialExpiryReminder');
 const { sendJournalNudges }         = require('../automation/reminders/journalNudge');
 const { checkStreakMilestones }     = require('../automation/reminders/streakMilestone');
@@ -68,8 +69,9 @@ function register() {
   cron.schedule('0 8 * * *', safe('planner-reminders', sendPlannerReminders));
   cron.schedule('0 9 * * *', safe('overdue-tasks', sendOverdueReminders));
 
-  // ── 8am daily: RSVP reminder for events happening tomorrow ──────────────────
+  // ── 8am daily: RSVP + calendar event reminders for tomorrow ─────────────────
   cron.schedule('0 8 * * *', safe('rsvp-reminder', sendRsvpReminders));
+  cron.schedule('0 8 * * *', safe('calendar-reminder', sendCalendarEventReminders));
 
   // ── 7am daily: trial/subscription expiry reminders ──────────────────────────
   cron.schedule('0 7 * * *', safe('trial-expiry', sendTrialExpiryReminders));

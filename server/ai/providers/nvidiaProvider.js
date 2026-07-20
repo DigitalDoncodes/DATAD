@@ -2,6 +2,11 @@ const OpenAI = require('openai');
 
 const NVIDIA_BASE_URL = 'https://integrate.api.nvidia.com/v1';
 
+// Per-request ceiling. Without this the SDK waits ~10 minutes, so one slow
+// model holds its socket open and starves every other AI request — that is
+// what wedged the whole server during testing.
+const REQUEST_TIMEOUT_MS = Number(process.env.AI_REQUEST_TIMEOUT_MS) || 20000;
+
 const NVIDIA_MODELS = {
   'deepseek-ai/deepseek-v4-flash': {
     contextWindow: 1048576, supportsVision: false, supportsEmbedding: false, maxTokens: 8192,
@@ -128,31 +133,58 @@ const NVIDIA_MODELS = {
   },
 };
 
-// Key pool: primary key plus an optional fallback for resilience against
-// account-level failures (401 invalid key / 429 account rate limit) that a
-// different NVIDIA account survives. With only NVIDIA_API_KEY set, behavior
-// is identical to the previous single-key implementation.
+// ── Standby key pool ────────────────────────────────────────────────────────
+// NVIDIA_API_KEY is the primary. Additional keys (from separate free-tier
+// NVIDIA accounts) sit unused until the primary stops working — rate limit,
+// exhausted credits, revoked key, or NVIDIA-side outage — then requests move
+// to the next key automatically. With only the primary set, behaviour is
+// identical to a plain single-key setup.
+//
+//   NVIDIA_API_KEY=nvapi-primary
+//   NVIDIA_API_KEY_2=nvapi-second-account
+//   NVIDIA_API_KEY_3=nvapi-third-account      (any number, in order)
+//   NVIDIA_API_KEY_FALLBACK=...               (legacy name, still honoured)
 const KEY_RESET_MS = 5 * 60 * 1000;
+const MAX_EXTRA_KEYS = 10;
 
 function nvidiaKeys() {
-  return [process.env.NVIDIA_API_KEY, process.env.NVIDIA_API_KEY_FALLBACK].filter(Boolean);
+  const keys = [process.env.NVIDIA_API_KEY];
+  for (let i = 2; i <= MAX_EXTRA_KEYS; i++) keys.push(process.env[`NVIDIA_API_KEY_${i}`]);
+  keys.push(process.env.NVIDIA_API_KEY_FALLBACK);
+  // De-duplicate so a key repeated across env vars isn't retried pointlessly.
+  return [...new Set(keys.filter(Boolean))];
 }
 
 // Module-level so every NvidiaProvider instance (there's normally one)
-// shares the same "primary key is dead, use fallback" knowledge.
+// shares the same "primary is down, we're on key N" knowledge.
 let _activeKeyIndex = 0;
 let _keyFailedAt = 0;
 
 function _currentKeyIndex() {
   if (_activeKeyIndex > 0 && Date.now() - _keyFailedAt > KEY_RESET_MS) {
-    _activeKeyIndex = 0; // periodically retry the primary key
+    _activeKeyIndex = 0; // periodically drift back to the primary
   }
   return _activeKeyIndex;
 }
 
-function _isKeyLevelError(err) {
+// Worth trying another key: auth/quota problems and NVIDIA-side failures.
+// Deliberately NOT 400/404/422 — a malformed request or unknown model name
+// fails identically on every key, so rotating would just burn the pool.
+function _shouldTryNextKey(err) {
   const status = err?.status || err?.response?.status;
-  return status === 401 || status === 429;
+  if (status === 401 || status === 403 || status === 429) return true; // key / quota
+  if (status >= 500) return true;                                      // NVIDIA down
+  if (!status) return true;                                            // network/timeout
+  return false;
+}
+
+function getKeyPoolStatus() {
+  return {
+    totalKeys: nvidiaKeys().length,
+    activeKeyIndex: _currentKeyIndex(),
+    usingFallback: _currentKeyIndex() > 0,
+    lastFailoverAt: _keyFailedAt ? new Date(_keyFailedAt).toISOString() : null,
+  };
 }
 
 class NvidiaProvider {
@@ -172,26 +204,41 @@ class NvidiaProvider {
       this._clients[idx] = new OpenAI({
         apiKey: keys[idx],
         baseURL: NVIDIA_BASE_URL,
+        timeout: REQUEST_TIMEOUT_MS,
+        maxRetries: 0, // the key pool + provider chain are the retry strategy
       });
     }
     return this._clients[idx];
   }
 
-  // Run an SDK call with the active key; on a key-level error (401/429),
-  // retry once with the next key in the pool and remember the switch.
+  // Run an SDK call against the active key, walking the whole standby pool
+  // if that key is failing. A key that works becomes the active one, so the
+  // next request goes straight to it instead of re-failing on a dead key.
   async _withKeyFallback(fn) {
     const keys = nvidiaKeys();
-    const idx = _currentKeyIndex();
-    try {
-      return await fn(this._getClient(idx));
-    } catch (err) {
-      const nextIdx = idx + 1;
-      if (!_isKeyLevelError(err) || nextIdx >= keys.length) throw err;
-      console.warn(`[nvidiaProvider] key ${idx} failed (${err.status}); switching to fallback key`);
-      _activeKeyIndex = nextIdx;
-      _keyFailedAt = Date.now();
-      return fn(this._getClient(nextIdx));
+    const start = _currentKeyIndex();
+    let lastErr;
+
+    for (let attempt = 0; attempt < keys.length; attempt++) {
+      const idx = (start + attempt) % keys.length;
+      try {
+        const result = await fn(this._getClient(idx));
+        if (idx !== _activeKeyIndex) {
+          _activeKeyIndex = idx;
+          _keyFailedAt = idx > 0 ? Date.now() : 0;
+          console.warn(`[nvidiaProvider] now serving on key #${idx + 1}/${keys.length}`);
+        }
+        return result;
+      } catch (err) {
+        lastErr = err;
+        if (!_shouldTryNextKey(err)) throw err; // same failure on every key
+        console.warn(
+          `[nvidiaProvider] key #${idx + 1}/${keys.length} failed (${err?.status || 'network'}): ${err?.message?.slice(0, 80)}`
+        );
+      }
     }
+
+    throw lastErr;
   }
 
   isAvailable() {
@@ -202,7 +249,7 @@ class NvidiaProvider {
     return NVIDIA_MODELS[modelName] || NVIDIA_MODELS['meta/llama-3.1-8b-instruct'];
   }
 
-  async complete({ messages, system, maxTokens, temperature, responseFormat, model }) {
+  async complete({ messages, system, maxTokens, temperature, responseFormat, model, tools }) {
     const start = Date.now();
     const resolvedModel = model || this.model;
     const modelInfo = this.getModelInfo(resolvedModel);
@@ -217,11 +264,26 @@ class NvidiaProvider {
       temperature: temperature ?? this.temperature,
     };
     if (responseFormat) params.response_format = responseFormat;
+    if (tools?.length) {
+      params.tools = tools;
+      params.tool_choice = 'auto';
+    }
 
     const res = await this._withKeyFallback((client) => client.chat.completions.create(params));
-    const text = res.choices[0].message.content.trim();
+    const message = res.choices[0].message;
+    // A tool-calling turn returns content: null — .trim() on it threw before
+    // this branch existed.
+    const text = (message.content || '').trim();
     return {
       text,
+      // Normalised to { id, name, arguments } so callers never have to know the
+      // provider's nested function-call shape.
+      toolCalls: (message.tool_calls || []).map((tc) => ({
+        id: tc.id,
+        name: tc.function?.name,
+        arguments: tc.function?.arguments,
+      })),
+      finishReason: res.choices[0].finish_reason,
       provider: 'nvidia',
       model: resolvedModel,
       tokensUsed: res.usage?.total_tokens || 0,
@@ -236,6 +298,29 @@ class NvidiaProvider {
   // arg so an aborted Express request genuinely cancels the upstream call,
   // not just the client-side read.
   async *completeStream({ messages, system, maxTokens, temperature, model, signal }) {
+    for await (const ev of this.completeStreamRich({ messages, system, maxTokens, temperature, model, signal })) {
+      if (ev.type === 'text') yield ev.text;
+    }
+  }
+
+  /**
+   * Streaming with tool-call support.
+   *
+   * completeStream() above yields bare content strings, which cannot express
+   * "the model wants to call a tool" — so this yields typed events instead and
+   * completeStream() is now a filter over it, keeping every existing caller
+   * working unchanged.
+   *
+   * Yields:
+   *   { type: 'text', text }              content delta, as it arrives
+   *   { type: 'tool_calls', toolCalls }   once, terminally, if the model
+   *                                       decided to call tools this turn
+   *
+   * Tool calls arrive fragmented across chunks — the name in one delta, the
+   * JSON arguments split across many more — keyed by `index`, so they have to
+   * be reassembled before they mean anything.
+   */
+  async *completeStreamRich({ messages, system, maxTokens, temperature, model, signal, tools }) {
     const resolvedModel = model || this.model;
     const modelInfo = this.getModelInfo(resolvedModel);
 
@@ -249,11 +334,36 @@ class NvidiaProvider {
       temperature: temperature ?? this.temperature,
       stream: true,
     };
+    if (tools?.length) {
+      params.tools = tools;
+      params.tool_choice = 'auto';
+    }
 
     const stream = await this._withKeyFallback((client) => client.chat.completions.create(params, { signal }));
+
+    const pending = new Map(); // index -> { id, name, arguments }
+
     for await (const chunk of stream) {
-      const delta = chunk.choices?.[0]?.delta?.content;
-      if (delta) yield delta;
+      const choice = chunk.choices?.[0];
+      if (!choice) continue;
+
+      const delta = choice.delta?.content;
+      if (delta) yield { type: 'text', text: delta };
+
+      for (const tc of choice.delta?.tool_calls || []) {
+        const idx = tc.index ?? 0;
+        if (!pending.has(idx)) pending.set(idx, { id: '', name: '', arguments: '' });
+        const acc = pending.get(idx);
+        if (tc.id) acc.id = tc.id;
+        if (tc.function?.name) acc.name += tc.function.name;
+        // Concatenated, never replaced: the arguments JSON is streamed in
+        // fragments and is only parseable once every fragment has landed.
+        if (tc.function?.arguments) acc.arguments += tc.function.arguments;
+      }
+    }
+
+    if (pending.size) {
+      yield { type: 'tool_calls', toolCalls: [...pending.values()].filter((t) => t.name) };
     }
   }
 
@@ -279,3 +389,5 @@ class NvidiaProvider {
 }
 
 module.exports = NvidiaProvider;
+module.exports.getKeyPoolStatus = getKeyPoolStatus;
+module.exports.nvidiaKeys = nvidiaKeys;

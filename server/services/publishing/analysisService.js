@@ -114,11 +114,18 @@ async function analyze(itemId, buffer) {
     if (extracted.pageCount != null) item.file.pageCount = extracted.pageCount;
 
     let ai;
-    try {
-      ai = await llmAnalysis(item, extracted);
-    } catch (err) {
-      console.warn(`[studio:analyze] AI unavailable/failed (${err.message}); using heuristics`);
+    // Images have no extractable text and most providers can't process
+    // raw image data — go straight to heuristics to avoid "model does not
+    // support image input" errors.
+    if (item.file.type === 'image') {
       ai = heuristicAnalysis(item, extracted);
+    } else {
+      try {
+        ai = await llmAnalysis(item, extracted);
+      } catch (err) {
+        console.warn(`[studio:analyze] AI unavailable/failed (${err.message}); using heuristics`);
+        ai = heuristicAnalysis(item, extracted);
+      }
     }
 
     item.analysis = {

@@ -217,6 +217,74 @@ Return ONLY valid JSON:
   "closingNote": "one warm, motivating sentence to close"
 }`,
   }),
+
+  // ── Flashcard Generation ─────────────────────────────────────────────────
+  flashcardGenerate: ({ topic, count }) => ({
+    system: withDaxIdentity(`You are creating study flashcards. Be precise, factual, and well-structured. Each card must have a clear question and a complete answer.`),
+    user: `Generate ${count || 10} flashcards on the topic: "${topic}".
+
+Return ONLY valid JSON:
+{
+  "flashcards": [
+    {
+      "id": 1,
+      "question": "clear, specific question",
+      "answer": "complete, accurate answer",
+      "concept": "the core concept being tested"
+    }
+  ]
+}`,
+  }),
+
+  // ── Quiz Generation ──────────────────────────────────────────────────────
+  quizGenerate: ({ topic, count, difficulty }) => ({
+    system: withDaxIdentity(`You are creating practice quizzes. Questions should be realistic and test genuine understanding.`),
+    user: `Generate ${count || 5} multiple-choice questions on "${topic}" at ${difficulty || 'medium'} difficulty.
+
+Return ONLY valid JSON:
+{
+  "title": "Quiz title",
+  "questions": [
+    {
+      "id": 1,
+      "question": "the question text",
+      "options": ["A", "B", "C", "D"],
+      "correctAnswer": "A",
+      "explanation": "why this is correct"
+    }
+  ]
+}`,
+  }),
+
+  // ── Finance Assistant ───────────────────────────────────────────────────
+  financeAssist: ({ question, context }) => ({
+    system: withDaxIdentity(`You are a personal finance coach for students. Give practical, India-relevant financial advice. Be specific with numbers and actionable.`),
+    user: `Answer this finance question for a student:\n${question}\n\n${context ? `Student context: ${context}` : ''}\n\nReturn ONLY valid JSON:\n{"answer":"detailed 2-3 sentence answer","actionItems":["item 1","item 2","item 3"],"keyConcept":"one key financial concept explained simply"}`,
+  }),
+
+  // ── Dashboard Insights ──────────────────────────────────────────────────
+  dashboardInsights: ({ studentContext }) => ({
+    system: withDaxIdentity(`You are analysing a student's progress. Give honest, data-driven insights. Be specific and actionable, never generic.`),
+    user: `Analyse this student's current data and provide actionable insights.\n\nStudent data:\n${studentContext}\n\nReturn ONLY valid JSON:\n{"overallAssessment":"one sentence","strengths":["strength 1","strength 2","strength 3"],"focusAreas":["area 1","area 2"],"nextBestAction":"one specific action the student should take today","confidence":0.8}`,
+  }),
+
+  // ── Company Research ────────────────────────────────────────────────────
+  companyResearch: ({ companyName, sector }) => ({
+    system: withDaxIdentity(`You are researching companies for placement preparation. Be thorough and accurate. Focus on what matters for campus recruiting.`),
+    user: `Research this company for a student targeting campus placements.\n\nCompany: ${companyName}\nSector: ${sector || 'Not specified'}\n\nReturn ONLY valid JSON:\n{"overview":"3-4 sentence company overview with India context","culture":"2-3 sentences on work culture","selectionProcess":"typical selection rounds with descriptions","tips":["tip 1","tip 2","tip 3","tip 4","tip 5"],"keyMetrics":["notable metric 1","notable metric 2"],"recentNews":"1-2 sentences on recent developments"}`,
+  }),
+
+  // ── Resume ATS Analysis ─────────────────────────────────────────────────
+  resumeAts: ({ resumeText, targetRole }) => ({
+    system: withDaxIdentity(`You are an ATS (Applicant Tracking System) expert. Analyse resumes the way ATS software does. Be precise about keyword matching and formatting.`),
+    user: `Analyse this resume for ATS compatibility targeting a ${targetRole || 'campus placement'} role.\n\nResume:\n${resumeText}\n\nReturn ONLY valid JSON:\n{"atsScore":75,"keywordMatch":{"matched":["keyword1","keyword2"],"missing":["keyword3","keyword4"]},"formattingIssues":["issue 1","issue 2"],"sectionCompleteness":{"summary":"good","experience":"needs improvement","skills":"good","education":"complete"},"recommendations":["specific recommendation 1","specific recommendation 2","specific recommendation 3"]}`,
+  }),
+
+  // ── Career Hub Research ─────────────────────────────────────────────────
+  careerHubResearch: ({ question, studentContext }) => ({
+    system: withDaxIdentity(`You are a career counsellor. Give personalised, actionable advice grounded in the student's profile and the job market.`),
+    user: `Question: ${question}\n\nStudent context:\n${studentContext || 'Not provided'}\n\nReturn ONLY valid JSON:\n{"answer":"detailed 2-4 sentence answer","options":["option 1","option 2","option 3"],"nextSteps":["step 1","step 2","step 3"],"resources":["resource 1","resource 2"]}`,
+  }),
 };
 
 module.exports = PROMPTS;

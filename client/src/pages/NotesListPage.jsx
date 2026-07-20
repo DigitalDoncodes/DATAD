@@ -28,30 +28,30 @@ export default function NotesListPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold">Notes</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <h1 className="text-3xl font-semibold tracking-tight text-gray-900 dark:text-gray-100">Notes</h1>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Your learning, in your own words. If it helps a batchmate too — even better.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search notes…"
               aria-label="Search notes"
-              className="rounded-lg border border-gray-300 bg-transparent py-2 pl-9 pr-3 text-sm focus:border-indigo-500 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
+              className="rounded-full border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm shadow-sm transition-colors focus:border-primary-400 focus:outline-none dark:border-gray-700 dark:bg-gray-900"
             />
           </div>
           <select
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             aria-label="Filter by subject"
-            className="rounded-lg border border-gray-300 bg-transparent px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900"
+            className="rounded-full border border-gray-200 bg-white px-3.5 py-2 text-sm shadow-sm dark:border-gray-700 dark:bg-gray-900"
           >
             <option value="">All subjects</option>
             {SUBJECTS.map((s) => (
@@ -60,7 +60,7 @@ export default function NotesListPage() {
           </select>
           <Link
             to="/study/notes/new"
-            className="flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+            className="flex items-center gap-1.5 rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-primary-700 hover:shadow-md"
           >
             <Plus className="h-4 w-4" /> New note
           </Link>
@@ -82,10 +82,10 @@ export default function NotesListPage() {
             <Link
               key={note._id}
               to={`/study/notes/${note._id}`}
-              className="card-hover rounded-2xl border border-gray-200/80 bg-white p-4 dark:border-gray-800/80 dark:bg-gray-900"
+              className="card card-hover p-4"
             >
               <div className="mb-2 flex items-center gap-2">
-                <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-medium text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+                <span className="rounded-full bg-primary-100 px-2 py-0.5 text-xs font-medium text-primary-700 dark:bg-primary-900/50 dark:text-primary-300">
                   {note.subject}
                 </span>
                 {note.semester && (

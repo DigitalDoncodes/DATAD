@@ -1,0 +1,22 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:5173",
+      "localStorage": [
+        {
+          "name": "theme",
+          "value": "light"
+        },
+        {
+          "name": "token",
+          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2YTU3Y2E4MWFjMGU4MDY0ZTJkOWYxYTMiLCJuYW1lIjoiRGhhdGNoaW5hIE1vb3J0aGkgVEEiLCJlbWFpbCI6ImRpZ2l0YWxkb25kaGF0Y2hpbmFtb29ydGhpQGdtYWlsLmNvbSIsInJvbGUiOiJtZW1iZXIiLCJ0aWVyIjoiZnJlZSIsInN0dWRlbnRUeXBlIjoiZnJlc2hlciIsInByb2dyYW1zIjpbIm1iYSJdLCJhY3RpdmVQcm9ncmFtIjoibWJhIiwiaWF0IjoxNzg0MzE0Mzk0LCJleHAiOjE3ODQ5MTkxOTR9.3f6YmZMMF_po4iQ2XZeeFiFU1mFtFdwL0iLvkPQrSdI"
+        },
+        {
+          "name": "activeProgram",
+          "value": "mba"
+        }
+      ]
+    }
+  ]
+}

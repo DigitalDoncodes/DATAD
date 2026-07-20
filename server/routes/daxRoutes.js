@@ -6,6 +6,7 @@ const { FEATURE } = require('../subscription/featureRegistry');
 const usageMeter = require('../ai/usageMeter');
 const { getMinimumTier } = require('../subscription/featureRegistry');
 const daxService = require('../ai/daxService');
+const proposalService = require('../ai/proposalService');
 const UserModelPref = require('../models/UserModelPref');
 const { getAvailableModels, getDefaultModelId, parseModelId } = require('../ai/modelList');
 
@@ -120,14 +121,19 @@ router.delete('/memory', async (req, res, next) => {
 });
 
 router.post('/chat/stream', async (req, res, next) => {
-  const { message } = req.body;
+  const { message, modelId, conversationId, clientConversationId } = req.body;
   if (!message?.trim()) return res.status(400).json({ message: 'Message is required' });
 
   try {
     const controller = new AbortController();
     req.on('close', () => controller.abort());
 
-    const gen = daxService.streamChat(req.user.userId, message, { signal: controller.signal });
+    const gen = daxService.streamChat(req.user.userId, message, {
+      signal: controller.signal,
+      modelId,
+      conversationId,
+      clientConversationId,
+    });
 
     // Peek the first yield before committing to SSE headers — a quota-
     // exceeded turn resolves as the very first (and only) yield, so it can
@@ -153,6 +159,9 @@ router.post('/chat/stream', async (req, res, next) => {
     let chunk = first.value;
     while (true) {
       if (chunk.done) {
+        // Cards ride the terminal frame: the client renders them once the
+        // reply is complete, so a proposal never appears mid-sentence.
+        for (const p of chunk.proposals || []) sendEvent('proposal', { proposal: p });
         sendEvent('done', chunk);
         break;
       }
@@ -173,7 +182,7 @@ router.post('/chat/stream', async (req, res, next) => {
 
 router.get('/chat/history', async (req, res, next) => {
   try {
-    const result = await daxService.getChatHistory(req.user.userId);
+    const result = await daxService.getChatHistory(req.user.userId, req.query.conversationId);
     res.json(result);
   } catch (err) { next(err); }
 });
@@ -183,6 +192,99 @@ router.delete('/chat', async (req, res, next) => {
     const result = await daxService.clearChat(req.user.userId);
     res.json(result);
   } catch (err) { next(err); }
+});
+
+// ── Conversations ─────────────────────────────────────────────
+//
+// Every handler is scoped by req.user.userId inside daxService, so a caller
+// cannot reach another student's conversation by supplying its id — the
+// lookup simply misses and 404s.
+
+// Shared error mapping: the service layer throws typed errors, and without
+// this they fall through to the generic handler as 500s.
+function sendServiceError(err, res, next) {
+  if (err.name === 'NotFoundError') return res.status(404).json({ message: err.message });
+  if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
+  return next(err);
+}
+
+// ── Proposed writes ───────────────────────────────────────────
+//
+// The confirm endpoint is the only path by which a Dax-suggested write reaches
+// the database. It takes a proposal id and nothing else — the arguments were
+// validated and stored server-side at propose time, so a tampered client cannot
+// substitute different ones here, and a hallucinated tool call cannot mutate
+// anything without a human first clicking Confirm.
+
+router.get('/proposals', async (req, res, next) => {
+  try {
+    res.json(await proposalService.listPending(req.user.userId, req.query.conversationId));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.get('/proposals/:id', async (req, res, next) => {
+  try {
+    res.json({ proposal: await proposalService.get(req.user.userId, req.params.id) });
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.post('/proposals/:id/confirm', async (req, res, next) => {
+  try {
+    res.json(await proposalService.confirm(req.user.userId, req.params.id));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.post('/proposals/:id/reject', async (req, res, next) => {
+  try {
+    res.json(await proposalService.reject(req.user.userId, req.params.id));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.post('/proposals/:id/undo', async (req, res, next) => {
+  try {
+    res.json(await proposalService.undo(req.user.userId, req.params.id));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+// ── Conversations ─────────────────────────────────────────────
+
+router.get('/conversations', async (req, res, next) => {
+  try {
+    res.json(await daxService.listConversations(req.user.userId));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.post('/conversations', async (req, res, next) => {
+  try {
+    res.status(201).json(await daxService.createConversation(req.user.userId, req.body));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+// One-time localStorage import. Idempotent on (user, clientId), so a client
+// that retries — or a second device replaying the same local store — cannot
+// duplicate a student's history.
+router.post('/conversations/import', async (req, res, next) => {
+  try {
+    res.json(await daxService.importConversations(req.user.userId, req.body));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.get('/conversations/:id', async (req, res, next) => {
+  try {
+    res.json(await daxService.getConversation(req.user.userId, req.params.id));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.patch('/conversations/:id', async (req, res, next) => {
+  try {
+    res.json(await daxService.updateConversation(req.user.userId, req.params.id, req.body));
+  } catch (err) { sendServiceError(err, res, next); }
+});
+
+router.delete('/conversations/:id', async (req, res, next) => {
+  try {
+    res.json(await daxService.deleteConversation(req.user.userId, req.params.id));
+  } catch (err) { sendServiceError(err, res, next); }
 });
 
 // ── Model Preference ──────────────────────────────────────────
